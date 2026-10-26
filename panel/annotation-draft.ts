@@ -2,8 +2,7 @@ import type { OpenAIMessage } from '@openai/mcp-extensions/app';
 import type { App } from '@modelcontextprotocol/ext-apps';
 
 export type AnnotationInstruction = { title: string; prompt: string };
-// Annotation rounds always append to the active conversation. Login's new-chat
-// routing must never be reused here, including on errors or subsequent rounds.
+// Annotation rounds always append to the active conversation without submitting it.
 export const ANNOTATION_DESTINATION = { target: 'active' as const, send: false };
 
 export function createAnnotationDraftSender(getMessage: () => OpenAIMessage | undefined, app: Pick<App, 'getHostCapabilities'>) {

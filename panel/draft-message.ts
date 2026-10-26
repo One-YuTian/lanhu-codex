@@ -12,11 +12,3 @@ export function draftMessage(draft: DraftContent): OpenAIMessageParams {
     _meta: { 'openai/message': { ...ANNOTATION_DESTINATION } }
   };
 }
-
-export function supportedDesktopVersion(version?: string): boolean {
-  const match = version?.match(/^(\d+)\.(\d+)\.(\d+)(?:\D|$)/);
-  if (!match) return true; // Capability negotiation remains authoritative for unversioned hosts.
-  const current = match.slice(1).map(Number), minimum = [26, 928, 20710];
-  for (let index = 0; index < 3; index++) if (current[index] !== minimum[index]) return current[index] > minimum[index];
-  return true;
-}

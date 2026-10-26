@@ -3262,8 +3262,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path7) {
-      let input2 = path7;
+    function removeDotSegments(path6) {
+      let input2 = path6;
       const output2 = [];
       let nextSlash = -1;
       let len = 0;
@@ -3337,11 +3337,11 @@ var require_utils = __commonJS({
       }
       return output2.join("");
     }
-    function removeDotSegmentsRelative(path7) {
-      if (path7 === "" || path7[0] === "/") {
-        return removeDotSegments(path7);
+    function removeDotSegmentsRelative(path6) {
+      if (path6 === "" || path6[0] === "/") {
+        return removeDotSegments(path6);
       }
-      const segments = path7.split("/");
+      const segments = path6.split("/");
       const last = segments.length - 1;
       const output2 = [];
       let trailingDirectory = false;
@@ -3704,8 +3704,8 @@ var require_schemes = __commonJS({
       }
       if (wsComponent.resourceName) {
         const queryIndex = wsComponent.resourceName.indexOf("?");
-        const path7 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
-        wsComponent.path = path7 && path7 !== "/" ? path7 : void 0;
+        const path6 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
+        wsComponent.path = path6 && path6 !== "/" ? path6 : void 0;
         wsComponent.query = queryIndex === -1 ? void 0 : wsComponent.resourceName.slice(queryIndex + 1);
         wsComponent.resourceName = void 0;
       }
@@ -8075,10 +8075,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema) {
   return mergeDefs(schema._zod.def);
 }
-function getElementAtPath(obj, path7) {
-  if (!path7)
+function getElementAtPath(obj, path6) {
+  if (!path6)
     return obj;
-  return path7.reduce((acc, key) => acc?.[key], obj);
+  return path6.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -8418,11 +8418,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path7, issues) {
+function prefixIssues(path6, issues) {
   return issues.map((iss) => {
     var _a3;
     (_a3 = iss).path ?? (_a3.path = []);
-    iss.path.unshift(path7);
+    iss.path.unshift(path6);
     return iss;
   });
 }
@@ -8884,16 +8884,16 @@ function flattenError(error62, mapper = (issue2) => issue2.message) {
 }
 function formatError(error62, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error63, path7 = []) => {
+  const processError = (error63, path6 = []) => {
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path7, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
       } else {
-        const fullpath = [...path7, ...issue2.path];
+        const fullpath = [...path6, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -8932,17 +8932,17 @@ function formatError(error62, mapper = (issue2) => issue2.message) {
 }
 function treeifyError(error62, mapper = (issue2) => issue2.message) {
   const result = { errors: [] };
-  const processError = (error63, path7 = []) => {
+  const processError = (error63, path6 = []) => {
     var _a3;
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path7, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
       } else {
-        const fullpath = [...path7, ...issue2.path];
+        const fullpath = [...path6, ...issue2.path];
         if (fullpath.length === 0) {
           result.errors.push(mapper(issue2));
           continue;
@@ -8981,8 +8981,8 @@ function treeifyError(error62, mapper = (issue2) => issue2.message) {
 }
 function toDotPath(_path) {
   const segs = [];
-  const path7 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
-  for (const seg of path7) {
+  const path6 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
+  for (const seg of path6) {
     if (typeof seg === "number")
       segs.push(`[${seg}]`);
     else if (typeof seg === "symbol")
@@ -26120,13 +26120,13 @@ function resolveRef(ref, ctx) {
   if (!ref.startsWith("#")) {
     throw new Error("External $ref is not supported, only local refs (#/...) are allowed");
   }
-  const path7 = ref.slice(1).split("/").filter(Boolean);
-  if (path7.length === 0) {
+  const path6 = ref.slice(1).split("/").filter(Boolean);
+  if (path6.length === 0) {
     return ctx.rootSchema;
   }
   const defsKey = ctx.version === "draft-2020-12" ? "$defs" : "definitions";
-  if (path7[0] === defsKey) {
-    const key = path7[1] === void 0 ? void 0 : decodeJSONPointerSegment(path7[1]);
+  if (path6[0] === defsKey) {
+    const key = path6[1] === void 0 ? void 0 : decodeJSONPointerSegment(path6[1]);
     if (!key || !ctx.defs[key]) {
       throw new Error(`Reference not found: ${ref}`);
     }
@@ -28672,7 +28672,7 @@ var AppError = class extends Error {
   code;
 };
 function errorInfo(error62) {
-  return error62 instanceof AppError ? { code: error62.code, message: error62.message, ...["LOGIN_REQUIRED", "LOGIN_REJECTED", "COOKIE_SCOPE_MISMATCH"].includes(error62.code) ? { login_action: { skill: "lanhu-login" } } : {} } : { code: "INTERNAL_ERROR", message: "\u64CD\u4F5C\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u670D\u52A1\u72B6\u6001" };
+  return error62 instanceof AppError ? { code: error62.code, message: error62.message, ...["LOGIN_REQUIRED", "LOGIN_REJECTED", "COOKIE_SCOPE_MISMATCH"].includes(error62.code) ? { login_action: { method: "manual_cookie" } } : {} } : { code: "INTERNAL_ERROR", message: "\u64CD\u4F5C\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u670D\u52A1\u72B6\u6001" };
 }
 var cookieSchema = external_exports.object({
   name: external_exports.string().max(4096).regex(/^[^\x00-\x20\x7f()<>@,;:\\"/\[\]?={}]*$/),
@@ -28715,7 +28715,6 @@ function selectionLinks(selection) {
 }
 
 // src/draft-inbox.ts
-var PANEL_LEASE_MS = 75e3;
 var SELECTION_TTL_MS = 24 * 60 * 60 * 1e3;
 var MAX_SELECTIONS = 200;
 var DraftInbox = class {
@@ -28723,10 +28722,6 @@ var DraftInbox = class {
     this.options = options;
   }
   options;
-  panels = /* @__PURE__ */ new Map();
-  pending = /* @__PURE__ */ new Map();
-  receivers = /* @__PURE__ */ new Map();
-  activePanel;
   selections = /* @__PURE__ */ new Map();
   now() {
     return this.options.now?.() ?? Date.now();
@@ -28758,131 +28753,14 @@ var DraftInbox = class {
     const term = query.trim().toLocaleLowerCase();
     return [...this.selections.values()].reverse().flatMap((item) => selectionLinks(item.draft)).filter((item) => !term || (item.title ?? item.name).toLocaleLowerCase().includes(term)).slice(0, 20);
   }
-  open() {
-    this.prune();
-    if (this.panels.size >= 32) throw new AppError("TOO_MANY_PANELS", "\u6253\u5F00\u7684\u84DD\u6E56\u9762\u677F\u8FC7\u591A\uFF0C\u8BF7\u5173\u95ED\u4E0D\u7528\u7684\u9762\u677F");
-    const token = (0, import_node_crypto.randomUUID)();
-    this.panels.set(token, { seenAt: this.now(), visible: false, ready: false });
-    this.activePanel = token;
-    return token;
-  }
-  prune() {
-    for (const [token, panel] of this.panels) if (this.now() - panel.seenAt > PANEL_LEASE_MS * 2) this.closePanel(token);
-  }
-  poll(token, visible, mentionsSupported = true) {
-    const panel = this.panels.get(token);
-    if (!panel) throw new AppError("PANEL_EXPIRED", "\u63A5\u6536\u9762\u677F\u5DF2\u5931\u6548\uFF0C\u8BF7\u5728\u76EE\u6807\u4F1A\u8BDD\u91CD\u65B0\u6253\u5F00");
-    panel.seenAt = this.now();
-    panel.visible = visible;
-    panel.ready = mentionsSupported;
-    panel.mentionsSupported = mentionsSupported;
-    if (!mentionsSupported) return null;
-    const live = this.livePanels();
-    const foreground = live.filter(([, item]) => item.visible);
-    if (visible && foreground.length === 1) this.activePanel = token;
-    else if (!this.activePanel && live.length === 1) this.activePanel = token;
-    return [...this.pending.values()].find((item) => item.panel === token)?.draft ?? null;
-  }
-  livePanels() {
-    return [...this.panels].filter(([, panel]) => panel.ready && this.now() - panel.seenAt <= PANEL_LEASE_MS);
-  }
-  async receive(token, visible, waitMs = 0, mentionsSupported = true) {
-    const draft = this.poll(token, visible, mentionsSupported);
-    if (draft || !waitMs || !mentionsSupported) return draft;
-    if (this.receivers.has(token)) throw new AppError("RECEIVER_BUSY", "\u5F53\u524D\u9762\u677F\u5DF2\u6709\u63A5\u6536\u8BF7\u6C42");
-    await new Promise((resolve) => {
-      const timer = setTimeout(() => this.wake(token), waitMs);
-      this.receivers.set(token, { resolve, timer });
-    });
-    return this.poll(token, this.panels.get(token)?.visible ?? visible);
-  }
-  wake(token) {
-    const receiver = this.receivers.get(token);
-    if (!receiver) return;
-    this.receivers.delete(token);
-    clearTimeout(receiver.timer);
-    receiver.resolve();
-  }
-  push(prompt, title = "\u84DD\u6E56\u753B\u5E03", items) {
-    this.prune();
-    const live = this.livePanels();
-    const visible = live.filter(([, panel]) => panel.visible);
-    if (visible.length > 1) return Promise.reject(new AppError("PANEL_AMBIGUOUS", "\u591A\u4E2A\u4F1A\u8BDD\u7684\u84DD\u6E56\u9762\u677F\u540C\u65F6\u53EF\u89C1\uFF0C\u8BF7\u5207\u6362\u5230\u76EE\u6807\u4F1A\u8BDD\u4EE5\u786E\u8BA4\u63A5\u6536\u4F4D\u7F6E"));
-    const candidate = visible[0] ?? live.find(([token]) => token === this.activePanel);
-    if (!candidate && this.activePanel && this.panels.get(this.activePanel)?.mentionsSupported === false)
-      return Promise.reject(new AppError("COMPOSER_MENTIONS_UNSUPPORTED", "\u5F53\u524D Codex \u672A\u58F0\u660E\u8D44\u6E90 mention \u8FFD\u52A0\u80FD\u529B\uFF0C\u65E0\u6CD5\u5C06\u84DD\u6E56\u5BF9\u8C61\u4F5C\u4E3A mention \u6DFB\u52A0\u5230 Composer"));
-    if (!candidate) return Promise.reject(new AppError(
-      live.length ? "PANEL_AMBIGUOUS" : "PANEL_NOT_OPEN",
-      live.length ? "\u63A5\u6536\u76EE\u6807\u672A\u660E\u786E\uFF0C\u8BF7\u5728\u76EE\u6807\u4F1A\u8BDD\u663E\u793A\u84DD\u6E56\u9762\u677F\u4EE5\u786E\u8BA4\u63A5\u6536\u4F4D\u7F6E" : "\u5F53\u524D\u4F1A\u8BDD\u7684\u84DD\u6E56\u63A5\u6536\u5668\u5C1A\u672A\u8FDE\u63A5\uFF0C\u8BF7\u5148\u52A0\u8F7D\u4E00\u6B21\u84DD\u6E56\u9762\u677F\uFF1B\u8FDE\u63A5\u540E\u53EF\u4EE5\u6298\u53E0\u5230\u540E\u53F0"
-    ));
-    if (this.pending.size) return Promise.reject(new AppError("COMPOSER_BUSY", "\u4E0A\u4E00\u6761\u5185\u5BB9\u4ECD\u5728\u6DFB\u52A0\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    const draft = { id: (0, import_node_crypto.randomUUID)(), prompt, title, ...items ? { items } : {} };
-    this.pruneSelections();
-    this.selections.set(draft.id, { draft: structuredClone(draft), expiresAt: this.now() + SELECTION_TTL_MS });
-    while (this.selections.size > MAX_SELECTIONS) this.selections.delete(this.selections.keys().next().value);
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        this.pending.delete(draft.id);
-        reject(new AppError("DRAFT_TIMEOUT", "\u672A\u6536\u5230\u9762\u677F\u7684\u6DFB\u52A0\u786E\u8BA4\uFF0C\u8BF7\u68C0\u67E5\u5F53\u524D\u4F1A\u8BDD\u8349\u7A3F\u540E\u518D\u91CD\u8BD5"));
-      }, this.options.timeoutMs ?? 1e4);
-      this.activePanel = candidate[0];
-      this.pending.set(draft.id, { panel: candidate[0], draft, resolve, reject, timer });
-      this.wake(candidate[0]);
-    });
-  }
-  ack(token, draftId, inserted) {
-    const pending = this.pending.get(draftId);
-    if (!pending || pending.panel !== token) return { accepted: false };
-    clearTimeout(pending.timer);
-    this.pending.delete(draftId);
-    if (inserted) pending.resolve({ draftId });
-    else pending.reject(new AppError("DRAFT_NOT_CONFIRMED", "\u9762\u677F\u672A\u80FD\u786E\u8BA4\u8349\u7A3F\u5DF2\u6DFB\u52A0\uFF1B\u8BF7\u68C0\u67E5\u8F93\u5165\u6846\uFF0C\u672A\u81EA\u52A8\u53D1\u9001\u6D88\u606F"));
-    return { accepted: true };
-  }
-  closePanel(token) {
-    this.panels.delete(token);
-    this.wake(token);
-    for (const [id, pending] of this.pending) if (pending.panel === token) {
-      clearTimeout(pending.timer);
-      this.pending.delete(id);
-      pending.reject(new AppError("PANEL_CLOSED", "\u63A5\u6536\u9762\u677F\u5DF2\u5173\u95ED\uFF0C\u8BF7\u68C0\u67E5\u8349\u7A3F\u540E\u91CD\u65B0\u6253\u5F00\u76EE\u6807\u9762\u677F"));
-    }
-  }
   dispose() {
-    for (const token of this.panels.keys()) this.closePanel(token);
     this.selections.clear();
-  }
-};
-
-// src/login-attempts.ts
-var import_node_crypto2 = require("node:crypto");
-var LoginAttempts = class {
-  items = /* @__PURE__ */ new Map();
-  start(id = (0, import_node_crypto2.randomUUID)()) {
-    for (const [key, item] of this.items) if (Date.now() - item.created > 24 * 36e5) this.items.delete(key);
-    if (this.items.size >= 200) throw new AppError("LOGIN_ATTEMPTS_FULL", "\u767B\u5F55\u6D41\u7A0B\u8FC7\u591A\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5");
-    if (this.items.has(id)) throw new AppError("LOGIN_ATTEMPT_EXISTS", "\u6B64\u767B\u5F55\u6D41\u7A0B\u5DF2\u767B\u8BB0");
-    this.items.set(id, { state: "active", created: Date.now() });
-    return this.status(id);
-  }
-  status(id) {
-    const item = this.items.get(id);
-    return { attempt_id: id, state: item && Date.now() - item.created < 24 * 36e5 ? item.state : "expired" };
-  }
-  requireActive(id) {
-    if (this.status(id).state !== "active") throw new AppError("LOGIN_ATTEMPT_CANCELLED", "\u767B\u5F55\u6D41\u7A0B\u5DF2\u53D6\u6D88\u6216\u7ED3\u675F\uFF0C\u8BF7\u7ED3\u675F\u539F\u767B\u5F55\u4EFB\u52A1\uFF0C\u4E0D\u518D\u8BFB\u53D6\u6216\u63D0\u4EA4 Cookie");
-  }
-  finish(id, state) {
-    const item = this.items.get(id);
-    if (item?.state === "active") item.state = state;
-    return this.status(id);
   }
 };
 
 // src/bridge.ts
 var Bridge = class {
   drafts = new DraftInbox();
-  loginAttempts = new LoginAttempts();
   cookie = "";
   updatedAt = null;
   constructor(options = {}) {
@@ -29298,8 +29176,8 @@ function getErrorMap2() {
 
 // node_modules/.pnpm/zod@4.6.7/node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data: data2, path: path7, errorMaps, issueData } = params;
-  const fullPath = [...path7, ...issueData.path || []];
+  const { data: data2, path: path6, errorMaps, issueData } = params;
+  const fullPath = [...path6, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -29414,11 +29292,11 @@ var errorUtil;
 
 // node_modules/.pnpm/zod@4.6.7/node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path7, key) {
+  constructor(parent, value, path6, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path7;
+    this._path = path6;
     this._key = key;
   }
   get path() {
@@ -32969,11 +32847,11 @@ function normalizeObjectSchema(schema) {
   }
   return void 0;
 }
-function getDotPath(path7) {
-  if (path7.length === 0) {
+function getDotPath(path6) {
+  if (path6.length === 0) {
     return "object root";
   }
-  return path7.reduce((acc, seg, index) => {
+  return path6.reduce((acc, seg, index) => {
     if (index === 0) {
       return String(seg);
     }
@@ -37209,7 +37087,7 @@ var EMPTY_COMPLETION_RESULT = {
 var import_promises = require("node:fs/promises");
 var import_node_os = require("node:os");
 var import_node_path = __toESM(require("node:path"), 1);
-var import_node_crypto3 = require("node:crypto");
+var import_node_crypto2 = require("node:crypto");
 var SETTINGS_CAPABILITY = { readTool: "settings_read", updateTool: "settings_update" };
 var preferencesSchema = external_exports.object({ version: external_exports.union([external_exports.literal(1), external_exports.literal(2)]), COOKIE: external_exports.union([external_exports.literal(""), manualCookieSchema]).optional() });
 function settingsFile(env = process.env) {
@@ -37233,7 +37111,7 @@ var FileCookiePreferences = class {
     const parsed = external_exports.union([external_exports.literal(""), manualCookieSchema]).safeParse(cookie);
     if (!parsed.success) return Promise.reject(new AppError("INVALID_COOKIE", "Cookie \u683C\u5F0F\u65E0\u6548"));
     const task = this.writes.then(async () => {
-      const temporary = `${this.file}.${(0, import_node_crypto3.randomUUID)()}.tmp`;
+      const temporary = `${this.file}.${(0, import_node_crypto2.randomUUID)()}.tmp`;
       try {
         await (0, import_promises.mkdir)(import_node_path.default.dirname(this.file), { recursive: true });
         await (0, import_promises.writeFile)(temporary, JSON.stringify({ version: 2, COOKIE: parsed.data }), { mode: 384, flag: "wx" });
@@ -37456,7 +37334,7 @@ var LanhuApi = class {
   async credential(url2) {
     if (!this.bridge.loginStatus().loggedIn) {
       const checked = await this.bridge.checkLogin();
-      if (!checked.login.loggedIn) throw new AppError("LOGIN_REQUIRED", checked.loginPageOpened ? "\u84DD\u6E56\u51ED\u636E\u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u5DF2\u6253\u5F00\u767B\u5F55\u9875\uFF1B\u8BF7\u767B\u5F55\u540E\u91CD\u8BD5" : "\u84DD\u6E56\u51ED\u636E\u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u4F7F\u7528 Lanhu Login \u767B\u5F55\u6D41\u7A0B");
+      if (!checked.login.loggedIn) throw new AppError("LOGIN_REQUIRED", checked.loginPageOpened ? "\u84DD\u6E56\u51ED\u636E\u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u5DF2\u6253\u5F00\u767B\u5F55\u9875\uFF1B\u8BF7\u767B\u5F55\u540E\u91CD\u8BD5" : "\u84DD\u6E56\u51ED\u636E\u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie");
     }
     const cookie = this.bridge.getCookie(url2.href).cookie;
     if (!checkLoginCookie(cookie).loggedIn) throw new AppError("COOKIE_SCOPE_MISMATCH", "\u6B64\u63A5\u53E3\u6CA1\u6709\u53EF\u7528\u7684 user_token\uFF0C\u8BF7\u91CD\u65B0\u540C\u6B65\u5BF9\u5E94\u84DD\u6E56\u57DF\u540D\u7684 Cookie");
@@ -37467,7 +37345,7 @@ var LanhuApi = class {
       const response = await this.fetcher(url2, { method: body ? "POST" : "GET", body, headers, redirect: "manual", signal: AbortSignal.timeout(3e4) });
       if (!response.ok) {
         await response.body?.cancel();
-        if (response.status === 401) throw new AppError(headers.Cookie ? "LOGIN_REJECTED" : "RESOURCE_ACCESS_DENIED", headers.Cookie ? "\u84DD\u6E56\u670D\u52A1\u7AEF\u62D2\u7EDD\u51ED\u636E\uFF0C\u8BF7\u4F7F\u7528 Lanhu Login \u767B\u5F55\u6D41\u7A0B" : "\u84DD\u6E56\u8D44\u6E90\u62D2\u7EDD\u8BBF\u95EE\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u8D44\u6E90\u5730\u5740");
+        if (response.status === 401) throw new AppError(headers.Cookie ? "LOGIN_REJECTED" : "RESOURCE_ACCESS_DENIED", headers.Cookie ? "\u84DD\u6E56\u670D\u52A1\u7AEF\u62D2\u7EDD\u51ED\u636E\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie" : "\u84DD\u6E56\u8D44\u6E90\u62D2\u7EDD\u8BBF\u95EE\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u8D44\u6E90\u5730\u5740");
         if (response.status === 403) throw new AppError("ACCESS_DENIED", "\u84DD\u6E56\u670D\u52A1\u7AEF\u62D2\u7EDD\u8BBF\u95EE\uFF0C\u8BF7\u68C0\u67E5\u9879\u76EE\u6743\u9650\u6216\u91CD\u65B0\u767B\u5F55");
         throw new AppError("UPSTREAM_HTTP_ERROR", `\u84DD\u6E56\u63A5\u53E3\u8FD4\u56DE HTTP ${response.status}`);
       }
@@ -37537,7 +37415,7 @@ var LanhuApi = class {
       ...dds ? { Authorization: "Basic dW5kZWZpbmVkOg==" } : { "request-from": "web", "real-path": "/item/project/product" }
     }, 32 * 1024 * 1024)).bytes);
     if (result.code !== void 0 && !["0", "00000", "200"].includes(String(result.code))) {
-      if (String(result.code) === "401") throw new AppError("LOGIN_REJECTED", "\u84DD\u6E56\u670D\u52A1\u7AEF\u62D2\u7EDD\u51ED\u636E\uFF0C\u8BF7\u4F7F\u7528 Lanhu Login \u767B\u5F55\u6D41\u7A0B");
+      if (String(result.code) === "401") throw new AppError("LOGIN_REJECTED", "\u84DD\u6E56\u670D\u52A1\u7AEF\u62D2\u7EDD\u51ED\u636E\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie");
       const code = /^-?\d{1,10}$/.test(String(result.code)) ? `\uFF08\u4EE3\u7801 ${result.code}\uFF09` : "";
       throw new AppError("UPSTREAM_API_ERROR", `\u84DD\u6E56\u4E1A\u52A1\u63A5\u53E3\u8FD4\u56DE\u5931\u8D25${code}\uFF0C\u8BF7\u68C0\u67E5\u9879\u76EE\u3001\u7248\u672C ID\u3001\u8BBF\u95EE\u6743\u9650\u6216\u91CD\u65B0\u767B\u5F55`);
     }
@@ -37894,75 +37772,9 @@ function registerApiTools(server, api) {
   });
 }
 
-// src/panel.ts
-var import_promises2 = require("node:fs/promises");
-var import_node_path2 = __toESM(require("node:path"), 1);
-var PANEL_URI = "ui://lanhu/receiver/0.1.25";
-async function panelHtml() {
-  const candidates = ["panel.html", "../panel.html", "../package/panel.html"];
-  for (const relative of candidates) {
-    try {
-      return await (0, import_promises2.readFile)(import_node_path2.default.resolve(__dirname, relative), "utf8");
-    } catch {
-    }
-  }
-  throw new Error("Panel bundle missing");
-}
-function registerPanel(server, inbox) {
-  server.registerResource("lanhu-receiver", PANEL_URI, { mimeType: "text/html;profile=mcp-app" }, async () => ({
-    contents: [{
-      uri: PANEL_URI,
-      mimeType: "text/html;profile=mcp-app",
-      text: await panelHtml(),
-      _meta: {
-        ui: { prefersBorder: true, csp: { connectDomains: [], resourceDomains: [] } },
-        "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode: "inline" }
-      }
-    }]
-  }));
-  server.registerTool("lanhu_open_receiver", {
-    title: "\u84DD\u6E56\u63A5\u6536\u9762\u677F",
-    description: "\u521D\u59CB\u5316\u5F53\u524D\u4F1A\u8BDD\u7684\u84DD\u6E56\u63A5\u6536\u5668\uFF0C\u9ED8\u8BA4\u4EE5\u7D27\u51D1\u5185\u8054\u754C\u9762\u663E\u793A\uFF0C\u4E0D\u4E3B\u52A8\u5C55\u5F00\u3002\u521D\u59CB\u5316\u540E\u53EF\u6298\u53E0\u5230\u540E\u53F0\u7EE7\u7EED\u63A5\u6536\uFF1BChrome \u53F3\u952E\u53D1\u9001\u5185\u5BB9\u4F1A\u8FFD\u52A0\u5230\u5F53\u524D\u8349\u7A3F\uFF0C\u7531\u7528\u6237\u624B\u52A8\u786E\u8BA4\u53D1\u9001\u3002",
-    inputSchema: {},
-    annotations: { destructiveHint: false, openWorldHint: false },
-    _meta: { ui: { resourceUri: PANEL_URI }, "openai/ui": { entrypoints: [{ type: "thread" }], preferredModelDisplayMode: "inline" } }
-  }, async () => ({
-    content: [{ type: "text", text: "\u5DF2\u8FD4\u56DE\u84DD\u6E56\u63A5\u6536\u9762\u677F\u5165\u53E3\uFF0C\u5C1A\u672A\u786E\u8BA4\u754C\u9762\u52A0\u8F7D\u6216 Composer \u5199\u5165\u3002\u8BF7\u4EE5\u9762\u677F\u8FDE\u63A5\u72B6\u6001\u53CA\u8349\u7A3F\u6DFB\u52A0\u56DE\u6267\u4E3A\u51C6\u3002" }],
-    _meta: { "lanhu/panel": { token: inbox.open() } }
-  }));
-  const token = external_exports.string().uuid();
-  const appOnly = { ui: { visibility: ["app"] } };
-  const wrap = async (fn) => {
-    try {
-      return { content: [], _meta: await fn() };
-    } catch (error62) {
-      return { isError: true, content: [{ type: "text", text: JSON.stringify(errorInfo(error62)) }] };
-    }
-  };
-  server.registerTool("lanhu_receiver_poll", {
-    title: "\u63A5\u6536\u5F85\u6DFB\u52A0\u5185\u5BB9",
-    inputSchema: { token, visible: external_exports.boolean(), wait_ms: external_exports.number().int().min(0).max(25e3).optional(), mentions_supported: external_exports.boolean().optional() },
-    annotations: { destructiveHint: false, openWorldHint: false },
-    _meta: appOnly
-  }, (args) => wrap(async () => ({ "lanhu/draft": await inbox.receive(args.token, args.visible, args.wait_ms, args.mentions_supported) })));
-  server.registerTool("lanhu_receiver_ack", {
-    title: "\u786E\u8BA4\u8349\u7A3F\u6DFB\u52A0\u7ED3\u679C",
-    inputSchema: { token, draft_id: external_exports.string().uuid(), inserted: external_exports.boolean() },
-    _meta: appOnly
-  }, (args) => wrap(() => inbox.ack(args.token, args.draft_id, args.inserted)));
-  server.registerTool("lanhu_receiver_close", {
-    title: "\u5173\u95ED\u63A5\u6536\u9762\u677F",
-    inputSchema: { token },
-    _meta: appOnly
-  }, (args) => wrap(() => {
-    inbox.closePanel(args.token);
-    return {};
-  }));
-}
-
 // src/canvas-panel.ts
-var import_promises4 = require("node:fs/promises");
-var import_node_path4 = __toESM(require("node:path"), 1);
+var import_promises3 = require("node:fs/promises");
+var import_node_path3 = __toESM(require("node:path"), 1);
 
 // src/assets.mjs
 function assetUrl(value) {
@@ -38062,46 +37874,48 @@ function canvasReader(bridge) {
 }
 
 // src/canvas-preferences.ts
-var import_promises3 = require("node:fs/promises");
-var import_node_path3 = __toESM(require("node:path"), 1);
-var import_node_crypto4 = require("node:crypto");
+var import_promises2 = require("node:fs/promises");
+var import_node_path2 = __toESM(require("node:path"), 1);
+var import_node_crypto3 = require("node:crypto");
 var queues = /* @__PURE__ */ new Map();
 function registerCanvasPreferences(server) {
   const id = external_exports.string().regex(/^[\w-]{1,256}$/);
   server.registerTool("lanhu_canvas_preferences", {
     title: "\u84DD\u6E56\u753B\u5E03\u9879\u76EE\u8BB0\u5FC6",
-    description: "\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u6253\u5F00\u7684\u9879\u76EE\u3001\u56E2\u961F\u53CA\u8BBE\u8BA1\u7A3F ID\uFF0C\u4E0D\u4FDD\u5B58 Cookie \u6216\u4EFB\u610F URL\u3002",
+    description: "\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u9009\u62E9\u7684\u56E2\u961F\u3001\u6253\u5F00\u7684\u9879\u76EE\u53CA\u8BBE\u8BA1\u7A3F ID\uFF0C\u4E0D\u4FDD\u5B58 Cookie \u6216\u4EFB\u610F URL\u3002",
     inputSchema: {
+      team_id: id.optional(),
       route: external_exports.object({ project_id: id, team_id: id.optional(), image_id: id.optional() }).optional(),
       group: external_exports.object({ project_id: id, team_id: id.optional(), group_id: id }).optional(),
       seen_link: external_exports.string().regex(/^[a-f0-9]{64}$/).optional()
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     _meta: { ui: { visibility: ["app"] } }
-  }, async ({ route, group, seen_link }) => {
-    const file2 = import_node_path3.default.join(import_node_path3.default.dirname(settingsFile()), "canvas-state.json");
+  }, async ({ team_id, route, group, seen_link }) => {
+    const file2 = import_node_path2.default.join(import_node_path2.default.dirname(settingsFile()), "canvas-state.json");
     const readState = async () => {
       try {
-        return JSON.parse(await (0, import_promises3.readFile)(file2, "utf8"));
+        return JSON.parse(await (0, import_promises2.readFile)(file2, "utf8"));
       } catch (error62) {
         if (error62.code === "ENOENT") return {};
         throw error62;
       }
     };
     try {
-      if (route || group || seen_link) {
+      if (team_id || route || group || seen_link) {
         const task = (queues.get(file2) ?? Promise.resolve()).catch(() => void 0).then(async () => {
-          const temporary = `${file2}.${(0, import_node_crypto4.randomUUID)()}.tmp`;
+          const temporary = `${file2}.${(0, import_node_crypto3.randomUUID)()}.tmp`;
           try {
             const state2 = await readState();
             if (route) state2.route = route;
+            if (team_id) state2.team_id = team_id;
             if (group) state2.groups = { ...state2.groups, [projectMemoryKey(group)]: group.group_id };
             if (seen_link) state2.seenLinks = [.../* @__PURE__ */ new Set([...Array.isArray(state2.seenLinks) ? state2.seenLinks : [], seen_link])];
-            await (0, import_promises3.mkdir)(import_node_path3.default.dirname(file2), { recursive: true });
-            await (0, import_promises3.writeFile)(temporary, JSON.stringify(state2), { flag: "wx", mode: 384 });
-            await (0, import_promises3.rename)(temporary, file2);
+            await (0, import_promises2.mkdir)(import_node_path2.default.dirname(file2), { recursive: true });
+            await (0, import_promises2.writeFile)(temporary, JSON.stringify(state2), { flag: "wx", mode: 384 });
+            await (0, import_promises2.rename)(temporary, file2);
           } finally {
-            await (0, import_promises3.unlink)(temporary).catch(() => void 0);
+            await (0, import_promises2.unlink)(temporary).catch(() => void 0);
           }
         });
         queues.set(file2, task);
@@ -38113,7 +37927,7 @@ function registerCanvasPreferences(server) {
       }
       await queues.get(file2)?.catch(() => void 0);
       const state = await readState();
-      return { content: [], _meta: { "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
+      return { content: [], _meta: { "lanhu/team": id.safeParse(state.team_id).success ? state.team_id : null, "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
     } catch (error62) {
       if (!route && error62.code === "ENOENT") return { content: [], _meta: { "lanhu/savedRoute": null } };
       return { isError: true, content: [], _meta: { "lanhu/error": { message: "\u65E0\u6CD5\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u6253\u5F00\u7684\u9879\u76EE" } } };
@@ -38122,7 +37936,7 @@ function registerCanvasPreferences(server) {
 }
 
 // src/login.ts
-var loginAction = () => ({ skill: "lanhu-login", url: LANHU_LOGIN_URL });
+var loginAction = () => ({ method: "manual_cookie", url: LANHU_LOGIN_URL });
 function canvasLoginStatus(bridge) {
   let credential, expires = 0;
   let pending;
@@ -38144,7 +37958,7 @@ function canvasLoginStatus(bridge) {
   } });
 }
 async function verifyLogin(cookie, fetcher = fetch) {
-  if (!checkLoginCookie(cookie).loggedIn) throw new AppError("LOGIN_REQUIRED", "\u84DD\u6E56 Cookie \u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u4F7F\u7528 Lanhu Login");
+  if (!checkLoginCookie(cookie).loggedIn) throw new AppError("LOGIN_REQUIRED", "\u84DD\u6E56 Cookie \u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie");
   const candidate = new Bridge({ cookie });
   try {
     const raw = await new LanhuApi(candidate, fetcher).request("/api/account/user/detail", {});
@@ -38177,7 +37991,7 @@ async function clipboardLinks(platform = process.platform, run2 = execute) {
 }
 
 // package.json
-var version2 = "0.1.55";
+var version2 = "0.2.1";
 
 // src/runtime-version.ts
 var MCP_VERSION = version2;
@@ -38188,11 +38002,11 @@ var CANVAS_URI = `ui://lanhu/canvas/${MCP_VERSION}`;
 function registerCanvas(server, bridge) {
   registerCanvasPreferences(server);
   server.registerResource("lanhu-canvas", CANVAS_URI, { mimeType: "text/html;profile=mcp-app" }, async () => {
-    const root2 = /[\\/]src$/.test(__dirname) ? import_node_path4.default.resolve(__dirname, "../package") : /[\\/]dev$/.test(__dirname) ? import_node_path4.default.resolve(__dirname, "..") : __dirname;
+    const root2 = /[\\/]src$/.test(__dirname) ? import_node_path3.default.resolve(__dirname, "../package") : /[\\/]dev$/.test(__dirname) ? import_node_path3.default.resolve(__dirname, "..") : __dirname;
     return { contents: [{
       uri: CANVAS_URI,
       mimeType: "text/html;profile=mcp-app",
-      text: await (0, import_promises4.readFile)(import_node_path4.default.join(root2, "canvas.html"), "utf8"),
+      text: await (0, import_promises3.readFile)(import_node_path3.default.join(root2, "canvas.html"), "utf8"),
       _meta: {
         ui: { prefersBorder: false, csp: { connectDomains: [], resourceDomains: [], frameDomains: [] } },
         "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode: "inline" }
@@ -38202,7 +38016,7 @@ function registerCanvas(server, bridge) {
   const id = external_exports.string().trim().min(1).max(256).regex(/^[\w-]+$/);
   server.registerTool("lanhu_open_canvas", {
     title: "\u84DD\u6E56",
-    description: "\u6253\u5F00\u84DD\u6E56 UI\uFF0C\u4ECE\u5BF9\u8BDD\u8C03\u7528\u65F6\u9ED8\u8BA4\u5185\u8054\u663E\u793A\uFF0C\u4E0E\u5BF9\u8BDD\u5171\u5B58\uFF0C\u53EF\u624B\u52A8\u5207\u6362\u5168\u5C4F\uFF1B\u4E5F\u652F\u6301\u4F1A\u8BDD\u4FA7\u8FB9\u6807\u7B7E\u5165\u53E3\u3002\u4E0D\u4F20\u53C2\u6570\u65F6\u6062\u590D\u6700\u8FD1\u9879\u76EE\uFF0C\u9996\u6B21\u6253\u5F00\u663E\u793A\u9879\u76EE\u7BA1\u7406\u9762\u677F\uFF0C\u53EF\u6D4F\u89C8\u56E2\u961F\u6587\u4EF6\u5939\u548C\u9879\u76EE\u6216\u7C98\u8D34\u84DD\u6E56\u94FE\u63A5\uFF1B\u4E5F\u53EF\u6309\u9879\u76EE\u3001\u56E2\u961F\u53CA\u53EF\u9009\u8BBE\u8BA1\u7A3F ID \u6D4F\u89C8\u6700\u65B0\u8BBE\u8BA1\u4E0E\u6807\u6CE8\u3002\u65E0\u9700 Chrome \u6269\u5C55\uFF0C\u53EF\u4F7F\u7528\u914D\u7F6E\u4E2D\u4FDD\u5B58\u7684 Cookie\u3002",
+    description: "\u6253\u5F00\u84DD\u6E56 UI\uFF0C\u4ECE\u5BF9\u8BDD\u8C03\u7528\u65F6\u9ED8\u8BA4\u5185\u8054\u663E\u793A\uFF0C\u4E0E\u5BF9\u8BDD\u5171\u5B58\uFF0C\u53EF\u624B\u52A8\u5207\u6362\u5168\u5C4F\uFF1B\u4E5F\u652F\u6301\u4F1A\u8BDD\u4FA7\u8FB9\u6807\u7B7E\u5165\u53E3\u3002\u4E0D\u4F20\u53C2\u6570\u65F6\u663E\u793A\u9879\u76EE\u7BA1\u7406\u9762\u677F\uFF0C\u9ED8\u8BA4\u4F7F\u7528\u6700\u8FD1\u9009\u62E9\u7684\u56E2\u961F\uFF0C\u53EF\u6D4F\u89C8\u56E2\u961F\u6587\u4EF6\u5939\u548C\u9879\u76EE\u6216\u7C98\u8D34\u84DD\u6E56\u94FE\u63A5\uFF1B\u4E5F\u53EF\u6309\u9879\u76EE\u3001\u56E2\u961F\u53CA\u53EF\u9009\u8BBE\u8BA1\u7A3F ID \u6D4F\u89C8\u6700\u65B0\u8BBE\u8BA1\u4E0E\u6807\u6CE8\u3002\u65E0\u9700 Chrome \u6269\u5C55\uFF0C\u53EF\u4F7F\u7528\u914D\u7F6E\u4E2D\u4FDD\u5B58\u7684 Cookie\u3002",
     inputSchema: { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() },
     annotations: { readOnlyHint: true, openWorldHint: false },
     _meta: { ui: { resourceUri: CANVAS_URI }, "openai/ui": { entrypoints: [{ type: "global" }, { type: "thread" }], preferredModelDisplayMode: "inline" } }
@@ -38302,10 +38116,10 @@ function registerMentions(server, inbox) {
 
 // src/sidebar-icon.ts
 var import_node_fs = require("node:fs");
-var import_node_path5 = __toESM(require("node:path"), 1);
-var root = /[\\/]dev$/.test(__dirname) ? import_node_path5.default.resolve(__dirname, "../..") : import_node_path5.default.resolve(__dirname, "..");
+var import_node_path4 = __toESM(require("node:path"), 1);
+var root = /[\\/]dev$/.test(__dirname) ? import_node_path4.default.resolve(__dirname, "../..") : import_node_path4.default.resolve(__dirname, "..");
 var sidebarIcons = [{
-  src: `data:image/png;base64,${(0, import_node_fs.readFileSync)(import_node_path5.default.join(root, "assets/sidebar-icon.png")).toString("base64")}`,
+  src: `data:image/png;base64,${(0, import_node_fs.readFileSync)(import_node_path4.default.join(root, "assets/sidebar-icon.png")).toString("base64")}`,
   mimeType: "image/png",
   sizes: ["80x80"]
 }];
@@ -38323,7 +38137,7 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
     }
   };
   server.registerTool("get_status", { title: "\u67E5\u770B\u672C\u673A\u51ED\u636E\u72B6\u6001", description: "\u67E5\u770B\u672C\u673A Cookie \u72B6\u6001\uFF0C\u4E0D\u8FD4\u56DE Cookie \u539F\u6587\u3002", inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(() => bridge.status()));
-  server.registerTool("check_login", { title: "\u68C0\u67E5\u84DD\u6E56\u767B\u5F55\u51ED\u636E", description: "\u9ED8\u8BA4\u53EA\u68C0\u67E5\u672C\u673A Cookie \u683C\u5F0F\uFF1Bverify=true \u901A\u8FC7\u84DD\u6E56\u7528\u6237\u63A5\u53E3\u9A8C\u8BC1\u767B\u5F55\u3002\u51ED\u636E\u7F3A\u5931\u6216\u88AB\u62D2\u7EDD\u65F6\u4F7F\u7528 Lanhu Login skill\uFF0C\u4E0D\u56E0\u9879\u76EE\u6743\u9650\u6216\u7F51\u7EDC\u5931\u8D25\u53CD\u590D\u767B\u5F55\u3002", inputSchema: { verify: external_exports.boolean().optional() }, annotations: { readOnlyHint: true } }, (args) => wrap(async () => {
+  server.registerTool("check_login", { title: "\u68C0\u67E5\u84DD\u6E56\u767B\u5F55\u51ED\u636E", description: "\u9ED8\u8BA4\u53EA\u68C0\u67E5\u672C\u673A Cookie \u683C\u5F0F\uFF1Bverify=true \u901A\u8FC7\u84DD\u6E56\u7528\u6237\u63A5\u53E3\u9A8C\u8BC1\u767B\u5F55\u3002\u51ED\u636E\u7F3A\u5931\u6216\u88AB\u62D2\u7EDD\u65F6\uFF0C\u8BF7\u7528\u6237\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie\uFF1B\u9879\u76EE\u6743\u9650\u6216\u7F51\u7EDC\u5931\u8D25\u4E0D\u8981\u6C42\u66F4\u6362 Cookie\u3002", inputSchema: { verify: external_exports.boolean().optional() }, annotations: { readOnlyHint: true } }, (args) => wrap(async () => {
     if (args.verify) return { login: await verifyLogin(bridge.settingsCookie()) };
     const result = await bridge.checkLogin();
     return { ...result, ...!result.login.loggedIn ? { login_action: loginAction() } : {} };
@@ -38336,29 +38150,13 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
   }));
   server.registerTool("get_cookie", { description: "\u83B7\u53D6\u5B8C\u6574\u84DD\u6E56 Cookie\uFF1B\u4F20\u5165 url \u65F6\u6309\u57DF\u540D\u548C\u8DEF\u5F84\u7B5B\u9009\u3002", inputSchema: { url: external_exports.string().optional() }, annotations: { readOnlyHint: true } }, (args) => wrap(() => bridge.getCookie(args.url))());
   server.registerTool("set_cookie", {
-    description: "\u4FDD\u5B58 Cookie Header\uFF1Bverify=true \u5148\u6821\u9A8C\uFF0C\u5931\u8D25\u4FDD\u7559\u539F\u51ED\u636E\u3002\u81EA\u52A8\u767B\u5F55\u987B\u4F20 login_attempt_id\uFF0C\u5DF2\u53D6\u6D88\u4EFB\u52A1\u62D2\u7EDD\u63D0\u4EA4\uFF1BUI \u624B\u52A8\u8F93\u5165\u7528 cancel_login_attempt_id \u5728\u6210\u529F\u4FDD\u5B58\u65F6\u53D6\u6D88\u539F\u6D41\u7A0B\u3002\u4E0D\u8981\u5C55\u793A Cookie\u3002",
-    inputSchema: { cookie: external_exports.string(), verify: external_exports.boolean().optional(), login_attempt_id: external_exports.string().uuid().optional(), cancel_login_attempt_id: external_exports.string().uuid().optional() }
+    description: "\u4FDD\u5B58\u7528\u6237\u624B\u52A8\u63D0\u4F9B\u7684 Cookie Header\uFF1Bverify=true \u5148\u6821\u9A8C\uFF0C\u5931\u8D25\u4FDD\u7559\u539F\u51ED\u636E\u3002\u4E0D\u8981\u5C55\u793A Cookie\u3002",
+    inputSchema: { cookie: external_exports.string(), verify: external_exports.boolean().optional() }
   }, (args) => wrap(async () => {
-    if (args.login_attempt_id && args.cancel_login_attempt_id) throw new Error("\u4E0D\u80FD\u540C\u65F6\u81EA\u52A8\u63D0\u4EA4\u4E0E\u624B\u52A8\u53D6\u6D88");
-    if (args.login_attempt_id) bridge.loginAttempts.requireActive(args.login_attempt_id);
-    const login = args.verify || args.login_attempt_id || args.cancel_login_attempt_id ? await verifyLogin(args.cookie) : void 0;
-    await settings.update({ COOKIE: args.cookie }, {
-      beforeSave: () => {
-        if (args.login_attempt_id) bridge.loginAttempts.requireActive(args.login_attempt_id);
-      },
-      afterSave: () => {
-        if (args.cancel_login_attempt_id) bridge.loginAttempts.finish(args.cancel_login_attempt_id, "cancelled");
-        if (args.login_attempt_id) bridge.loginAttempts.finish(args.login_attempt_id, "completed");
-      }
-    });
-    return { ...bridge.status(), ...login ? { login } : {}, ...args.cancel_login_attempt_id ? { cancelled_attempt: bridge.loginAttempts.status(args.cancel_login_attempt_id) } : {} };
+    const login = args.verify ? await verifyLogin(args.cookie) : void 0;
+    await settings.update({ COOKIE: args.cookie });
+    return { ...bridge.status(), ...login ? { login } : {} };
   })());
-  server.registerTool("lanhu_login_attempt", {
-    title: "\u84DD\u6E56\u767B\u5F55\u6D41\u7A0B\u72B6\u6001",
-    description: "\u767B\u8BB0\u3001\u67E5\u8BE2\u6216\u53D6\u6D88\u63D2\u4EF6\u767B\u5F55\u6D41\u7A0B\uFF0C\u4E0D\u6253\u5F00\u6D4F\u89C8\u5668\u3001\u4E0D\u8BFB\u53D6 Cookie\uFF0C\u4E5F\u4E0D\u9A8C\u8BC1\u8EAB\u4EFD\u3002\u5DF2\u53D6\u6D88\u6D41\u7A0B\u5E94\u7ED3\u675F Agent \u767B\u5F55\u4EFB\u52A1\u3002",
-    inputSchema: { action: external_exports.enum(["start", "status", "cancel"]), attempt_id: external_exports.string().uuid() },
-    annotations: { openWorldHint: false }
-  }, (args) => wrap(() => args.action === "start" ? bridge.loginAttempts.start(args.attempt_id) : args.action === "cancel" ? bridge.loginAttempts.finish(args.attempt_id, "cancelled") : bridge.loginAttempts.status(args.attempt_id))());
   server.registerTool("clear_cookie", { description: "\u6E05\u9664\u672C\u673A\u4FDD\u5B58\u53CA\u5185\u5B58 Cookie\uFF0C\u4E0D\u5220\u9664 Chrome \u4E2D\u7684 Cookie\u3002", inputSchema: {} }, wrap(async () => {
     await settings.update({ COOKIE: "" });
     return bridge.status();
@@ -38387,7 +38185,6 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
       return { isError: true, content: [{ type: "text", text: JSON.stringify(errorInfo(error62)) }] };
     }
   });
-  registerPanel(server, bridge.drafts);
   registerCanvas(server, bridge);
   registerMentions(server, bridge.drafts);
   server.registerTool("lanhu_get_selection", {
@@ -38401,29 +38198,29 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
 
 // src/shared-service.ts
 var import_node_net = require("node:net");
-var import_node_crypto5 = require("node:crypto");
-var import_promises5 = require("node:fs/promises");
+var import_node_crypto4 = require("node:crypto");
+var import_promises4 = require("node:fs/promises");
 var import_node_child_process2 = require("node:child_process");
-var import_node_path6 = __toESM(require("node:path"), 1);
+var import_node_path5 = __toESM(require("node:path"), 1);
 var import_node_os2 = require("node:os");
 async function endpoint() {
-  const directory = import_node_path6.default.dirname(settingsFile());
-  await (0, import_promises5.mkdir)(directory, { recursive: true, mode: 448 });
-  const keyFile = import_node_path6.default.join(directory, "bridge-key");
+  const directory = import_node_path5.default.dirname(settingsFile());
+  await (0, import_promises4.mkdir)(directory, { recursive: true, mode: 448 });
+  const keyFile = import_node_path5.default.join(directory, "bridge-key");
   try {
-    await (0, import_promises5.writeFile)(keyFile, (0, import_node_crypto5.randomBytes)(32).toString("hex"), { flag: "wx", mode: 384 });
+    await (0, import_promises4.writeFile)(keyFile, (0, import_node_crypto4.randomBytes)(32).toString("hex"), { flag: "wx", mode: 384 });
   } catch (error62) {
     if (error62.code !== "EEXIST") throw error62;
   }
   let key = "";
   for (let attempt = 0; attempt < 20; attempt++) {
-    key = (await (0, import_promises5.readFile)(keyFile, "utf8")).trim();
+    key = (await (0, import_promises4.readFile)(keyFile, "utf8")).trim();
     if (/^[a-f0-9]{64}$/.test(key)) break;
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
   if (!/^[a-f0-9]{64}$/.test(key)) throw new Error("Invalid local bridge key");
-  const id = (0, import_node_crypto5.createHash)("sha256").update(import_node_path6.default.resolve(directory)).digest("hex").slice(0, 24);
-  const address = process.platform === "win32" ? `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}` : import_node_path6.default.join(directory, `bridge-${BRIDGE_RUNTIME}.sock`);
+  const id = (0, import_node_crypto4.createHash)("sha256").update(import_node_path5.default.resolve(directory)).digest("hex").slice(0, 24);
+  const address = process.platform === "win32" ? `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}` : import_node_path5.default.join(directory, `bridge-${BRIDGE_RUNTIME}.sock`);
   return { address, key };
 }
 var PipeTransport = class {
@@ -38495,7 +38292,7 @@ async function serveSharedBridge() {
     for (const socket of clients) socket.destroy();
     server.close();
     await bridge.close();
-    if (process.platform !== "win32") await (0, import_promises5.unlink)(address).catch(() => void 0);
+    if (process.platform !== "win32") await (0, import_promises4.unlink)(address).catch(() => void 0);
   };
   const scheduleIdle = () => {
     clearTimeout(idle);

@@ -2,28 +2,28 @@ import type { App } from '@modelcontextprotocol/ext-apps';
 import type { AnnotationInstruction } from './annotation-draft';
 import { projectMemoryKey } from './canvas/lanhu-links.js';
 
-export function nativeTransport(app: Pick<App, 'callServerTool' | 'openLink'>, appendDraft?: (items: AnnotationInstruction[]) => Promise<void>, requestLogin?: (attemptId?: string) => Promise<void>) {
+export function nativeTransport(app: Pick<App, 'callServerTool' | 'openLink'>, appendDraft?: (items: AnnotationInstruction[]) => Promise<void>) {
   let active = 0;
   const waiting: Array<() => void> = [];
   return {
     appendDraft,
-    async requestLogin(attemptId?: string) {
-      if (!requestLogin) throw new Error('当前宿主不支持新建登录对话');
-      if (attemptId) {
-        const result = await app.callServerTool({ name: 'lanhu_login_attempt', arguments: { action: 'start', attempt_id: attemptId } });
-        if (result.isError) throw new Error('登录流程登记失败，请使用手动填写 Cookie');
-      }
-      return requestLogin(attemptId);
-    },
-    async setLoginCookie(cookie: string, attemptId?: string) {
-      const result = await app.callServerTool({ name: 'set_cookie', arguments: { cookie, verify: true,
-        ...(attemptId ? { cancel_login_attempt_id: attemptId } : {}) } });
+    async setLoginCookie(cookie: string) {
+      const result = await app.callServerTool({ name: 'set_cookie', arguments: { cookie, verify: true } });
       const block = result.content?.find(item => item.type === 'text');
       const value = block?.type === 'text' ? JSON.parse(block.text) : {};
       if (result.isError || !value.login?.loggedIn || value.login.verification !== 'upstream')
         throw new Error('Cookie 未通过登录校验或保存失败，请检查后重试。');
       // Return only confirmation; never propagate Cookie or environment data to UI.
       return { loggedIn: true };
+    },
+    async recallTeam() {
+      const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: {} });
+      if (result.isError) throw new Error('团队选择读取失败');
+      return result._meta?.['lanhu/team'];
+    },
+    async rememberTeam(team_id: string) {
+      const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: { team_id } });
+      if (result.isError) throw new Error('团队选择保存失败');
     },
     async recallProject() {
       const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: {} });

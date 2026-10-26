@@ -5,17 +5,7 @@ import { Script } from 'node:vm';
 export async function buildPanel() {
   const base = new URL('../', import.meta.url);
   const root = fileURLToPath(base);
-  const output = await build({ absWorkingDir: root, entryPoints: ['panel/main.ts'], bundle: true,
-    write: false, format: 'iife', platform: 'browser', target: 'chrome119', minify: true, legalComments: 'none' });
-  const template = await readFile(new URL('panel/index.html', base), 'utf8');
-  const css = await readFile(new URL('node_modules/@openai/mcp-extensions/styles.css', base), 'utf8');
-  // Replacement strings interpret $&, $` and $' inside bundled dependencies.
-  // Callbacks insert their contents literally, keeping SDK source intact.
-  const script = output.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
-  new Script(script, { filename: 'lanhu-receiver.js' });
-  const html = template.replace('/* STYLES */', () => css).replace('/* SCRIPT */', () => script);
   await mkdir(new URL('package/', base), { recursive: true });
-  await writeFile(new URL('package/panel.html', base), html);
   const canvas = await build({ absWorkingDir: root, entryPoints: ['panel/canvas.ts'], bundle: true,
     write: false, format: 'iife', platform: 'browser', target: 'chrome119', minify: true, legalComments: 'none' });
   const canvasScript = canvas.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');

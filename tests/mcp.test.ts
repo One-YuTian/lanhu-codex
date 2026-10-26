@@ -38,7 +38,7 @@ it('构建产物无端口工具及 PORT 设置，即使环境端口被占用也�
     expect(client.getServerVersion()?.version).toBe(MCP_VERSION);
     const tools = (await client.listTools()).tools;
     expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining([...API_TOOL_NAMES, 'lanhu_prepare_annotations']));
-    for (const name of ['set_port', 'set_cookie_mode', 'open_login']) expect(tools.some(tool => tool.name === name)).toBe(false);
+    for (const name of ['set_port', 'set_cookie_mode', 'open_login', 'lanhu_open_receiver', 'lanhu_receiver_poll', 'lanhu_receiver_ack', 'lanhu_receiver_close', 'lanhu_login_attempt']) expect(tools.some(tool => tool.name === name)).toBe(false);
     const status = await call(client, 'get_status');
     expect(status.value).not.toHaveProperty('actualPort'); expect(JSON.stringify(status)).not.toContain('private-fixture');
     expect((await call(client, 'get_cookie')).value.cookie).toBe('session=private-fixture');

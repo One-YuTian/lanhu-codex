@@ -21,6 +21,15 @@ export async function rememberProject(value) {
   if (adapter) await adapter.rememberProject(route);
   else localStorage.setItem('lanhu:last-project', JSON.stringify(route));
 }
+export async function recallTeam() {
+  try { return adapter ? await adapter.recallTeam() : localStorage.getItem('lanhu:last-team'); }
+  catch { return null; }
+}
+export async function rememberTeam(team_id) {
+  if (!team_id) return;
+  if (adapter) await adapter.rememberTeam(team_id);
+  else localStorage.setItem('lanhu:last-team', team_id);
+}
 export async function recallGroup(route) {
   try { return adapter ? await adapter.recallGroup(route) : JSON.parse(localStorage.getItem('lanhu:groups') || '{}')[projectMemoryKey(route)]; } catch { return null; }
 }
@@ -49,13 +58,9 @@ export async function appendDraft(items) {
   if (!adapter?.appendDraft) throw new Error('请在 Codex 蓝湖插件面板中提交标注。');
   return adapter.appendDraft(items);
 }
-export async function requestLogin(attemptId) {
-  if (!adapter?.requestLogin) throw new Error('请复制提示词“登录蓝湖设计网站。”，手动创建新对话并发送。');
-  return adapter.requestLogin(attemptId);
-}
-export async function setLoginCookie(cookie, attemptId) {
+export async function setLoginCookie(cookie) {
   if (!adapter?.setLoginCookie) throw new Error('请在 Codex 蓝湖插件中手动填写 Cookie。');
-  return adapter.setLoginCookie(cookie, attemptId);
+  return adapter.setLoginCookie(cookie);
 }
 export function openExternal(url) {
   if (adapter) return adapter.open(url);

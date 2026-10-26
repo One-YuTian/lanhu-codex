@@ -1,5 +1,5 @@
 import { icon } from './icons.js';
-import { assignImage, recallProject } from './transport.js';
+import { assignImage, recallTeam, rememberTeam } from './transport.js';
 import { resource } from './model.js';
 import { selectMarkup } from './ui/components.js';
 const catalog = new Map();
@@ -121,6 +121,7 @@ export function mountProjectManager({ root, api, openProject, openDialog, select
     selectedRoute = null; onSelectionChange(null);
     loadedFolders.clear(); pendingFolders.clear(); folderErrors.clear();
     render();
+    if (team) void rememberTeam(team).catch(() => { status.textContent = '无法保存团队选择，下次打开可能需要重新选择。'; });
     if (!team) { status.textContent = '暂无可访问的团队，可通过链接打开项目。'; return; }
     try { const data = await api('projects', { team_id: team }); if (current !== generation || root.hidden) return; projects = data.projects || []; folders = data.folders || []; rememberCatalog(projects, team); }
     catch (error) { if (current === generation) listError = `项目加载失败：${error.message}，请点击刷新重试。`; }
@@ -133,9 +134,9 @@ export function mountProjectManager({ root, api, openProject, openDialog, select
       const current = ++generation; setTeams(); treeLoading = listLoading = true; listError = ''; selectedRoute = null; onSelectionChange(null); render();
       search.value = '';
       try {
-        const [data, recent] = await Promise.all([api('teams'), recallProject()]);
+        const [data, recent] = await Promise.all([api('teams'), recallTeam()]);
         if (current !== generation || root.hidden) return;
-        setTeams(data.teams || [], preferredTeam || team || recent?.team_id);
+        setTeams(data.teams || [], recent || preferredTeam || team);
         await loadTeam();
       } catch (error) { if (current === generation) { treeLoading = listLoading = false; listError = `团队加载失败：${error.message}，请点击刷新重试或通过链接打开。`; render(); } }
     }

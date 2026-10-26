@@ -100,7 +100,7 @@ export class LanhuApi {
       const checked = await this.bridge.checkLogin();
       if (!checked.login.loggedIn) throw new AppError('LOGIN_REQUIRED', checked.loginPageOpened
         ? '蓝湖凭据缺失或格式无效，已打开登录页；请登录后重试'
-        : '蓝湖凭据缺失或格式无效，请使用 Lanhu Login 登录流程');
+        : '蓝湖凭据缺失或格式无效，请在蓝湖面板手动填写 Cookie');
     }
     const cookie = this.bridge.getCookie(url.href).cookie;
     // A valid token on an unrelated path/subdomain must not authorize this URL.
@@ -114,7 +114,7 @@ export class LanhuApi {
       if (!response.ok) {
         await response.body?.cancel();
         if (response.status === 401) throw new AppError(headers.Cookie ? 'LOGIN_REJECTED' : 'RESOURCE_ACCESS_DENIED', headers.Cookie
-          ? '蓝湖服务端拒绝凭据，请使用 Lanhu Login 登录流程' : '蓝湖资源拒绝访问，请重新获取资源地址');
+          ? '蓝湖服务端拒绝凭据，请在蓝湖面板手动填写 Cookie' : '蓝湖资源拒绝访问，请重新获取资源地址');
         if (response.status === 403) throw new AppError('ACCESS_DENIED', '蓝湖服务端拒绝访问，请检查项目权限或重新登录');
         throw new AppError('UPSTREAM_HTTP_ERROR', `蓝湖接口返回 HTTP ${response.status}`);
       }
@@ -159,7 +159,7 @@ export class LanhuApi {
       Referer: dds ? 'https://dds.lanhuapp.com/' : 'https://lanhuapp.com/web/',
       ...(dds ? { Authorization: 'Basic dW5kZWZpbmVkOg==' } : { 'request-from': 'web', 'real-path': '/item/project/product' }) }, 32 * 1024 * 1024)).bytes);
     if (result.code !== undefined && !['0', '00000', '200'].includes(String(result.code))) {
-      if (String(result.code) === '401') throw new AppError('LOGIN_REJECTED', '蓝湖服务端拒绝凭据，请使用 Lanhu Login 登录流程');
+      if (String(result.code) === '401') throw new AppError('LOGIN_REJECTED', '蓝湖服务端拒绝凭据，请在蓝湖面板手动填写 Cookie');
       const code = /^-?\d{1,10}$/.test(String(result.code)) ? `（代码 ${result.code}）` : '';
       throw new AppError('UPSTREAM_API_ERROR', `蓝湖业务接口返回失败${code}，请检查项目、版本 ID、访问权限或重新登录`);
     }

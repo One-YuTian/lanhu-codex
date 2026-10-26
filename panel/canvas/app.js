@@ -3,9 +3,9 @@ import { icon, iconHref, renderIcons } from './icons.js';
 import { inspectorMarkup, layerSlice } from './inspector.js';
 import { formatColor } from './layer-style.js';
 import { createButton, installComponents, promptNumber } from './ui/components.js';
-import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, recallProject, rememberProject, recallGroup, rememberGroup, requestLogin, setLoginCookie } from './transport.js';
+import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, rememberProject, recallGroup, rememberGroup, setLoginCookie } from './transport.js';
 import { mountAnnotations } from './annotation-ui.js';
-import { renderLoginState, renderLoginSuccess } from './login-state.js';
+import { renderLoginState } from './login-state.js';
 import { mountProjectManager } from './project-manager.js';
 import { mountProjectPicker } from './project-picker.js';
 import { promptCookie } from './login-cookie.js';
@@ -20,7 +20,6 @@ renderIcons();
 const panels = { leftCollapsed: false, rightCollapsed: false };
 let loginRequired = false;
 let loginFlow;
-let loginSucceeded = false;
 document.documentElement.classList.add('auth-checking');
 for (const [side, iconName] of [['left', 'panel-left-open'], ['right', 'panel-right-open']]) {
   const button = createButton({ className: `panel-handle ${side}` }); button.id = `expand-${side}`;
@@ -61,29 +60,26 @@ function showLogin() {
   $('#link-dialog').close(); $('#context-menu').hidden = true;
   projectPicker.close();
   updatePanels();
-  if (!alreadyShown) loginFlow = renderLoginState(document, requestLogin, toast, async attemptId => {
-    const saved = await promptCookie(cookie => setLoginCookie(cookie, attemptId));
+  if (!alreadyShown) loginFlow = renderLoginState(document, toast, async () => {
+    const saved = await promptCookie(setLoginCookie);
     if (saved) completeLogin();
   });
 }
 function completeLogin() {
-  loginSucceeded = true; loginRequired = true;
-  if (loginFlow) loginFlow.pending = false;
-  controller?.abort(); state.generation++; detailGeneration++;
-  document.documentElement.classList.remove('auth-checking');
-  document.documentElement.classList.add('login-required');
-  updatePanels(); renderLoginSuccess(document, state.route.project_id ? openDialog : () => {
-    loginSucceeded = false; loginRequired = false;
-    document.documentElement.classList.remove('login-required'); void onRoute(true);
-  });
-  if (!state.route.project_id) $('#open-project-link').textContent = '浏览项目';
+  if (loginFlow) loginFlow.manual = false;
+  loginRequired = false;
+  document.documentElement.classList.remove('auth-checking', 'login-required');
+  $('#state').replaceChildren();
+  projectPicker.close();
+  // Always enter project management after authentication, even for an old route.
+  navigate({});
+  void loadProfile();
 }
 async function checkCanvasLogin() {
-  if (loginSucceeded) return false;
   const response = await canvasFetch('/api/status');
   if (!response.ok) throw new Error('登录状态读取失败，请稍后重试');
   const status = await response.json();
-  if (loginSucceeded || loginFlow?.manual) return false;
+  if (loginFlow?.manual) return false;
   if (status.mode !== 'mcp') { document.documentElement.classList.remove('auth-checking'); return true; }
   if (!status.loggedIn) { showLogin(); return false; }
   if (loginRequired) { completeLogin(); return false; }
@@ -343,7 +339,7 @@ async function loadDetail() {
     const version = data.versions?.[0];
     state.detail = { ...image, ...data.image, id: state.route.image_id, name: image.name || data.name || '设计稿', width: Number(version?.width || image.width || data.width) || 375, height: Number(version?.height || image.height || data.height) || 667, url: version?.url || version?.image_url || image.url || data.url };
     state.detail.x = 0; state.detail.y = 0;
-    $('#state').innerHTML = ''; world.append(createBoard(state.detail, true)); state.nav = 'layers'; renderNavigation(); renderProperties(); fit();
+    $('#state').innerHTML = ''; world.append(createBoard(state.detail, true)); renderNavigation(); renderProperties(); fit();
     try {
       let payload;
       if (version?.json_url) { const response = await canvasFetch(resource(version.json_url), { signal: controller.signal }); if (!response.ok) throw new Error('图层数据加载失败'); payload = await response.json(); }
@@ -535,7 +531,7 @@ function openDialog() { $('#link-error').textContent = ''; $('#link-dialog').sho
 $('#link-button').onclick = () => projectPicker.open(); $('#project-name')?.addEventListener('click', () => projectPicker.open()); $('#cancel-link').onclick = () => $('#link-dialog').close();
 $('#link-form').onsubmit = event => {
   event.preventDefault();
-  try { const route = parseRoute($('#project-url').value.trim()); if (!route.project_id) throw new Error('链接中没有找到项目 ID（pid）'); loginSucceeded = false; loginRequired = false; document.documentElement.classList.remove('login-required'); state.filter = ''; state.search = ''; $('#search').value = ''; $('#link-dialog').close(); projectPicker.close(); navigate(route); } catch (error) { $('#link-error').textContent = error.message; }
+  try { const route = parseRoute($('#project-url').value.trim()); if (!route.project_id) throw new Error('链接中没有找到项目 ID（pid）'); loginRequired = false; document.documentElement.classList.remove('login-required'); state.filter = ''; state.search = ''; $('#search').value = ''; $('#link-dialog').close(); projectPicker.close(); navigate(route); } catch (error) { $('#link-error').textContent = error.message; }
 };
 $('#refresh').onclick = () => { void loadProfile(); void onRoute(true); };
 $('#share').onclick = () => {
@@ -544,6 +540,7 @@ $('#share').onclick = () => {
   void openExternal(url);
   void copy(url);
 };
+$('#collapse-left').onclick = () => { panels.leftCollapsed = true; updatePanels(); };
 $('#expand-left').onclick = () => { panels.leftCollapsed = false; updatePanels(); };
 $('#collapse-right').onclick = () => { panels.rightCollapsed = true; updatePanels(); };
 $('#expand-right').onclick = () => { panels.rightCollapsed = false; updatePanels(); };
@@ -580,19 +577,13 @@ window.addEventListener('popstate', () => onRoute()); window.addEventListener('h
 window.addEventListener('lanhu-navigation', () => onRoute());
 async function startCanvas() {
   updatePanels(); annotations.render();
-  if (!state.route.project_id) {
-    const saved = await recallProject();
-    if (saved && !parseRoute(currentUrl()).project_id) {
-      const url = new URL(currentUrl()); url.hash = routeHash(saved); updateUrl(url, true);
-    }
-  }
   await onRoute(true); if (!loginRequired) void loadProfile();
 }
 void startCanvas();
 installClipboardProjects({ enabled: () => !loginRequired && !document.documentElement.classList.contains('auth-checking'), open: route => { projectPicker.close(); navigate(route); } });
 let checkingLogin = false;
 async function refreshLoginState() {
-  if (loginSucceeded || checkingLogin || document.visibilityState === 'hidden' && !loginFlow?.pending) return;
+  if (checkingLogin || document.visibilityState === 'hidden') return;
   checkingLogin = true;
   try {
     const wasRequired = loginRequired;

@@ -49,9 +49,9 @@ it('无 Cookie 的资源 401 不触发账号登录，避免签名资源失败导
   } finally { await bridge.close(); }
 });
 
-it('只有身份类错误提示 Lanhu Login，权限及网络错误不触发自动登录', () => {
+it('只有身份类错误提示手动填写 Cookie，权限及网络错误不触发自动登录', () => {
   for (const code of ['LOGIN_REQUIRED', 'LOGIN_REJECTED', 'COOKIE_SCOPE_MISMATCH']) {
-    expect(errorInfo(new AppError(code, 'fixture'))).toMatchObject({ login_action: { skill: 'lanhu-login' } });
+    expect(errorInfo(new AppError(code, 'fixture'))).toMatchObject({ login_action: { method: 'manual_cookie' } });
   }
   for (const code of ['ACCESS_DENIED', 'UPSTREAM_API_ERROR', 'UPSTREAM_REQUEST_FAILED', 'LOGIN_UNVERIFIED']) {
     expect(errorInfo(new AppError(code, 'fixture'))).not.toHaveProperty('login_action');
@@ -71,7 +71,7 @@ it('MCP 校验后保存：失败不覆盖旧 Cookie，成功更新持久配置�
       const response = await client.callTool({ name, arguments: args });
       return { ...response, value: JSON.parse((response.content as any)[0].text) };
     };
-    expect((await call('check_login')).value).toMatchObject({ login_action: { skill: 'lanhu-login' } });
+    expect((await call('check_login')).value).toMatchObject({ login_action: { method: 'manual_cookie' } });
     expect((await call('check_login', { verify: true })).value.code).toBe('LOGIN_REQUIRED');
     expect(fetcher).not.toHaveBeenCalled();
     fetcher.mockResolvedValueOnce(new Response('private-error', { status: 401 }));

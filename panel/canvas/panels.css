@@ -61,18 +61,11 @@ img { -webkit-user-drag: none; }
 .login-required .annotation-marquee { display: none !important; }
 .login-required .workspace { height: 100vh; }
 .login-required #state p { max-width: 420px; line-height: 1.8; margin-left: auto; margin-right: auto; }
-.login-required #login-button { background: #2878ff; color: white; min-width: 112px; padding: 11px 28px; margin-top: 14px; border-radius: 6px; }
-.login-required #login-button:hover { background: #1765ed; }
-.login-required #state .login-manual { display: block; background: transparent; color: #2878ff; font-size: 12px; padding: 5px 10px; margin: 16px auto 0; }
-.login-required #state .login-manual:hover { background: #e8effb; }
+.login-required #manual-cookie-button { min-width: 112px; padding: 11px 28px; margin-top: 14px; border-radius: 6px; }
 .login-cookie-dialog { width: 540px; }
 .login-cookie-dialog input { width: 100%; margin-top: 12px; }
-.login-required #open-project-link { background: #2878ff; color: white; padding: 11px 24px; margin-top: 16px; }
-.login-spinner { width: 32px; height: 32px; border: 3px solid #dce7fb; border-top-color: #2878ff; border-radius: 50%; margin: 0 auto 22px; animation: login-spin .8s linear infinite; }
-@keyframes login-spin { to { transform: rotate(360deg); } }
-.login-success-icon { color: #23a86a; font-size: 38px; margin-bottom: 18px; }
-.login-required #state .login-help { font-size: 12px; max-width: 640px; color: #8e97a7; margin-top: 24px; }
-.login-help code { user-select: text; font: inherit; color: #5d6d85; }
-.login-required #state .login-help button { background: transparent; color: #2878ff; padding: 3px 8px; margin: 0 0 0 6px; font-size: inherit; }
-.login-required #state .login-help button:hover { background: #e8effb; }
-@media (prefers-reduced-motion: reduce) { .login-spinner { animation: none; } }
+/* Explicit cross-platform centering avoids the native macOS button baseline. */
+.toolbar button { display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1; }
+
+/* Keep side-panel controls clear of the floating top toolbar at narrow widths. */
+.native-panel #sidebar, .native-panel #inspector { top: 72px; }

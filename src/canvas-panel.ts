@@ -23,7 +23,7 @@ export function registerCanvas(server: McpServer, bridge: Bridge) {
   });
   const id = z.string().trim().min(1).max(256).regex(/^[\w-]+$/);
   server.registerTool('lanhu_open_canvas', { title: '蓝湖',
-    description: '打开蓝湖 UI，从对话调用时默认内联显示，与对话共存，可手动切换全屏；也支持会话侧边标签入口。不传参数时恢复最近项目，首次打开显示项目管理面板，可浏览团队文件夹和项目或粘贴蓝湖链接；也可按项目、团队及可选设计稿 ID 浏览最新设计与标注。无需 Chrome 扩展，可使用配置中保存的 Cookie。',
+    description: '打开蓝湖 UI，从对话调用时默认内联显示，与对话共存，可手动切换全屏；也支持会话侧边标签入口。不传参数时显示项目管理面板，默认使用最近选择的团队，可浏览团队文件夹和项目或粘贴蓝湖链接；也可按项目、团队及可选设计稿 ID 浏览最新设计与标注。无需 Chrome 扩展，可使用配置中保存的 Cookie。',
     inputSchema: { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() }, annotations: { readOnlyHint: true, openWorldHint: false },
     _meta: { ui: { resourceUri: CANVAS_URI }, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }], preferredModelDisplayMode: 'inline' } satisfies OpenAIUiToolMetadata }
   }, async args => {

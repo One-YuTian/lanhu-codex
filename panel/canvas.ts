@@ -1,21 +1,20 @@
 import { App } from '@modelcontextprotocol/ext-apps';
 import { OpenAIExtensions } from '@openai/mcp-extensions/app';
-import { configureTransport, setPanelRoute, recallProject } from './canvas/transport.js';
+import { configureTransport, setPanelRoute } from './canvas/transport.js';
 import { configureIcons } from './canvas/icons.js';
 import { createCanvasRouteHandler } from './canvas-route';
 import { nativeTransport } from './canvas-transport';
 import { preparePanelLayout } from './canvas/panel-layout.js';
 import { createAnnotationDraftSender } from './annotation-draft';
-import { sendLoginMessage } from './login-message';
 import { MCP_VERSION } from '../src/runtime-version';
 
 const app = new App({ name: '蓝湖', version: MCP_VERSION }, {}, { autoResize: false });
 const extensions = new OpenAIExtensions(app);
 const appendAnnotations = createAnnotationDraftSender(() => extensions.message, app);
-configureTransport(nativeTransport(app, appendAnnotations, attemptId => sendLoginMessage(extensions.message, app, attemptId)));
+configureTransport(nativeTransport(app, appendAnnotations));
 configureIcons('', 'lh-icon-');
 preparePanelLayout();
-app.ontoolresult = createCanvasRouteHandler(recallProject, setPanelRoute);
+app.ontoolresult = createCanvasRouteHandler(setPanelRoute);
 async function start() {
   await app.connect();
   await import('./canvas/app.js');

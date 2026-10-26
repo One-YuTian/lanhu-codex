@@ -56,9 +56,9 @@ export class AppError extends Error {
   constructor(public readonly code: string, message: string) { super(message); }
 }
 
-export function errorInfo(error: unknown): { code: string; message: string; login_action?: { skill: string } } {
+export function errorInfo(error: unknown): { code: string; message: string; login_action?: { method: string } } {
   return error instanceof AppError
-    ? { code: error.code, message: error.message, ...(['LOGIN_REQUIRED', 'LOGIN_REJECTED', 'COOKIE_SCOPE_MISMATCH'].includes(error.code) ? { login_action: { skill: 'lanhu-login' } } : {}) }
+    ? { code: error.code, message: error.message, ...(['LOGIN_REQUIRED', 'LOGIN_REJECTED', 'COOKIE_SCOPE_MISMATCH'].includes(error.code) ? { login_action: { method: 'manual_cookie' } } : {}) }
     : { code: 'INTERNAL_ERROR', message: '操作失败，请检查服务状态' };
 }
 

@@ -2,7 +2,7 @@ import { AppError, checkLoginCookie, errorInfo, LANHU_LOGIN_URL } from './shared
 import { Bridge } from './bridge';
 import { LanhuApi } from './lanhu-api';
 
-export const loginAction = () => ({ skill: 'lanhu-login', url: LANHU_LOGIN_URL });
+export const loginAction = () => ({ method: 'manual_cookie', url: LANHU_LOGIN_URL });
 
 // Share in-flight checks and briefly cache their result while the canvas polls.
 // A newly saved/cleared credential invalidates the cache immediately.
@@ -25,7 +25,7 @@ export function canvasLoginStatus(bridge: Bridge) {
 }
 
 export async function verifyLogin(cookie: string, fetcher: typeof fetch = fetch) {
-  if (!checkLoginCookie(cookie).loggedIn) throw new AppError('LOGIN_REQUIRED', '蓝湖 Cookie 缺失或格式无效，请使用 Lanhu Login');
+  if (!checkLoginCookie(cookie).loggedIn) throw new AppError('LOGIN_REQUIRED', '蓝湖 Cookie 缺失或格式无效，请在蓝湖面板手动填写 Cookie');
   const candidate = new Bridge({ cookie });
   try {
     const raw = await new LanhuApi(candidate, fetcher).request('/api/account/user/detail', {});

@@ -1,10 +1,8 @@
 import { AppError, checkLoginCookie, lanhuUrl, manualCookieSchema } from './shared';
 import { DraftInbox } from './draft-inbox';
-import { LoginAttempts } from './login-attempts';
 
 export class Bridge {
   readonly drafts = new DraftInbox();
-  readonly loginAttempts = new LoginAttempts();
   private cookie = '';
   private updatedAt: string | null = null;
   constructor(options: { cookie?: string } = {}) {

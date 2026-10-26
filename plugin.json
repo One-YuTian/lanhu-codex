@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "lanhu-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "蓝湖Codex插件",
   "author": {
     "name": "Lanhu Codex Project"
@@ -24,8 +24,7 @@
           "Interactive"
         ],
         "logo": "./assets/logo.png",
-        "composerIcon": "./assets/logo.png",
-        "defaultPrompt": "打开蓝湖，并检查本机 Cookie 配置状态。"
+        "composerIcon": "./assets/logo.png"
       }
     }
   }

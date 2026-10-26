@@ -26,7 +26,8 @@ it('首页隐藏左栏及展开入口，打开项目后按用户折叠状态恢�
   const elements = Object.fromEntries(['sidebar', 'expand-left', 'inspector', 'expand-right'].map(id => [`#${id}`, { hidden: false }]));
   const state = { route: { project_id: '' }, detail: null, layer: null };
   const panels = { leftCollapsed: false, rightCollapsed: false };
-  const context = { $: (selector: string) => elements[selector], state, panels, loginRequired: false };
+  const context = { $: (selector: string) => elements[selector], state, panels, loginRequired: false, viewport: { clientWidth: 1280 }, document: { documentElement: { style: { setProperty() {} }, classList: { toggle() {} } } } };
+  for (const node of Object.values(elements)) (node as any).getBoundingClientRect = () => ({ width: 240 });
   runInNewContext(`${source}; updatePanels();`, context);
   expect(elements['#sidebar'].hidden).toBe(true);
   expect(elements['#expand-left'].hidden).toBe(true);

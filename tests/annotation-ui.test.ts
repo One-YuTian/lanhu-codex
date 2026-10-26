@@ -56,14 +56,15 @@ function setup() {
     filter: 'g', detail: null, layers: [], pan: { x: 0, y: 0 }, zoom: 1, mode: 'annotate', selected: new Set() };
   const clearSelection = vi.fn(() => context.selected.clear());
   const setMode = vi.fn();
-  const mounted = mountAnnotations({ viewport, getContext: () => context, clearSelection, setMode, reveal: vi.fn(), toast: vi.fn() });
+  const toast = vi.fn();
+  const mounted = mountAnnotations({ viewport, getContext: () => context, clearSelection, setMode, reveal: vi.fn(), toast });
   mounted.render();
   const button = (root: Element, label: string) => root.querySelectorAll('button').find(item => item.attributes['aria-label'] === label || (item as any).title === label)!;
   const pointer = (target: Element, x: number, y: number, additive = false) => ({ target, clientX: x, clientY: y, pointerId: 1, button: 0, shiftKey: additive, preventDefault() {}, stopImmediatePropagation() {} });
   const click = async (index = 0, additive = false) => { const board = boards[index], event = pointer(elements[index], board.x + 20, board.y + 20, additive); await viewport.fire('pointerdown', event); await viewport.fire('pointerup', event); };
   const input = (text: string) => { const element = viewport.querySelector('textarea')!; element.value = text; element.oninput!(); };
   const list = async () => { await viewport.querySelector('.annotation-tools')!.fire('mouseenter'); return viewport.querySelector('.annotation-list')!; };
-  return { viewport, context, mounted, button, pointer, click, input, list, document, clearSelection, setMode };
+  return { viewport, context, mounted, toast, button, pointer, click, input, list, document, clearSelection, setMode };
 }
 it('右键临时标注复用多选编辑、确认和提交逻辑，不切换工具或持续添加标注', async () => {
   const ui = setup(); ui.context.mode = 'select'; ui.context.selected = new Set(['a', 'b']);
@@ -75,6 +76,7 @@ it('右键临时标注复用多选编辑、确认和提交逻辑，不切换工�
   const send = vi.fn(async () => {}); configureTransport({ appendDraft: send });
   const list = await ui.list(); await ui.button(list, '提交').fire('click');
   expect(send).toHaveBeenCalledOnce();
+  expect(ui.toast).toHaveBeenCalledWith('已发送到对话框');
   expect(send.mock.calls[0][0][0].prompt).toContain('临时多选标注');
 });
 it('详情页临时标注使用已选图层，取消不会产生标注或改变抓手工具', async () => {

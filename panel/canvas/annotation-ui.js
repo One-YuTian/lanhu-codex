@@ -169,7 +169,8 @@ export function mountAnnotations({ viewport, getContext, setMode, reveal, toast,
     const heading = document.createElement('strong'); heading.textContent = `全部标注（${current.items.length}）`;
     const close = createButton({ iconName: 'x', title: '关闭标注列表', onClick: () => { listOpen = false; render(); } });
     const header = document.createElement('header'); header.append(heading, close); list.append(header);
-    if (!current.items.length) { const empty = document.createElement('p'); empty.textContent = '点击或拖动框选添加标注，Shift/Ctrl 点击多选，确认后在此显示'; list.append(empty); }
+    const contentArea = document.createElement('div'); contentArea.className = 'annotation-list-items'; list.append(contentArea);
+    if (!current.items.length) { const empty = document.createElement('p'); empty.textContent = '点击或拖动框选添加标注，Shift/Ctrl 点击多选，确认后在此显示'; contentArea.append(empty); }
     for (const item of current.items) {
       const row = document.createElement('div'); row.className = 'annotation-list-row';
       const content = createButton({ className: 'annotation-list-content', onClick: async () => {
@@ -189,7 +190,7 @@ export function mountAnnotations({ viewport, getContext, setMode, reveal, toast,
       removeButton.disabled = current.busy; content.disabled = current.busy;
       row.addEventListener('mouseenter', () => { hovered = item; drawTargets(); });
       row.addEventListener('mouseleave', () => { hovered = null; drawTargets(); });
-      row.append(body, removeButton); list.append(row);
+      row.append(body, removeButton); contentArea.append(row);
     }
     const footer = document.createElement('footer');
     const clear = createButton({ label: '清空', onClick: () => {
@@ -199,7 +200,7 @@ export function mountAnnotations({ viewport, getContext, setMode, reveal, toast,
     const send = createButton({ label: current.busy ? '正在提交…' : '提交', variant: 'primary', onClick: async () => {
       closeEditor();
       const pending = current.send(appendDraft); render();
-      try { await pending; if (store() === current) closeEditor(); toast('标注已追加到 Composer 草稿，未自动发送；标注已清空'); }
+      try { await pending; if (store() === current) closeEditor(); toast('已发送到对话框'); }
       catch (error) { toast(error.message); }
       finally { render(); }
     } });

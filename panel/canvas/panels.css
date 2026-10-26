@@ -49,7 +49,7 @@ img { -webkit-user-drag: none; }
 .manager-card.selected { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); background: #edf4ff; }
 .manager-project-entry.selected { background: #edf4ff; color: var(--blue); }
 @media(max-width:700px) { .project-picker-dialog { max-width: calc(100vw - 16px); } .project-picker-dialog .manager-sidebar { width: 165px; } .project-picker-dialog .manager-content { padding: 16px; } }
-.native-panel .toolbar { top: 12px; bottom: auto; left: 50%; transform: translateX(-50%); z-index: 30; max-width: calc(100% - 112px); overflow-x: auto; gap: 2px; padding: 6px; }
+.native-panel .toolbar { top: 12px; bottom: auto; left: calc(var(--panel-left-offset, 0px) + (100% - var(--panel-left-offset, 0px) - var(--panel-right-offset, 0px)) / 2); transform: translateX(-50%); z-index: 30; max-width: calc(100% - var(--panel-left-offset, 0px) - var(--panel-right-offset, 0px) - 24px); overflow-x: auto; gap: 2px; padding: 6px; }
 .native-panel .toolbar > * { flex: none; }
 .native-panel .toolbar #share { display: inline-flex; }
 .auth-checking .header, .auth-checking .toolbar, .auth-checking .sidebar, .auth-checking .inspector,
@@ -67,5 +67,11 @@ img { -webkit-user-drag: none; }
 /* Explicit cross-platform centering avoids the native macOS button baseline. */
 .toolbar button { display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1; }
 
-/* Keep side-panel controls clear of the floating top toolbar at narrow widths. */
-.native-panel #sidebar, .native-panel #inspector { top: 72px; }
+.native-panel #sidebar, .native-panel #inspector { top: 0; bottom: 0; }
+.native-panel #sidebar { width: var(--sidebar-width, 240px); }
+.native-panel.toolbar-bottom .toolbar { top: auto; bottom: 12px; left: 50%; max-width: calc(100% - 112px); }
+.sidebar-resize-handle { position: absolute; inset: 0 -4px 0 auto; width: 8px; z-index: 12; cursor: col-resize; touch-action: none; outline: none; }
+.sidebar-resize-handle:hover, .sidebar-resize-handle:focus-visible { background: #2878ff33; }
+.sidebar-resizing, .sidebar-resizing * { cursor: col-resize !important; user-select: none !important; }
+
+.native-panel .sidebar .side-tabs { gap: 8px; padding: 0 10px; }

@@ -17,7 +17,7 @@
 .annotation-editor footer, .annotation-list footer { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 .annotation-editor .ui-button--primary, .annotation-list .ui-button--primary { background: #2878ff; color: white; padding: 8px 12px; }
 .annotation-editor .ui-icon, .annotation-list .ui-icon { width: 17px; height: 17px; display: block; }
-.annotation-list { top: 70px; left: 50%; transform: translateX(-50%); width: min(400px,calc(100% - 24px)); max-height: calc(100% - 90px); overflow: auto; }
+.annotation-list { top: 70px; left: 50%; transform: translateX(-50%); width: min(400px,calc(100% - 24px)); max-height: min(420px, calc(100% - 96px)); display: flex; flex-direction: column; overflow: hidden; }
 .annotation-list > header, .annotation-editor > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .annotation-editor > header strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .annotation-editor > header button { flex: none; }
@@ -25,7 +25,7 @@
 .annotation-selection { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
 .annotation-target-outline, .annotation-marquee { position: absolute; border: 2px solid #2878ff; background: #2878ff12; pointer-events: none; box-shadow: 0 0 0 1px #ffffff80; box-sizing: border-box; }
 .annotation-marquee { z-index: 7; }
-.annotation-list > p { color: #8792a3; line-height: 1.8; }
+.annotation-list-items > p { color: #8792a3; line-height: 1.8; }
 .annotation-list-row { display: flex; align-items: flex-start; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--ui-border); }
 .annotation-list-content { display: flex; flex: 1; flex-direction: column; gap: 6px; min-width: 0; text-align: left; white-space: normal; }
 .annotation-list-content strong { font-size: 13px; font-weight: 500; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -44,3 +44,7 @@
 .annotation-tag-remove.ui-button { display: inline-flex; align-items: center; justify-content: center; width: 14px; min-width: 14px; height: 14px; padding: 0; opacity: 0; }
 .annotation-tag-remove .ui-icon { width: 12px; height: 12px; }
 .annotation-object-name:hover .annotation-tag-remove, .annotation-object-name:focus-within .annotation-tag-remove { opacity: 1; }
+
+.annotation-list-items { min-height: 0; overflow-y: auto; overscroll-behavior: contain; overflow-wrap: anywhere; white-space: normal; }
+.annotation-list > header, .annotation-list > footer { flex: none; }
+.native-panel.toolbar-bottom .annotation-list { top: auto; bottom: 70px; }

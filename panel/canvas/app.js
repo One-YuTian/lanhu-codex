@@ -3,7 +3,7 @@ import { icon, iconHref, renderIcons } from './icons.js';
 import { inspectorMarkup, layerSlice } from './inspector.js';
 import { formatColor } from './layer-style.js';
 import { createButton, installComponents, promptNumber } from './ui/components.js';
-import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, rememberProject, recallGroup, rememberGroup, setLoginCookie } from './transport.js';
+import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, rememberProject, recallGroup, rememberGroup, setLoginCookie, recallSidebarWidth, rememberSidebarWidth } from './transport.js';
 import { mountAnnotations } from './annotation-ui.js';
 import { renderLoginState } from './login-state.js';
 import { mountProjectManager } from './project-manager.js';
@@ -12,6 +12,7 @@ import { promptCookie } from './login-cookie.js';
 import { firstProjectGroup } from './lanhu-links.js';
 import { installInterfaceEvents } from './interface-events.js';
 import { installClipboardProjects } from './clipboard-project.js';
+import { installSidebarResize } from './sidebar-resize.js';
 
 const $ = selector => document.querySelector(selector);
 const state = { route: parseRoute(currentUrl()), images: [], sectors: [], groups: buildGroups([], []), expanded: new Set(), searchCollapsed: new Set(), collapsedLayers: new Set(), selected: new Set(), filter: '', search: '', zoom: 1, pan: { x: 80, y: 80 }, mode: 'select', space: false, detail: null, layers: [], layer: null, slices: [], sliceStatus: 'loading', exportScales: new Set([1]), format: 'png', colorFormat: 'hex', nav: 'project', generation: 0 };
@@ -50,6 +51,15 @@ function updatePanels() {
   const selected = !loginRequired && !!state.detail && !!state.layer;
   $('#inspector').hidden = !selected || panels.rightCollapsed;
   $('#expand-right').hidden = !selected || !panels.rightCollapsed;
+  updateToolbarLayout();
+}
+function updateToolbarLayout() {
+  const left = $('#sidebar').hidden ? 0 : $('#sidebar').getBoundingClientRect().width;
+  const right = $('#inspector').hidden ? 0 : $('#inspector').getBoundingClientRect().width;
+  const root = document.documentElement;
+  root.style.setProperty('--panel-left-offset', `${left}px`);
+  root.style.setProperty('--panel-right-offset', `${right}px`);
+  root.classList.toggle('toolbar-bottom', viewport.clientWidth - left - right < 240);
 }
 function showLogin() {
   const alreadyShown = loginRequired;
@@ -573,12 +583,13 @@ document.addEventListener('keydown', event => {
   if (key === 'escape') { if (state.layer) deselectLayer(); else if (state.detail) navigate({ ...state.route, image_id: '', version_id: '', page_id: '' }); else { state.selected.clear(); updateSelection(); } }
 });
 window.addEventListener('blur', () => { state.space = false; endDrag(); transform(); });
-window.addEventListener('popstate', () => onRoute()); window.addEventListener('hashchange', () => onRoute()); new ResizeObserver(() => transform()).observe(viewport);
+window.addEventListener('popstate', () => onRoute()); window.addEventListener('hashchange', () => onRoute()); new ResizeObserver(() => { transform(); updateToolbarLayout(); }).observe(viewport);
 window.addEventListener('lanhu-navigation', () => onRoute());
 async function startCanvas() {
   updatePanels(); annotations.render();
   await onRoute(true); if (!loginRequired) void loadProfile();
 }
+installSidebarResize({ sidebar: $('#sidebar'), readWidth: recallSidebarWidth, saveWidth: rememberSidebarWidth, onChange: updateToolbarLayout, onError: () => toast('无法保存面板宽度') });
 void startCanvas();
 installClipboardProjects({ enabled: () => !loginRequired && !document.documentElement.classList.contains('auth-checking'), open: route => { projectPicker.close(); navigate(route); } });
 let checkingLogin = false;

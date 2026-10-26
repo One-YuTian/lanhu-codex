@@ -27,7 +27,7 @@ it('原生项目记忆只走 MCP，不依赖 localStorage、CDN 或 HTTP', async
 });
 it.each([false, true])('启动默认项目管理，显式链接仍直接打开（显式=%s）', async explicit => {
   const app = await readFile('panel/canvas/app.js', 'utf8');
-  const source = app.slice(app.indexOf('async function startCanvas()'), app.indexOf('void startCanvas();'));
+  const source = app.slice(app.indexOf('async function startCanvas()'), app.indexOf('installSidebarResize({ sidebar:'));
   let href = explicit ? 'https://lanhu-panel.invalid/#/item/project/stage?pid=explicit' : 'https://lanhu-panel.invalid/';
   const recall = vi.fn(async () => ({ project_id: 'saved', team_id: 'team', image_id: 'image' }));
   const onRoute = vi.fn(), context = { state: { route: parseRoute(href) }, loginRequired: false, recallProject: recall, currentUrl: () => href,

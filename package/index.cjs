@@ -37884,6 +37884,7 @@ function registerCanvasPreferences(server) {
     title: "\u84DD\u6E56\u753B\u5E03\u9879\u76EE\u8BB0\u5FC6",
     description: "\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u9009\u62E9\u7684\u56E2\u961F\u3001\u6253\u5F00\u7684\u9879\u76EE\u53CA\u8BBE\u8BA1\u7A3F ID\uFF0C\u4E0D\u4FDD\u5B58 Cookie \u6216\u4EFB\u610F URL\u3002",
     inputSchema: {
+      sidebar_width: external_exports.number().int().min(200).max(480).optional(),
       team_id: id.optional(),
       route: external_exports.object({ project_id: id, team_id: id.optional(), image_id: id.optional() }).optional(),
       group: external_exports.object({ project_id: id, team_id: id.optional(), group_id: id }).optional(),
@@ -37891,7 +37892,7 @@ function registerCanvasPreferences(server) {
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     _meta: { ui: { visibility: ["app"] } }
-  }, async ({ team_id, route, group, seen_link }) => {
+  }, async ({ sidebar_width, team_id, route, group, seen_link }) => {
     const file2 = import_node_path2.default.join(import_node_path2.default.dirname(settingsFile()), "canvas-state.json");
     const readState = async () => {
       try {
@@ -37902,13 +37903,14 @@ function registerCanvasPreferences(server) {
       }
     };
     try {
-      if (team_id || route || group || seen_link) {
+      if (sidebar_width !== void 0 || team_id || route || group || seen_link) {
         const task = (queues.get(file2) ?? Promise.resolve()).catch(() => void 0).then(async () => {
           const temporary = `${file2}.${(0, import_node_crypto3.randomUUID)()}.tmp`;
           try {
             const state2 = await readState();
             if (route) state2.route = route;
             if (team_id) state2.team_id = team_id;
+            if (sidebar_width !== void 0) state2.sidebar_width = sidebar_width;
             if (group) state2.groups = { ...state2.groups, [projectMemoryKey(group)]: group.group_id };
             if (seen_link) state2.seenLinks = [.../* @__PURE__ */ new Set([...Array.isArray(state2.seenLinks) ? state2.seenLinks : [], seen_link])];
             await (0, import_promises2.mkdir)(import_node_path2.default.dirname(file2), { recursive: true });
@@ -37927,7 +37929,7 @@ function registerCanvasPreferences(server) {
       }
       await queues.get(file2)?.catch(() => void 0);
       const state = await readState();
-      return { content: [], _meta: { "lanhu/team": id.safeParse(state.team_id).success ? state.team_id : null, "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
+      return { content: [], _meta: { "lanhu/sidebarWidth": external_exports.number().int().min(200).max(480).safeParse(state.sidebar_width).success ? state.sidebar_width : null, "lanhu/team": id.safeParse(state.team_id).success ? state.team_id : null, "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
     } catch (error62) {
       if (!route && error62.code === "ENOENT") return { content: [], _meta: { "lanhu/savedRoute": null } };
       return { isError: true, content: [], _meta: { "lanhu/error": { message: "\u65E0\u6CD5\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u6253\u5F00\u7684\u9879\u76EE" } } };
@@ -37991,7 +37993,7 @@ async function clipboardLinks(platform = process.platform, run2 = execute) {
 }
 
 // package.json
-var version2 = "0.2.2";
+var version2 = "0.2.3";
 
 // src/runtime-version.ts
 var MCP_VERSION = version2;
@@ -38073,9 +38075,7 @@ function registerCanvas(server, bridge) {
 }
 
 // src/mentions.ts
-var MENTIONS_CAPABILITY = { searchTool: "lanhu_search_mentions" };
 function registerMentions(server, inbox) {
-  server.server.registerCapabilities({ experimental: { "openai/mentions": MENTIONS_CAPABILITY } });
   server.registerTool("lanhu_prepare_annotations", {
     title: "\u51C6\u5907\u6807\u6CE8\u6307\u4EE4\u5757",
     description: "\u4EC5\u4F9B\u753B\u5E03\u5C06\u6BCF\u6761\u6807\u6CE8\u767B\u8BB0\u4E3A\u72EC\u7ACB\u5E26\u6807\u9898\u7684\u8D44\u6E90\u5F15\u7528\uFF1B\u4E0D\u4F1A\u53D1\u9001\u6D88\u606F\u3002",
@@ -38085,14 +38085,6 @@ function registerMentions(server, inbox) {
     if (items.reduce((length, item) => length + item.prompt.length, 0) > 6e4) throw new AppError("ANNOTATIONS_TOO_LARGE", "\u6807\u6CE8\u5185\u5BB9\u8FC7\u957F");
     return { content: [], _meta: { "lanhu/annotationLinks": inbox.register(items) } };
   });
-  server.registerTool(MENTIONS_CAPABILITY.searchTool, {
-    title: "\u641C\u7D22\u84DD\u6E56\u8D44\u6E90 Mentions",
-    description: "\u4F9B Composer \u641C\u7D22\u6807\u6CE8\u6216\u9009\u533A\u7684\u72EC\u7ACB\u8D44\u6E90\u5F15\u7528\uFF0C\u4E0D\u8FD4\u56DE\u5B8C\u6574\u5185\u5BB9\u6216\u51ED\u636E\u3002",
-    inputSchema: { query: external_exports.string().max(200) },
-    outputSchema: { items: external_exports.array(ResourceLinkSchema) },
-    annotations: { readOnlyHint: true, openWorldHint: false },
-    _meta: { ui: { visibility: ["app"] }, "openai/extensions": { "mentions/search": {} } }
-  }, async ({ query }) => ({ content: [], structuredContent: { items: inbox.searchMentions(query) } }));
   server.registerResource(
     "lanhu-selection",
     new ResourceTemplate("lanhu://selection/{selection_id}/{item_index}", { list: void 0 }),

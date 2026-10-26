@@ -21,6 +21,14 @@ export async function rememberProject(value) {
   if (adapter) await adapter.rememberProject(route);
   else localStorage.setItem('lanhu:last-project', JSON.stringify(route));
 }
+export async function recallSidebarWidth() {
+  try { return adapter ? await adapter.recallSidebarWidth() : Number(localStorage.getItem('lanhu:sidebar-width')) || null; }
+  catch { return null; }
+}
+export async function rememberSidebarWidth(width) {
+  if (adapter) await adapter.rememberSidebarWidth(width);
+  else localStorage.setItem('lanhu:sidebar-width', String(width));
+}
 export async function recallTeam() {
   try { return adapter ? await adapter.recallTeam() : localStorage.getItem('lanhu:last-team'); }
   catch { return null; }

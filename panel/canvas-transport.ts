@@ -16,6 +16,15 @@ export function nativeTransport(app: Pick<App, 'callServerTool' | 'openLink'>, a
       // Return only confirmation; never propagate Cookie or environment data to UI.
       return { loggedIn: true };
     },
+    async recallSidebarWidth() {
+      const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: {} });
+      if (result.isError) throw new Error('面板宽度读取失败');
+      return result._meta?.['lanhu/sidebarWidth'];
+    },
+    async rememberSidebarWidth(sidebar_width: number) {
+      const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: { sidebar_width } });
+      if (result.isError) throw new Error('面板宽度保存失败');
+    },
     async recallTeam() {
       const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: {} });
       if (result.isError) throw new Error('团队选择读取失败');

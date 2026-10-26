@@ -24,7 +24,7 @@ it('项目记忆单独落盘，不含 Cookie，重新创建 MCP 会话仍可恢�
     expect(JSON.parse(await readFile(path.join(directory, 'canvas-state.json'), 'utf8'))).toEqual({ route });
     await current.client.close(); await current.server.close(); current = await connect();
     expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: {} }))._meta?.['lanhu/savedRoute']).toEqual(route);
-    await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { team_id: 'selected-team' } });
+    await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { team_id: 'selected-team', sidebar_width: 360 } });
     const hash = 'a'.repeat(64);
     await Promise.all([
       current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { group: { project_id: 'project', team_id: 'team', group_id: 'sector-b' } } }),
@@ -34,6 +34,8 @@ it('项目记忆单独落盘，不含 Cookie，重新创建 MCP 会话仍可恢�
     await current.client.close(); await current.server.close(); current = await connect();
     const restored = await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: {} });
     expect(restored._meta?.['lanhu/team']).toBe('selected-team');
+    expect(restored._meta?.['lanhu/sidebarWidth']).toBe(360);
+    for (const sidebar_width of [199, 481, 240.5]) expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { sidebar_width } })).isError).toBe(true);
     expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { team_id: 'https://evil' } })).isError).toBe(true);
     expect(restored._meta?.['lanhu/groups']).toEqual({ 'team:project': 'sector-b' });
     expect(restored._meta?.['lanhu/seenLinks']).toEqual([hash]);

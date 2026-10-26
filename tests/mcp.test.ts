@@ -37,9 +37,10 @@ it('构建产物无端口工具及 PORT 设置，即使环境端口被占用也�
   try {
     const { client } = await connect('session=private-fixture', undefined, String(held.port));
     expect(client.getServerVersion()?.version).toBe(MCP_VERSION);
+    expect(client.getServerCapabilities()?.experimental).not.toHaveProperty('openai/mentions');
     const tools = (await client.listTools()).tools;
     expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining([...API_TOOL_NAMES, 'lanhu_prepare_annotations']));
-    for (const name of ['set_port', 'set_cookie_mode', 'open_login', 'lanhu_open_receiver', 'lanhu_receiver_poll', 'lanhu_receiver_ack', 'lanhu_receiver_close', 'lanhu_login_attempt']) expect(tools.some(tool => tool.name === name)).toBe(false);
+    for (const name of ['set_port', 'set_cookie_mode', 'open_login', 'lanhu_open_receiver', 'lanhu_receiver_poll', 'lanhu_receiver_ack', 'lanhu_receiver_close', 'lanhu_login_attempt', 'lanhu_search_mentions']) expect(tools.some(tool => tool.name === name)).toBe(false);
     const status = await call(client, 'get_status');
     expect(status.value).not.toHaveProperty('actualPort'); expect(JSON.stringify(status)).not.toContain('private-fixture');
     expect((await call(client, 'get_cookie')).value.cookie).toBe('session=private-fixture');

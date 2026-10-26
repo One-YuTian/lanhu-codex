@@ -1,12 +1,13 @@
 import { afterEach, expect, it } from 'vitest';
 import path from 'node:path';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile, lstat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { reserve } from './helpers';
 import { API_TOOL_NAMES } from '../src/api-tools';
 import { MCP_VERSION } from '../src/runtime-version';
+import { bridgeAddress } from '../src/shared-service';
 
 const clients: Client[] = [], directories: string[] = [];
 afterEach(async () => {
@@ -64,6 +65,29 @@ it('多个 stdio 会话通过本地私有管道共享 Cookie，退出后从配�
   expect((await call(third, 'get_cookie')).value.cookie).toBe('session=external-update');
   await call(third, 'clear_cookie'); expect((await call(third, 'get_status')).value.hasCookie).toBe(false);
 });
+it('宿主长数据目录下反复连接保留版本隔离，退出清理 socket，不阻断下一次 UI 初始化', async () => {
+  const base = await mkdtemp(path.join(tmpdir(), 'lanhu-stdio-')); directories.push(base);
+  const data = path.join(base, 'plugins', 'data', 'agent-plugins', 'a'.repeat(64));
+  await mkdir(data, { recursive: true });
+  expect(Buffer.byteLength(path.join(data, `bridge-v${MCP_VERSION.replaceAll('.', '-')}.sock`))).toBeGreaterThan(104);
+  const address = bridgeAddress(data);
+  for (let cycle = 0; cycle < 3; cycle++) {
+    const { client } = await connect('', data);
+    expect(client.getServerVersion()?.version).toBe(MCP_VERSION);
+    const tools = (await client.listTools()).tools;
+    expect(tools.some(tool => tool.name === 'lanhu_open_canvas')).toBe(true);
+    const resources = (await client.listResources()).resources;
+    const canvas = resources.find(resource => resource.name === 'lanhu-canvas')!;
+    expect((await client.readResource({ uri: canvas.uri })).contents[0].text).toContain('id="viewport"');
+    if (process.platform !== 'win32') {
+      expect(Buffer.byteLength(address)).toBeLessThan(104);
+      expect((await lstat(path.dirname(address))).mode & 0o077).toBe(0);
+      expect((await lstat(address)).isSocket()).toBe(true);
+    }
+    await client.close(); await new Promise(resolve => setTimeout(resolve, 1400));
+    if (process.platform !== 'win32') await expect(lstat(address)).rejects.toMatchObject({ code: 'ENOENT' });
+  }
+}, 20000);
 it('每条标注都是独立带标题资源，超过三条亦可读取，资源不会混入其他指令', async () => {
   const { client } = await connect();
   const items = Array.from({ length: 5 }, (_, index) => ({ title: `标注 ${index + 1}`, prompt: JSON.stringify({ comment: `修改 ${index + 1}`, object_id: `layer-${index}`, path: '分组 / 画板 / 图层' }) }));

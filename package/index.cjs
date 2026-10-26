@@ -37991,7 +37991,7 @@ async function clipboardLinks(platform = process.platform, run2 = execute) {
 }
 
 // package.json
-var version2 = "0.2.1";
+var version2 = "0.2.2";
 
 // src/runtime-version.ts
 var MCP_VERSION = version2;
@@ -38203,6 +38203,11 @@ var import_promises4 = require("node:fs/promises");
 var import_node_child_process2 = require("node:child_process");
 var import_node_path5 = __toESM(require("node:path"), 1);
 var import_node_os2 = require("node:os");
+function bridgeAddress(directory, platform = process.platform, userId = process.getuid?.()) {
+  const id = (0, import_node_crypto4.createHash)("sha256").update(import_node_path5.default.resolve(directory)).digest("hex").slice(0, 24);
+  if (platform === "win32") return `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}`;
+  return import_node_path5.default.posix.join("/tmp", `lanhu-${userId}-${id}`, `${BRIDGE_RUNTIME}.sock`);
+}
 async function endpoint() {
   const directory = import_node_path5.default.dirname(settingsFile());
   await (0, import_promises4.mkdir)(directory, { recursive: true, mode: 448 });
@@ -38219,8 +38224,18 @@ async function endpoint() {
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
   if (!/^[a-f0-9]{64}$/.test(key)) throw new Error("Invalid local bridge key");
-  const id = (0, import_node_crypto4.createHash)("sha256").update(import_node_path5.default.resolve(directory)).digest("hex").slice(0, 24);
-  const address = process.platform === "win32" ? `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}` : import_node_path5.default.join(directory, `bridge-${BRIDGE_RUNTIME}.sock`);
+  const address = bridgeAddress(directory);
+  if (process.platform !== "win32") {
+    const socketDirectory = import_node_path5.default.dirname(address);
+    try {
+      await (0, import_promises4.mkdir)(socketDirectory, { mode: 448 });
+    } catch (error62) {
+      if (error62.code !== "EEXIST") throw error62;
+    }
+    const stat = await (0, import_promises4.lstat)(socketDirectory);
+    if (!stat.isDirectory() || stat.uid !== process.getuid() || (stat.mode & 63) !== 0)
+      throw Object.assign(new Error("Unsafe local socket directory"), { code: "LOCAL_BRIDGE_DIRECTORY_UNSAFE" });
+  }
   return { address, key };
 }
 var PipeTransport = class {
@@ -38319,9 +38334,10 @@ async function serveSharedBridge() {
       server.once("error", reject);
       server.listen(address, resolve);
     });
-  } catch {
+  } catch (error62) {
     await bridge.close();
-    return;
+    if (error62.code === "EADDRINUSE") return;
+    throw error62;
   }
   server.on("error", () => {
     void stop();
@@ -38355,7 +38371,7 @@ async function connectSharedBridge() {
   } catch {
   }
   if (!socket) {
-    const owner = (0, import_node_child_process2.spawn)(process.execPath, [process.argv[1], "--bridge-service"], { cwd: (0, import_node_os2.homedir)(), detached: true, windowsHide: true, stdio: "ignore", env: process.env });
+    const owner = (0, import_node_child_process2.spawn)(process.execPath, [process.argv[1], "--bridge-service"], { cwd: (0, import_node_os2.homedir)(), detached: true, windowsHide: true, stdio: ["ignore", "ignore", "inherit"], env: process.env });
     owner.on("error", () => void 0);
     owner.unref();
     for (let attempt = 0; attempt < 100; attempt++) {
@@ -38367,7 +38383,7 @@ async function connectSharedBridge() {
       }
     }
   }
-  if (!socket) throw new Error("Local bridge unavailable");
+  if (!socket) throw Object.assign(new Error("Local bridge unavailable"), { code: "LOCAL_BRIDGE_UNAVAILABLE" });
   socket.write(`${key}
 `);
   const peer = socket;
@@ -38438,7 +38454,8 @@ async function standalone() {
 var run = process.argv.some((arg) => ["--ui", "--http", "--port"].includes(arg) || arg.startsWith("--port=")) ? async () => {
   throw new Error("HTTP/WebSocket \u670D\u52A1\u5DF2\u79FB\u9664\uFF0C\u8BF7\u4F7F\u7528 Codex \u63D2\u4EF6\u9762\u677F");
 } : process.argv.includes("--bridge-service") ? () => serveSharedBridge() : /[\\/]package[\\/]dev[\\/]/.test(process.argv[1]) ? standalone : connectSharedBridge;
-void run().catch(() => {
-  console.error("lanhu-mcp: \u672C\u5730\u670D\u52A1\u542F\u52A8\u5931\u8D25");
+void run().catch((error62) => {
+  const code = typeof error62?.code === "string" && /^(EACCES|EPERM|ENOENT|EADDRINUSE|ENAMETOOLONG|LOCAL_BRIDGE_[A-Z_]+)$/.test(error62.code) ? ` (${error62.code})` : "";
+  console.error(`lanhu-mcp: \u672C\u5730\u670D\u52A1\u542F\u52A8\u5931\u8D25${code}`);
   process.exitCode = 1;
 });

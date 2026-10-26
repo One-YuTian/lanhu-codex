@@ -34,4 +34,8 @@ async function standalone() {
 const run = process.argv.some(arg => ['--ui', '--http', '--port'].includes(arg) || arg.startsWith('--port=')) ? async () => { throw new Error('HTTP/WebSocket 服务已移除，请使用 Codex 插件面板'); }
   : process.argv.includes('--bridge-service') ? () => serveSharedBridge()
   : /[\\/]package[\\/]dev[\\/]/.test(process.argv[1]) ? standalone : connectSharedBridge;
-void run().catch(() => { console.error('lanhu-mcp: 本地服务启动失败'); process.exitCode = 1; });
+void run().catch(error => {
+  // Emit only known error codes, never paths, credential values or raw errors.
+  const code = typeof error?.code === 'string' && /^(EACCES|EPERM|ENOENT|EADDRINUSE|ENAMETOOLONG|LOCAL_BRIDGE_[A-Z_]+)$/.test(error.code) ? ` (${error.code})` : '';
+  console.error(`lanhu-mcp: 本地服务启动失败${code}`); process.exitCode = 1;
+});

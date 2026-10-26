@@ -1,6 +1,6 @@
 import { createConnection, createServer, type Socket } from 'node:net';
 import { createHash, randomBytes } from 'node:crypto';
-import { mkdir, readFile, writeFile, unlink } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, unlink, lstat } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { homedir } from 'node:os';
@@ -11,6 +11,15 @@ import { Bridge } from './bridge';
 import { FileCookiePreferences, Settings, settingsFile } from './settings';
 import { createMcpServer } from './mcp';
 import { BRIDGE_RUNTIME } from './runtime-version';
+
+export function bridgeAddress(directory: string, platform = process.platform, userId = process.getuid?.()) {
+  const id = createHash('sha256').update(path.resolve(directory)).digest('hex').slice(0, 24);
+  if (platform === 'win32') return `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}`;
+  // Darwin truncates Unix socket addresses at 104 bytes. PLUGIN_DATA contains
+  // long host-generated IDs, and even os.tmpdir() can be long on macOS. Keep
+  // the complete address short so version isolation and unlink both work.
+  return path.posix.join('/tmp', `lanhu-${userId}-${id}`, `${BRIDGE_RUNTIME}.sock`);
+}
 
 async function endpoint() {
   const directory = path.dirname(settingsFile());
@@ -25,8 +34,15 @@ async function endpoint() {
     await new Promise(resolve => setTimeout(resolve, 10));
   }
   if (!/^[a-f0-9]{64}$/.test(key)) throw new Error('Invalid local bridge key');
-  const id = createHash('sha256').update(path.resolve(directory)).digest('hex').slice(0, 24);
-  const address = process.platform === 'win32' ? `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}` : path.join(directory, `bridge-${BRIDGE_RUNTIME}.sock`);
+  const address = bridgeAddress(directory);
+  if (process.platform !== 'win32') {
+    const socketDirectory = path.dirname(address);
+    try { await mkdir(socketDirectory, { mode: 0o700 }); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
+    const stat = await lstat(socketDirectory);
+    if (!stat.isDirectory() || stat.uid !== process.getuid!() || (stat.mode & 0o077) !== 0)
+      throw Object.assign(new Error('Unsafe local socket directory'), { code: 'LOCAL_BRIDGE_DIRECTORY_UNSAFE' });
+  }
   return { address, key };
 }
 
@@ -93,8 +109,10 @@ export async function serveSharedBridge() {
   });
   try {
     await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(address, resolve); });
-  } catch {
-    await bridge.close(); return; // Another starter won the pipe; never bind another port.
+  } catch (error) {
+    await bridge.close();
+    if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') return; // Another starter won the pipe.
+    throw error;
   }
   server.on('error', () => { void stop(); });
   process.on('SIGINT', () => { void stop(); });
@@ -113,13 +131,13 @@ export async function connectSharedBridge() {
   let socket: Socket | undefined;
   try { socket = await connect(); } catch { /* Start one owner if absent. */ }
   if (!socket) {
-    const owner = spawn(process.execPath, [process.argv[1], '--bridge-service'], { cwd: homedir(), detached: true, windowsHide: true, stdio: 'ignore', env: process.env });
+    const owner = spawn(process.execPath, [process.argv[1], '--bridge-service'], { cwd: homedir(), detached: true, windowsHide: true, stdio: ['ignore', 'ignore', 'inherit'], env: process.env });
     owner.on('error', () => undefined); owner.unref();
     for (let attempt = 0; attempt < 100; attempt++) {
       try { socket = await connect(); break; } catch { await new Promise(resolve => setTimeout(resolve, 50)); }
     }
   }
-  if (!socket) throw new Error('Local bridge unavailable');
+  if (!socket) throw Object.assign(new Error('Local bridge unavailable'), { code: 'LOCAL_BRIDGE_UNAVAILABLE' });
   socket.write(`${key}\n`);
   const peer = socket;
   const stop = () => { process.stdin.unpipe(peer); peer.end(); process.stdin.pause(); };

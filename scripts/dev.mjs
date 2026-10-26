@@ -5,7 +5,7 @@ import { context } from 'esbuild';
 import { buildOptions } from './build-options.mjs';
 
 // One watcher owns one child. Keep stdout exclusively for the child's MCP frames.
-const output = fileURLToPath(new URL('../dist/dev/index.cjs', import.meta.url));
+const output = fileURLToPath(new URL('../package/dev/index.cjs', import.meta.url));
 let child;
 let stopping = false;
 let queue = Promise.resolve();

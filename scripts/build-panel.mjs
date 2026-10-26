@@ -14,8 +14,8 @@ export async function buildPanel() {
   const script = output.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
   new Script(script, { filename: 'lanhu-receiver.js' });
   const html = template.replace('/* STYLES */', () => css).replace('/* SCRIPT */', () => script);
-  await mkdir(new URL('dist/', base), { recursive: true });
-  await writeFile(new URL('dist/panel.html', base), html);
+  await mkdir(new URL('package/', base), { recursive: true });
+  await writeFile(new URL('package/panel.html', base), html);
   const canvas = await build({ absWorkingDir: root, entryPoints: ['panel/canvas.ts'], bundle: true,
     write: false, format: 'iife', platform: 'browser', target: 'chrome119', minify: true, legalComments: 'none' });
   const canvasScript = canvas.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
@@ -35,5 +35,5 @@ export async function buildPanel() {
     .replace('</head>', () => `<link rel="icon" type="image/png" href="${panelIcon}"><style>${styles}\nhtml,body{width:100vw;height:100vh}</style></head>`)
     .replace('<body>', () => `<body><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden"><defs>${symbols}</defs></svg>`)
     .replace('</body>', () => `<script>${canvasScript}</script></body>`);
-  await writeFile(new URL('dist/canvas.html', base), canvasHtml);
+  await writeFile(new URL('package/canvas.html', base), canvasHtml);
 }

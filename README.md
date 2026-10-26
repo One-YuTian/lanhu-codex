@@ -6,16 +6,18 @@
 
 ## 安装到 Codex
 
-运行环境需要 Node.js 20.19 或更高版本，`node` 必须在 Codex 可用的 PATH 中。
+运行环境需要 Node.js 20.19 或更高版本。启动器优先使用 PATH 中的 Node；macOS 桌面环境还会查找 Homebrew、Volta、fnm 默认版本和 nvm 默认版本，无需 Codex 读取 `.zshrc`。nvm 用户请先执行 `nvm alias default 20`（或指定已安装的更高版本）。Windows 使用对应的 `.cmd` 启动器。
 
 1. 将本仓库推送到自己的 Git 远程仓库。
 2. 在 Codex 的插件市场添加入口中填入仓库地址，使用仓库根目录。
 3. 从“蓝湖插件市场”安装 `lanhu-mcp`，然后打开蓝湖画布。
 4. 按登录技能通过 CDP 登录，或在插件设置/画布中手动填写 Cookie。
 
-市场清单位于 `.agents/plugins/marketplace.json`，插件来源路径 `./` 相对仓库根目录。仓库包含已打包的 `dist/index.cjs`、`dist/panel.html` 和 `dist/canvas.html`；从 Git 安装后的运行不需要 pnpm 或 node_modules。无需启动独立 Web 服务。
+市场清单位于 `.agents/plugins/marketplace.json`，插件来源路径 `./` 相对仓库根目录。仓库包含已打包的 `package/index.cjs`、`package/panel.html` 和 `package/canvas.html`；从 Git 安装后的运行不需要 pnpm 或 node_modules。无需启动独立 Web 服务。
 
 本地调试可将本目录注册为本地插件市场。仅克隆源码并修改文件不会自动更新 Codex 已安装的缓存，需要通过 Codex 更新或重新安装插件。
+
+如果 macOS 中没有蓝湖面板且日志出现 `MCP server startup failed ... No such file or directory`，请更新到 0.1.55 或更高版本后重新连接插件。这表示 MCP 启动命令未找到，面板尚未注册；旧版本直接调用 `node`，无法使用仅在终端配置的 nvm 路径。
 
 格式参考：[OpenAI 插件打包文档](https://developers.openai.com/plugins/build/plugins)、[插件市场清单](https://learn.chatgpt.com/docs/enterprise/plugin-management)。
 
@@ -54,15 +56,15 @@ skills/                           连接、登录、页面元素与切图技能
 assets/                           插件 Logo 和侧栏图标
 scripts/                          构建、兼容清单同步与可移植性检查
 tests/                            功能回归测试与合成测试数据
-dist/                             Git 安装直接使用的运行产物
+package/                             Git 安装直接使用的运行产物
 ```
 
-`node_modules/`、`.cache/`、`dist/dev/` 和本机凭据不进入版本库。保留技能说明及 `THIRD_PARTY_NOTICES.md`，画布图标许可证位于 `panel/canvas/icons/LICENSE`。
+`node_modules/`、`.cache/`、`package/dev/` 和本机凭据不进入版本库。保留技能说明及 `THIRD_PARTY_NOTICES.md`，画布图标许可证位于 `panel/canvas/icons/LICENSE`。
 
 ## 凭据与发布
 
 MCP 通过 stdio 和私有本机管道工作，不启动 HTTP/TCP/WebSocket 服务。Cookie 保存在 `PLUGIN_DATA/settings.json`；宿主未提供该变量时兼容使用用户目录下的 `.lanhu-codex/settings.json`。旧路径保留以兼容既有配置。插件清单中的 COOKIE 始终为空，真实凭据由用户配置，不提交到 Git。
 
-发布更新时同步修改 `package.json` 和 `plugin.json` 的版本号；服务端、共享管道和画布从 package.json 读取版本。运行 `pnpm check`，提交更新后的 `dist/` 与兼容清单，再推送仓库。Git 安装不能假设宿主自动安装依赖或构建。
+发布更新时同步修改 `package.json` 和 `plugin.json` 的版本号；服务端、共享管道和画布从 package.json 读取版本。运行 `pnpm check`，提交更新后的 `package/` 与兼容清单，再推送仓库。Git 安装不能假设宿主自动安装依赖或构建。
 
 当前工程仅准备本地 Git 仓库和市场文件，不绑定远程仓库，也不自动安装到 Codex。

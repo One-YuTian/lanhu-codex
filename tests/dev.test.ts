@@ -61,5 +61,5 @@ it('dev 监听依赖变更自动重启；编译错误保留服务，恢复后重
   expect((logs.match(/服务已重启/g) ?? []).length).toBe(restartCount);
   await writeFile(dependency, 'export const marker = "fixture-v3";');
   await ready('fixture-v3', 3);
-  expect(await readFile(path.join(directory, 'dist/dev/index.cjs'), 'utf8')).toContain('fixture-v3');
+  expect(await readFile(path.join(directory, 'package/dev/index.cjs'), 'utf8')).toContain('fixture-v3');
 }, 25000);

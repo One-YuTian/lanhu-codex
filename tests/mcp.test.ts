@@ -21,7 +21,7 @@ async function connect(cookie = '', directory?: string, port = '19989') {
   const data = directory ?? await mkdtemp(path.join(tmpdir(), 'lanhu-stdio-'));
   if (!directory) directories.push(data);
   const client = new Client({ name: 'local-cookie-test', version: '1' }); clients.push(client);
-  await client.connect(new StdioClientTransport({ command: process.execPath, args: [path.resolve('dist/index.cjs')], cwd: process.cwd(),
+  await client.connect(new StdioClientTransport({ command: process.execPath, args: [path.resolve('package/index.cjs')], cwd: process.cwd(),
     env: { ...process.env, COOKIE: cookie, PORT: port, PLUGIN_DATA: data } as Record<string, string>, stderr: 'pipe' }));
   return { client, data };
 }
@@ -83,5 +83,5 @@ it('生产清单不声明 PORT，旧 HTTP 启动参数明确拒绝', async () =>
   const config = JSON.parse(await readFile('mcp.json', 'utf8')).mcpServers.lanhu;
   expect(config.env).toEqual({ COOKIE: '' });
   const client = new Client({ name: 'removed-http', version: '1' }); clients.push(client);
-  await expect(client.connect(new StdioClientTransport({ command: process.execPath, args: [path.resolve('dist/index.cjs'), '--http'], stderr: 'pipe' }))).rejects.toThrow();
+  await expect(client.connect(new StdioClientTransport({ command: process.execPath, args: [path.resolve('package/index.cjs'), '--http'], stderr: 'pipe' }))).rejects.toThrow();
 });

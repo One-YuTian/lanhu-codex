@@ -4,7 +4,7 @@ jobs:
   check:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -15,4 +15,4 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
-      - run: git diff --exit-code -- dist .codex-plugin/plugin.json .mcp.json
+      - run: git diff --exit-code -- package .codex-plugin/plugin.json .mcp.json

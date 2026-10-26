@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "lanhu": {
-      "command": "node",
-      "args": [
-        "${PLUGIN_ROOT}/dist/index.cjs"
-      ],
+      "command": "./scripts/launch-mcp",
+      "args": [],
       "cwd": "${PLUGIN_ROOT}",
       "env": {
         "COOKIE": ""

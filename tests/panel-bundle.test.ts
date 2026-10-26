@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 it.each(['visible', 'hidden'])('最终 HTML 使用真实 SDK 在 %s 状态完成握手和草稿请求', async visibility => {
-  const html = await readFile('dist/panel.html', 'utf8');
+  const html = await readFile('package/panel.html', 'utf8');
   const script = html.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
   expect(script).toBeTruthy(); expect(script).not.toContain('/* SCRIPT */');
   expect(html).toContain('<details id="receiver-details">');

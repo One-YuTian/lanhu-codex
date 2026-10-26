@@ -1,6 +1,6 @@
 node_modules/
 .cache/
-dist/dev/
+package/dev/
 coverage/
 *.log
 .env

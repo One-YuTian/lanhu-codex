@@ -1,6 +1,6 @@
 {
   "name": "lanhu-mcp",
-  "version": "0.1.54",
+  "version": "0.1.55",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.6.0",
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node scripts/build.mjs && node scripts/sync-plugin.mjs",
     "dev": "node scripts/dev.mjs",
-    "start": "node dist/index.cjs",
+    "start": "node package/index.cjs",
     "typecheck": "tsc -p tsconfig.json",
     "test": "pnpm build && vitest run",
     "check": "pnpm typecheck && pnpm test && pnpm verify",

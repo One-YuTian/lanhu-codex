@@ -16,7 +16,7 @@ export const CANVAS_URI = `ui://lanhu/canvas/${MCP_VERSION}`;
 export function registerCanvas(server: McpServer, bridge: Bridge) {
   registerCanvasPreferences(server);
   server.registerResource('lanhu-canvas', CANVAS_URI, { mimeType: 'text/html;profile=mcp-app' }, async () => {
-    const root = /[\\/]src$/.test(__dirname) ? path.resolve(__dirname, '../dist') : /[\\/]dev$/.test(__dirname) ? path.resolve(__dirname, '..') : __dirname;
+    const root = /[\\/]src$/.test(__dirname) ? path.resolve(__dirname, '../package') : /[\\/]dev$/.test(__dirname) ? path.resolve(__dirname, '..') : __dirname;
     return { contents: [{ uri: CANVAS_URI, mimeType: 'text/html;profile=mcp-app', text: await readFile(path.join(root, 'canvas.html'), 'utf8'),
       _meta: { ui: { prefersBorder: false, csp: { connectDomains: [], resourceDomains: [], frameDomains: [] } },
         'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'inline' } } }] };

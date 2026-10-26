@@ -1,0 +1,28 @@
+#!/bin/sh
+# GUI apps on macOS do not inherit the Node path configured in shell profiles.
+# Keep stdout exclusively for MCP and avoid loading interactive shell profiles.
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+usable_node() {
+  [ -n "$1" ] && [ -x "$1" ] && "$1" -e 'const [a,b]=process.versions.node.split(".").map(Number);process.exit(a>20||(a===20&&b>=19)?0:1)' >/dev/null 2>&1
+}
+# Resolve PATH first so an existing working installation keeps its precedence.
+candidate=$(command -v node || true)
+if usable_node "$candidate"; then exec "$candidate" "$root/package/index.cjs" "$@"; fi
+for candidate in /opt/homebrew/bin/node /usr/local/bin/node "${HOME}/.volta/bin/node" "${HOME}/.local/share/fnm/aliases/default/bin/node"; do
+  if usable_node "$candidate"; then exec "$candidate" "$root/package/index.cjs" "$@"; fi
+done
+nvm_dir=${NVM_DIR:-"${HOME}/.nvm"}
+if [ -s "$nvm_dir/nvm.sh" ]; then
+  # nvm is a shell function; load only its own initialization, never .zshrc.
+  NVM_DIR=$nvm_dir
+  export NVM_DIR
+  set +u
+  . "$NVM_DIR/nvm.sh" --no-use >&2
+  if nvm use --silent default >&2; then
+    candidate=$(command -v node || true)
+    if usable_node "$candidate"; then exec "$candidate" "$root/package/index.cjs" "$@"; fi
+  fi
+fi
+echo 'lanhu-mcp: Node.js >=20.19 is required. Install Node or configure an nvm default version, then reopen the plugin.' >&2
+exit 1

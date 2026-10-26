@@ -9,7 +9,7 @@ import { DraftInbox } from './draft-inbox';
 export const PANEL_URI = 'ui://lanhu/receiver/0.1.25';
 export const PANEL_TOOL_NAMES = ['lanhu_open_receiver', 'lanhu_receiver_poll', 'lanhu_receiver_ack', 'lanhu_receiver_close'] as const;
 export async function panelHtml() {
-  const candidates = ['panel.html', '../panel.html', '../dist/panel.html'];
+  const candidates = ['panel.html', '../panel.html', '../package/panel.html'];
   for (const relative of candidates) {
     try { return await readFile(path.resolve(__dirname, relative), 'utf8'); } catch { /* Try source/dev/packaged layout. */ }
   }

@@ -21,16 +21,16 @@ assert.deepEqual(overlay.interface, manifest.extensions['com.openai'].interface)
 assert(overlay.interface.shortDescription.length <= 30);
 assert.equal(marketplace.plugins[0].name, manifest.name);
 assert.equal(path.resolve(root, marketplace.plugins[0].source.path), root);
-assert.equal(mcp.command, 'node');
+assert.equal(mcp.command, './scripts/launch-mcp');
 assert.deepEqual(mcp.env, { COOKIE: '' });
 const { type, ...portable } = mcp;
 assert.equal(type, 'stdio');
 assert.deepEqual(legacy, portable);
-for (const file of [overlay.interface.logo, overlay.interface.composerIcon, 'dist/index.cjs', 'dist/panel.html', 'dist/canvas.html']) {
+for (const file of [overlay.interface.logo, overlay.interface.composerIcon, 'package/index.cjs', 'package/panel.html', 'package/canvas.html']) {
   assert((await readFile(path.resolve(root, file))).length > 0);
 }
 for (const file of ['panel.html', 'canvas.html']) {
-  const html = await readFile(path.join(root, 'dist', file), 'utf8');
+  const html = await readFile(path.join(root, 'package', file), 'utf8');
   assert(!html.includes('/* SCRIPT */'));
   assert(!/<script\b[^>]*\bsrc=/.test(html));
   for (const match of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)) new Script(match[1]);
@@ -42,12 +42,12 @@ await mkdir(cache, { recursive: true });
 const temporary = await mkdtemp(path.join(cache, 'plugin-check-'));
 const client = new Client({ name: 'lanhu-portability-check', version: '1.0.0' });
 try {
-  for (const file of ['dist/index.cjs', 'dist/panel.html', 'dist/canvas.html', 'assets', 'skills']) {
+  for (const file of ['package/index.cjs', 'package/panel.html', 'package/canvas.html', 'scripts/launch-mcp', 'scripts/launch-mcp.cmd', 'assets', 'skills']) {
     await mkdir(path.dirname(path.join(temporary, file)), { recursive: true });
     await cp(path.join(root, file), path.join(temporary, file), { recursive: true });
   }
   const transport = new StdioClientTransport({
-    command: process.execPath,
+    command: path.join(temporary, process.platform === 'win32' ? 'scripts/launch-mcp.cmd' : 'scripts/launch-mcp'),
     args: mcp.args.map(value => value.replaceAll('${PLUGIN_ROOT}', temporary)),
     cwd: temporary, stderr: 'pipe',
     env: { ...Object.fromEntries(Object.entries(process.env).filter(([, value]) => value !== undefined)), COOKIE: '', PLUGIN_DATA: path.join(temporary, 'data') }

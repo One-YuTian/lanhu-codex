@@ -1,0 +1,29 @@
+{
+  "name": "lanhu-mcp",
+  "version": "0.1.54",
+  "description": "蓝湖Codex插件",
+  "author": {
+    "name": "Lanhu Codex Project"
+  },
+  "keywords": [
+    "lanhu",
+    "chrome",
+    "cookie",
+    "mcp"
+  ],
+  "interface": {
+    "displayName": "蓝湖",
+    "shortDescription": "蓝湖Codex插件",
+    "longDescription": "蓝湖Codex插件",
+    "developerName": "Lanhu Codex Project",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive"
+    ],
+    "logo": "./assets/logo.png",
+    "composerIcon": "./assets/logo.png",
+    "defaultPrompt": "打开蓝湖，并检查本机 Cookie 配置状态。"
+  },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

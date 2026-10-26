@@ -1,0 +1,6 @@
+interface:
+  display_name: "Lanhu Login"
+  short_description: "通过 Chrome CDP 获取 Cookie，由 MCP 校验；支持手动接管"
+  default_prompt: "使用 $lanhu-login，通过 Chrome DevTools Protocol 打开蓝湖并获取 Cookie，用户确认只有已登录。将 Cookie 交给 set_cookie(verify=true) 校验，携带 login_attempt_id；流程已取消则结束，不调用 check_login。"
+policy:
+  allow_implicit_invocation: true

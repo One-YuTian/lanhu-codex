@@ -1,0 +1,46 @@
+.image-loading { background: linear-gradient(110deg,#f1f3f7 30%,#fafbfc 50%,#f1f3f7 70%); background-size: 220% 100%; animation: image-shimmer 1.8s linear infinite; }
+.slice-preview.image-loading { position: relative; }
+.image-loading::after { content: '图片加载中…'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; color: #8c97a9; pointer-events: none; }
+.board.image-loading::after { font-size: calc(13px * var(--annotation-scale,1)); }
+@keyframes image-shimmer { to { background-position: -220% 0; } }
+@media(prefers-reduced-motion:reduce) { .image-loading { animation: none; } }
+.annotation-tools { display: inline-flex; gap: 0; }
+.annotation-tools button { display: flex; align-items: center; justify-content: center; }
+.annotating, .annotating .layer-box { cursor: crosshair; }
+.annotation-pins { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+.annotation-pin.ui-button { position: absolute; transform: translate(-50%,-50%); width: 26px; height: 26px; min-width: 26px; padding: 0; border: 2px solid white; border-radius: 50% 50% 50% 4px; background: #2878ff; color: white; font-size: 12px; font-weight: 600; box-shadow: 0 2px 7px #1e467533; pointer-events: auto; }
+.annotation-pin.ui-button:hover { background: #1763df; }
+.annotation-editor, .annotation-list { position: absolute; z-index: 36; background: white; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); box-shadow: 0 8px 32px #253c6426; padding: 10px; color: #25364d; font-size: 13px; }
+.annotation-editor { min-height: 190px; max-height: calc(100% - 24px); overflow: auto; }
+.annotation-editor textarea { display: block; width: 100%; min-height: 96px; resize: vertical; padding: 8px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-small); background: #f7f8fb; color: inherit; font: inherit; line-height: 1.6; }
+.annotation-path { font-size: 11px; color: #8792a3; overflow-wrap: anywhere; margin: 6px 0; }
+.annotation-editor footer, .annotation-list footer { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.annotation-editor .ui-button--primary, .annotation-list .ui-button--primary { background: #2878ff; color: white; padding: 8px 12px; }
+.annotation-editor .ui-icon, .annotation-list .ui-icon { width: 17px; height: 17px; display: block; }
+.annotation-list { top: 70px; left: 50%; transform: translateX(-50%); width: min(400px,calc(100% - 24px)); max-height: calc(100% - 90px); overflow: auto; }
+.annotation-list > header, .annotation-editor > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.annotation-editor > header strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.annotation-editor > header button { flex: none; }
+.annotation-path, .annotation-list-content small { white-space: pre-line; }
+.annotation-selection { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.annotation-target-outline, .annotation-marquee { position: absolute; border: 2px solid #2878ff; background: #2878ff12; pointer-events: none; box-shadow: 0 0 0 1px #ffffff80; box-sizing: border-box; }
+.annotation-marquee { z-index: 7; }
+.annotation-list > p { color: #8792a3; line-height: 1.8; }
+.annotation-list-row { display: flex; align-items: flex-start; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--ui-border); }
+.annotation-list-content { display: flex; flex: 1; flex-direction: column; gap: 6px; min-width: 0; text-align: left; white-space: normal; }
+.annotation-list-content strong { font-size: 13px; font-weight: 500; white-space: pre-wrap; overflow-wrap: anywhere; }
+.annotation-list-content small { color: #8792a3; font-size: 11px; overflow-wrap: anywhere; }
+.annotation-list-body { flex: 1; min-width: 0; }
+.annotation-list-body .annotation-list-content { width: 100%; }
+.annotation-objects { margin: 6px 0; color: #8792a3; font-size: 11px; min-width: 0; }
+.annotation-object-names { display: flex; flex-wrap: wrap; gap: 4px; max-height: 110px; overflow: auto; }
+.annotation-object-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 5px; border-radius: var(--ui-radius-small); background: #f1f4f9; }
+.annotation-objects-toggle.ui-button { font-size: 11px; padding: 3px 0; color: #2878ff; }
+.annotation-objects--compact .annotation-object-names { flex-wrap: nowrap; max-height: 24px; overflow: hidden; }
+.annotation-objects--compact .annotation-object-name { flex-shrink: 0; max-width: 70%; }
+.annotation-object-name { display: inline-flex; align-items: center; gap: 3px; }
+.annotation-tag-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.annotation-tag-remove.ui-button { flex-shrink: 0; }
+.annotation-tag-remove.ui-button { display: inline-flex; align-items: center; justify-content: center; width: 14px; min-width: 14px; height: 14px; padding: 0; opacity: 0; }
+.annotation-tag-remove .ui-icon { width: 12px; height: 12px; }
+.annotation-object-name:hover .annotation-tag-remove, .annotation-object-name:focus-within .annotation-tag-remove { opacity: 1; }

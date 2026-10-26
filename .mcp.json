@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "lanhu": {
+      "command": "node",
+      "args": [
+        "${PLUGIN_ROOT}/dist/index.cjs"
+      ],
+      "cwd": "${PLUGIN_ROOT}",
+      "env": {
+        "COOKIE": ""
+      }
+    }
+  }
+}

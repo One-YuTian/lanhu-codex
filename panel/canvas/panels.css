@@ -1,0 +1,78 @@
+.side-tabs { align-items: center; }
+html, body, body * { user-select: none; -webkit-user-select: none; }
+input, textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [contenteditable]:not([contenteditable="false"]) * { user-select: text; -webkit-user-select: text; }
+img { -webkit-user-drag: none; }
+.viewport.hand, .viewport.hand .board, .viewport.hand .layer-box { cursor: grab !important; }
+.viewport.panning, .viewport.panning .board, .viewport.panning .layer-box { cursor: grabbing !important; }
+.inspector .side-tabs { position: sticky; top: 0; z-index: 2; background: white; }
+.side-tabs .panel-collapse { margin-left: auto; flex: none; width: 32px; padding: 8px; border: 0; display: flex; align-items: center; justify-content: center; color: #8993a3; }
+.panel-collapse .ui-icon, .panel-handle .ui-icon { width: 18px; height: 18px; display: block; }
+.panel-handle { position: absolute; top: 12px; z-index: 20; padding: 8px; background: white; border: 1px solid #e8eaf0; border-radius: 5px; color: #718096; box-shadow: 0 2px 8px #00000008; }
+.panel-handle.left { left: 12px; }
+.panel-handle.right { right: 12px; }
+#user-avatar { display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
+#user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+#user-avatar .ui-icon { width: 18px; height: 18px; }
+.native-panel .workspace { height: 100vh; }
+.native-panel .project-manager { height: 100vh; }
+.manager-team-field { margin: 0 8px 22px; }
+.manager-team-field .ui-select-trigger { background: var(--ui-surface); border: 1px solid var(--ui-border); }
+.manager-team-field .ui-select-trigger span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manager-team-field .ui-select-menu { max-height: 280px; overflow-y: auto; }
+.manager-project-entry { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; min-height: 38px; }
+.manager-project-entry .ui-icon { color: #2d86f7; flex: none; }
+.manager-project-entry span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manager-sort { width: 150px; flex: none; }
+.manager-sort .ui-select-trigger { height: 36px; font-size: 13px; background: transparent; }
+.manager-skeleton { display: block; border-radius: 5px; background: linear-gradient(100deg, #edf0f4 25%, #f8f9fb 45%, #edf0f4 65%); background-size: 240% 100%; animation: manager-shimmer 1.4s linear infinite; }
+.manager-tree-placeholder { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 9px 16px; }
+.manager-tree-placeholder span:first-child { width: 18px; height: 18px; flex: none; }
+.manager-tree-placeholder span:last-child { width: 65%; height: 13px; }
+.manager-card-placeholder { pointer-events: none; }
+.manager-card-placeholder .manager-card-label span { width: 65%; height: 16px; }
+.manager-cover-loading::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, #edf0f4 25%, #f8f9fb 45%, #edf0f4 65%); background-size: 240% 100%; animation: manager-shimmer 1.4s linear infinite; }
+.manager-cover-loading > .ui-icon { visibility: hidden; }
+@keyframes manager-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media(prefers-reduced-motion:reduce) { .manager-skeleton, .manager-cover-loading::after { animation: none; } }
+.project-picker-dialog { width: 1100px; max-width: calc(100vw - 48px); padding: 0; overflow: hidden; }
+.project-picker-dialog[open] { display: flex; flex-direction: column; height: min(760px, calc(100vh - 48px)); }
+.project-picker-header { display: flex; align-items: center; gap: 8px; padding: 16px 20px; border-bottom: 1px solid var(--ui-border); flex: none; }
+.project-picker-header h2 { font-size: 16px; margin: 0 auto 0 0; }
+.project-picker-header button { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 8px; }
+.project-picker-dialog .project-manager, .native-panel .project-picker-dialog .project-manager { height: auto; min-height: 0; flex: 1; }
+.project-picker-dialog .manager-content { padding: 20px 24px; }
+.project-picker-dialog .manager-sidebar { width: 230px; }
+.project-picker-dialog .manager-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; }
+.project-picker-dialog .manager-cover { height: 140px; }
+.project-picker-dialog .manager-cover img { max-height: 120px; }
+.project-picker-dialog footer { margin: 0; padding: 16px 20px; border-top: 1px solid var(--ui-border); flex: none; }
+.manager-card.selected { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); background: #edf4ff; }
+.manager-project-entry.selected { background: #edf4ff; color: var(--blue); }
+@media(max-width:700px) { .project-picker-dialog { max-width: calc(100vw - 16px); } .project-picker-dialog .manager-sidebar { width: 165px; } .project-picker-dialog .manager-content { padding: 16px; } }
+.native-panel .toolbar { top: 12px; bottom: auto; left: 50%; transform: translateX(-50%); z-index: 30; max-width: calc(100% - 112px); overflow-x: auto; gap: 2px; padding: 6px; }
+.native-panel .toolbar > * { flex: none; }
+.native-panel .toolbar #share { display: inline-flex; }
+.auth-checking .header, .auth-checking .toolbar, .auth-checking .sidebar, .auth-checking .inspector,
+.auth-checking .panel-handle,
+.login-required .header, .login-required .toolbar, .login-required .sidebar, .login-required .inspector,
+.login-required .panel-handle, .login-required #world, .login-required #selection-info,
+.login-required #marquee, .login-required .annotation-editor, .login-required .annotation-list,
+.login-required .annotation-pins, .login-required .annotation-selection,
+.login-required .annotation-marquee { display: none !important; }
+.login-required .workspace { height: 100vh; }
+.login-required #state p { max-width: 420px; line-height: 1.8; margin-left: auto; margin-right: auto; }
+.login-required #login-button { background: #2878ff; color: white; min-width: 112px; padding: 11px 28px; margin-top: 14px; border-radius: 6px; }
+.login-required #login-button:hover { background: #1765ed; }
+.login-required #state .login-manual { display: block; background: transparent; color: #2878ff; font-size: 12px; padding: 5px 10px; margin: 16px auto 0; }
+.login-required #state .login-manual:hover { background: #e8effb; }
+.login-cookie-dialog { width: 540px; }
+.login-cookie-dialog input { width: 100%; margin-top: 12px; }
+.login-required #open-project-link { background: #2878ff; color: white; padding: 11px 24px; margin-top: 16px; }
+.login-spinner { width: 32px; height: 32px; border: 3px solid #dce7fb; border-top-color: #2878ff; border-radius: 50%; margin: 0 auto 22px; animation: login-spin .8s linear infinite; }
+@keyframes login-spin { to { transform: rotate(360deg); } }
+.login-success-icon { color: #23a86a; font-size: 38px; margin-bottom: 18px; }
+.login-required #state .login-help { font-size: 12px; max-width: 640px; color: #8e97a7; margin-top: 24px; }
+.login-help code { user-select: text; font: inherit; color: #5d6d85; }
+.login-required #state .login-help button { background: transparent; color: #2878ff; padding: 3px 8px; margin: 0 0 0 6px; font-size: inherit; }
+.login-required #state .login-help button:hover { background: #e8effb; }
+@media (prefers-reduced-motion: reduce) { .login-spinner { animation: none; } }

@@ -1,0 +1,15 @@
+:root {
+  --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --ui-text: #25364d;
+  --ui-muted: #7c889b;
+  --ui-primary: #2878ff;
+  --ui-surface: #fff;
+  --ui-subtle: #f6f7fa;
+  --ui-border: #e9edf3;
+  --ui-radius: 6px;
+  --ui-radius-small: 4px;
+  --ui-radius-large: 10px;
+  --ui-control-height: 36px;
+  --ui-icon-size: 18px;
+  --ui-shadow: 0 6px 24px #25364d18;
+}

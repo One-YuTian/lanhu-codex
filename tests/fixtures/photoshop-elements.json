@@ -1,0 +1,17 @@
+{
+  "info": {
+    "id": 284,
+    "name": "artboard",
+    "artboard": { "artboardRect": { "left": 1778, "top": 0, "right": 2528, "bottom": 1334 } },
+    "layers": [
+      {
+        "id": 775,
+        "name": "finger",
+        "bounds": { "left": 2309, "top": 734, "right": 2507, "bottom": 891 },
+        "isSlice": true,
+        "sliceBackData": "fixture snapshot omitted from model output",
+        "layers": [{ "id": 501, "name": "child" }]
+      }
+    ]
+  }
+}

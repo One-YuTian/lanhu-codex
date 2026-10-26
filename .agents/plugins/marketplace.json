@@ -1,0 +1,12 @@
+{
+  "name": "lanhu",
+  "interface": { "displayName": "蓝湖插件市场" },
+  "plugins": [
+    {
+      "name": "lanhu-mcp",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Developer Tools"
+    }
+  ]
+}

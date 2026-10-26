@@ -1,0 +1,317 @@
+{
+  "board": {
+    "id": 2,
+    "width": 750,
+    "height": 1334,
+    "left": 0,
+    "top": 0,
+    "layers": [
+      {
+        "id": 22,
+        "type": "textLayer",
+        "name": "0",
+        "text": true,
+        "textInfo": {
+          "text": "0",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+          },
+          "size": 38.541666666666664,
+          "fontPostScriptName": "LilitaOne",
+          "bold": false,
+          "italic": false,
+          "justification": "right",
+          "leading": null,
+          "tracking": -20,
+          "baselineShift": null,
+          "horizontalScale": null,
+          "verticalScale": null,
+          "textStyleRange": [
+            {
+              "from": 0,
+              "to": 2,
+              "textStyle": {
+                "fontName": "Lilita One",
+                "fontStyleName": "Regular",
+                "size": {
+                  "value": 37,
+                  "units": "pointsUnit"
+                },
+                "fontPostScriptName": "LilitaOne",
+                "connectionForms": true,
+                "japaneseAlternate": "defaultForm",
+                "lineWidth": {
+                  "value": 0.96,
+                  "units": "pointsUnit"
+                },
+                "miterLimit": {
+                  "value": 3.84,
+                  "units": "pointsUnit"
+                },
+                "impliedFontSize": {
+                  "value": 37,
+                  "units": "pointsUnit"
+                },
+                "impliedBaselineShift": {
+                  "value": 0,
+                  "units": "pointsUnit"
+                },
+                "contextualLigatures": true,
+                "markYDistFromBaseline": {
+                  "value": 81.5373,
+                  "units": "pointsUnit"
+                },
+                "stylisticSets": 0,
+                "color": {
+                  "red": 255,
+                  "green": 255,
+                  "blue": 255
+                },
+                "fontTechnology": 1,
+                "fontScript": 0,
+                "tracking": -20
+              }
+            }
+          ],
+          "fontName": "Lilita One",
+          "fontStyleName": "Regular",
+          "sizePt": 37,
+          "antiAlias": "antiAliasSharp",
+          "bounds": {
+            "left": {
+              "value": -23.643,
+              "units": "pointsUnit"
+            },
+            "top": {
+              "value": -31.5236,
+              "units": "pointsUnit"
+            },
+            "right": {
+              "value": 0,
+              "units": "pointsUnit"
+            },
+            "bottom": {
+              "value": 8.14005,
+              "units": "pointsUnit"
+            }
+          },
+          "boundingBox": {
+            "left": {
+              "value": -22.338,
+              "units": "pointsUnit"
+            },
+            "top": {
+              "value": -26.55,
+              "units": "pointsUnit"
+            },
+            "right": {
+              "value": -1.023,
+              "units": "pointsUnit"
+            },
+            "bottom": {
+              "value": 0.375,
+              "units": "pointsUnit"
+            }
+          },
+          "textShape": [
+            {
+              "char": "paint",
+              "orientation": "horizontal",
+              "transform": {
+                "xx": 1,
+                "xy": 0,
+                "yx": 0,
+                "yy": 1,
+                "tx": 0,
+                "ty": 0
+              },
+              "rowCount": 1,
+              "columnCount": 1,
+              "rowMajorOrder": true,
+              "rowGutter": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "columnGutter": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "spacing": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "frameBaselineAlignment": "alignByAscent",
+              "firstBaselineMinimum": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "base": {
+                "horizontal": 0,
+                "vertical": 0
+              }
+            }
+          ]
+        },
+        "left": 548,
+        "top": 206,
+        "width": 23,
+        "height": 29
+      },
+      {
+        "id": 21,
+        "type": "textLayer",
+        "name": "20",
+        "text": true,
+        "textInfo": {
+          "text": "20",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+          },
+          "size": 41.666666666666664,
+          "fontPostScriptName": "LilitaOne",
+          "bold": false,
+          "italic": false,
+          "justification": "right",
+          "leading": null,
+          "tracking": -20,
+          "baselineShift": null,
+          "horizontalScale": null,
+          "verticalScale": null,
+          "textStyleRange": [
+            {
+              "from": 0,
+              "to": 3,
+              "textStyle": {
+                "fontName": "Lilita One",
+                "fontStyleName": "Regular",
+                "size": {
+                  "value": 40,
+                  "units": "pointsUnit"
+                },
+                "fontPostScriptName": "LilitaOne",
+                "connectionForms": true,
+                "japaneseAlternate": "defaultForm",
+                "lineWidth": {
+                  "value": 0.96,
+                  "units": "pointsUnit"
+                },
+                "miterLimit": {
+                  "value": 3.84,
+                  "units": "pointsUnit"
+                },
+                "impliedFontSize": {
+                  "value": 40,
+                  "units": "pointsUnit"
+                },
+                "impliedBaselineShift": {
+                  "value": 0,
+                  "units": "pointsUnit"
+                },
+                "contextualLigatures": true,
+                "markYDistFromBaseline": {
+                  "value": 81.5373,
+                  "units": "pointsUnit"
+                },
+                "stylisticSets": 0,
+                "color": {
+                  "red": 255,
+                  "green": 255,
+                  "blue": 255
+                },
+                "fontTechnology": 1,
+                "fontScript": 0,
+                "tracking": -20
+              }
+            }
+          ],
+          "fontName": "Lilita One",
+          "fontStyleName": "Regular",
+          "sizePt": 40,
+          "antiAlias": "antiAliasSharp",
+          "bounds": {
+            "left": {
+              "value": -45.76,
+              "units": "pointsUnit"
+            },
+            "top": {
+              "value": -34.0796,
+              "units": "pointsUnit"
+            },
+            "right": {
+              "value": 0,
+              "units": "pointsUnit"
+            },
+            "bottom": {
+              "value": 8.80005,
+              "units": "pointsUnit"
+            }
+          },
+          "boundingBox": {
+            "left": {
+              "value": -44.02,
+              "units": "pointsUnit"
+            },
+            "top": {
+              "value": -28.665,
+              "units": "pointsUnit"
+            },
+            "right": {
+              "value": -1.2,
+              "units": "pointsUnit"
+            },
+            "bottom": {
+              "value": 0.405,
+              "units": "pointsUnit"
+            }
+          },
+          "textShape": [
+            {
+              "char": "paint",
+              "orientation": "horizontal",
+              "transform": {
+                "xx": 1,
+                "xy": 0,
+                "yx": 0,
+                "yy": 1,
+                "tx": 0,
+                "ty": 0
+              },
+              "rowCount": 1,
+              "columnCount": 1,
+              "rowMajorOrder": true,
+              "rowGutter": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "columnGutter": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "spacing": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "frameBaselineAlignment": "alignByAscent",
+              "firstBaselineMinimum": {
+                "value": 0,
+                "units": "pointsUnit"
+              },
+              "base": {
+                "horizontal": 0,
+                "vertical": 0
+              }
+            }
+          ]
+        },
+        "left": 226,
+        "top": 204,
+        "width": 46,
+        "height": 31
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+.cache/
+dist/dev/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+.lanhu-codex/
+settings.json
+bridge-key
+*.sock
+.DS_Store
+Thumbs.db
+!.agents/
+!.agents/plugins/
+!.agents/plugins/marketplace.json

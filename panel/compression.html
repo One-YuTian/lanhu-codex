@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>蓝湖图片压缩</title>
+<style>
+:root{color-scheme:light dark;font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);font-size:12px;color:var(--color-text-primary,#29313d);background:var(--color-background-primary,#fff)}*{box-sizing:border-box}body{margin:0;padding:12px;min-width:300px}button{font:inherit}button{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:6px;border:0;border-radius:6px;background:transparent;color:var(--color-text-secondary,#748091);cursor:pointer;flex-shrink:0}button:hover{background:var(--color-background-secondary,#f2f5f8);color:var(--color-text-primary,#29313d)}button:disabled{opacity:.35;cursor:default}button:focus-visible,textarea:focus-visible{outline:2px solid #3a8bff;outline-offset:2px}button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.primary{background:#1677ff;color:#fff}.primary:hover{background:#0968e8;color:#fff}button[aria-pressed=true]{color:#1677ff;background:#1677ff14}.toolbar{display:flex;align-items:center;gap:4px;height:36px;margin-bottom:8px}.spacer{flex:1}.divider{height:15px;border-left:1px solid var(--color-border-primary,#e7ebf0);margin:0 5px}.table{position:relative;border:1px solid var(--color-border-primary,#e6eaf0);border-radius:8px;overflow:auto;max-height:480px;min-height:180px;transition:border-color .15s,background .15s}table{border-collapse:collapse;width:100%;text-align:left;table-layout:fixed}th{position:sticky;top:0;z-index:1;color:var(--color-text-secondary,#8993a1);background:var(--color-background-secondary,#f8f9fb);font-weight:400;font-size:11px}td,th{padding:10px 9px;border-bottom:1px solid var(--color-border-primary,#edf0f4)}tr:last-child td{border-bottom:0}th:first-child{width:auto}th:last-child{width:62px}th:nth-child(2),th:nth-child(3){width:13%}th:nth-child(4){width:9%}th:nth-child(5){width:68px}td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.picture{display:flex;align-items:center;gap:10px;min-width:0}.thumb{width:36px;height:36px;object-fit:contain;border-radius:5px;background:var(--color-background-secondary,#f3f5f8);flex-shrink:0}.filename{overflow:hidden;text-overflow:ellipsis;font-weight:400}.status{font-size:11px;color:#4386d8}.status.done,.status.unchanged{color:#269469}.status.error,.status.unsupported{color:#d36b60}.remove{width:24px;height:24px;padding:4px}.remove svg{width:14px;height:14px}#empty{display:flex;align-items:center;justify-content:center;min-height:150px;color:var(--color-text-tertiary,#bac2ce)}#empty svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}#notice{font-size:11px;line-height:1.5;color:#d36b60;margin:8px 2px 0;white-space:pre-line}[hidden]{display:none!important}@media(max-width:480px){body{padding:8px}td,th{padding:9px 5px}th:first-child{width:auto}th:nth-child(4),td:nth-child(4){display:none}th:nth-child(2),th:nth-child(3){width:17%}th:nth-child(5){width:52px}.picture{gap:6px}.thumb{width:30px;height:30px}.filename{font-size:11px}th:last-child{width:50px}.status{font-size:10px}}
+
+tr{--fill:rgba(22,119,255,.09);background:linear-gradient(90deg,var(--fill) 0,var(--fill) var(--progress,0%),transparent var(--progress,0%),transparent 100%)}
+tr[data-status=done],tr[data-status=unchanged]{--fill:rgba(35,163,112,.075)}tr[data-status=error]{--fill:rgba(211,107,96,.09)}
+.actions{overflow:visible;white-space:nowrap;text-align:right;padding-left:0;padding-right:5px}.row-action{display:inline-flex;width:24px;height:26px;padding:4px}.row-action svg{width:14px;height:14px}.retry{color:#4386d8}
+.task-count{text-align:right;font-size:11px;color:var(--color-text-secondary,#8993a1);font-variant-numeric:tabular-nums;margin:0 6px 0 0;white-space:nowrap;flex-shrink:0}
+
+dialog{width:min(300px,calc(100vw - 32px));border:1px solid var(--color-border-primary,#e6eaf0);border-radius:12px;padding:20px;color:inherit;background:var(--color-background-primary,#fff);box-shadow:0 12px 50px #0002}dialog::backdrop{background:#17223438}h2{font-size:15px;font-weight:600;margin:0 0 18px}#settings-form{display:grid;grid-template-columns:1fr 108px;gap:14px;align-items:center}h2,.dialog-actions,#settings-error{grid-column:1/-1}select,input{width:100%;font:inherit;color:inherit;background:var(--color-background-primary,#fff);border:1px solid var(--color-border-primary,#dce1e8);border-radius:6px;padding:7px}select:focus-visible,input:focus-visible{outline:2px solid #3a8bff;outline-offset:2px}.dialog-actions{display:flex;justify-content:flex-end;gap:6px}#settings-error{color:#d36b60;font-size:11px}#settings-error:empty{display:none}
+
+.settings-switch{justify-self:end;width:34px;height:20px;border-radius:20px;padding:3px;background:var(--color-border-primary,#cbd2dc);justify-content:flex-start;transition:background .15s}.settings-switch span{display:block;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0002;transition:transform .15s}.settings-switch[aria-checked=true]{background:#1677ff}.settings-switch[aria-checked=true] span{transform:translateX(14px)}.settings-switch:hover{background:var(--color-border-primary,#b8c2d0)}.settings-switch[aria-checked=true]:hover{background:#0968e8}.text-button{width:auto;min-width:56px;height:32px;padding:6px 14px}.dialog-actions{gap:8px}
+</style></head><body>
+<div class="toolbar" role="toolbar" aria-label="图片压缩">
+<button id="files" title="添加图片" aria-label="添加图片"><svg><use href="#i-image"/></svg></button>
+<button id="settings" title="设置" aria-label="设置"><svg><use href="#i-settings"/></svg></button>
+<span class="spacer"></span>
+<div class="task-count" id="count" role="status" aria-label="已结束任务/全部任务">0/0</div>
+<button id="clear" title="全部清空" aria-label="全部清空"><svg><use href="#i-trash"/></svg></button>
+<button id="clear-success" title="清空成功任务" aria-label="清空成功任务"><svg><use href="#i-clear-success"/></svg></button>
+<span class="divider"></span>
+<button id="retry" title="重试失败任务" aria-label="重试失败任务"><svg><use href="#i-retry"/></svg></button>
+<button id="start" title="开始" aria-label="开始"><svg><use href="#i-play"/></svg></button>
+<button id="pause" title="暂停" aria-label="暂停"><svg><use href="#i-pause"/></svg></button>
+</div>
+<div id="list" class="table" aria-label="图片列表"><table><thead><tr><th>图片</th><th>原大小</th><th>压缩后</th><th>节省</th><th>状态</th><th></th></tr></thead><tbody id="rows"></tbody></table><div id="empty" title="添加图片" aria-label="添加图片"><svg viewBox="0 0 24 24"><use href="#i-image"/></svg></div></div>
+<dialog id="settings-dialog" aria-labelledby="settings-title">
+<div id="settings-form" role="form"><h2 id="settings-title">设置</h2>
+<label for="setting-auto">自动开始</label><button id="setting-auto" class="settings-switch" type="button" role="switch" aria-checked="true" aria-label="自动开始"><span></span></button>
+<label for="setting-concurrency">并发数</label><input id="setting-concurrency" type="number" min="1" max="20" step="1" value="5" required>
+<div id="settings-error" role="alert"></div><div class="dialog-actions">
+<button id="settings-cancel" class="text-button" type="button">取消</button>
+<button id="settings-save" class="primary text-button" type="button">确认</button>
+</div></div></dialog>
+<div id="notice" role="status" aria-live="polite" hidden></div>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8Z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+<symbol id="i-clear-success" viewBox="0 0 24 24"><path d="M3 6h11M6 6l1 15h9l.4-5M8 3h5v3m2 4 3 3 4-5M10 10v7"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="m10 3-.6 2.4-2 .9L5 5.6l-2 3.5 1.8 1.7v2.4L3 14.9l2 3.5 2.4-.7 2 .9L10 21h4l.6-2.4 2-.9 2.4.7 2-3.5-1.8-1.7v-2.4L21 9.1l-2-3.5-2.4.7-2-.9L14 3Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-retry" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+</defs></svg>
+<script>/* SCRIPT */</script></body></html>

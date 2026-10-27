@@ -75,3 +75,8 @@ img { -webkit-user-drag: none; }
 .sidebar-resizing, .sidebar-resizing * { cursor: col-resize !important; user-select: none !important; }
 
 .native-panel .sidebar .side-tabs { gap: 8px; padding: 0 10px; }
+
+.manager-category{display:flex;align-items:center;gap:10px;width:100%;min-height:36px;padding:7px 16px 7px 38px;text-align:left;border-radius:7px;color:var(--text-muted,#667085)}
+.manager-category.active{background:#edf4ff;color:var(--blue,#2d86f7)}.manager-category .ui-icon{width:16px;height:16px;flex:none}
+.manager-project-section{margin-bottom:26px}.manager-project-section h2{font-size:14px;font-weight:500;margin:8px 0 16px;color:var(--text,#252b36)}
+.manager-section-empty{font-size:13px;color:var(--text-muted,#8a929f);margin:14px 0 24px}.manager-project-section[hidden]{display:none}

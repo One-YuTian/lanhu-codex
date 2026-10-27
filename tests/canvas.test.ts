@@ -90,8 +90,10 @@ describe('无端口的原生蓝湖画布', () => {
     const [serverTransport, clientTransport] = InMemoryTransport.createLinkedPair();
     try {
       await server.connect(serverTransport); await client.connect(clientTransport);
-      const tool = (await client.listTools()).tools.find(tool => tool.name === 'lanhu_open_canvas')!;
-      expect(tool._meta?.['openai/ui']).toMatchObject({ entrypoints: [{ type: 'global' }, { type: 'thread' }], preferredModelDisplayMode: 'inline' });
+      const tools = (await client.listTools()).tools;
+      const tool = tools.find(tool => tool.name === 'lanhu_open_canvas_thread')!;
+      expect(tools.find(tool => tool.name === 'lanhu_open_canvas')?._meta?.['openai/ui']).toMatchObject({ entrypoints: [{ type: 'global' }] });
+      expect(tool._meta?.['openai/ui']).toMatchObject({ entrypoints: [{ type: 'thread' }], preferredModelDisplayMode: 'inline' });
       expect(tool.inputSchema.required || []).not.toContain('project_id');
       const image = client.getServerVersion()!.icons![0];
       expect(image.mimeType).toBe('image/png');

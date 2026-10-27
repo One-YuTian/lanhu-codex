@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { settingsFile } from './settings';
-import { savedProject } from '../panel/canvas/project-memory.js';
+import { savedProject, recentProjectRoutes, rememberRecentProject } from '../panel/canvas/project-memory.js';
 import { projectMemoryKey } from '../panel/canvas/lanhu-links.js';
 
 const queues = new Map<string, Promise<unknown>>();
@@ -25,7 +25,7 @@ export function registerCanvasPreferences(server: McpServer) {
           const temporary = `${file}.${randomUUID()}.tmp`;
           try {
             const state = await readState();
-            if (route) state.route = route;
+            if (route) { state.recentProjects = rememberRecentProject(recentProjectRoutes(state.recentProjects, state.route), route); state.route = route; }
             if (team_id) state.team_id = team_id;
             if (sidebar_width !== undefined) state.sidebar_width = sidebar_width;
             if (group) state.groups = { ...state.groups, [projectMemoryKey(group)]: group.group_id };
@@ -40,7 +40,7 @@ export function registerCanvasPreferences(server: McpServer) {
       }
       await queues.get(file)?.catch(() => undefined);
       const state = await readState();
-      return { content: [], _meta: { 'lanhu/sidebarWidth': z.number().int().min(200).max(480).safeParse(state.sidebar_width).success ? state.sidebar_width : null, 'lanhu/team': id.safeParse(state.team_id).success ? state.team_id : null, 'lanhu/savedRoute': route ?? savedProject(state.route), 'lanhu/groups': state.groups || {}, 'lanhu/seenLinks': state.seenLinks || [] } };
+      return { content: [], _meta: { 'lanhu/sidebarWidth': z.number().int().min(200).max(480).safeParse(state.sidebar_width).success ? state.sidebar_width : null, 'lanhu/team': id.safeParse(state.team_id).success ? state.team_id : null, 'lanhu/savedRoute': route ?? savedProject(state.route), 'lanhu/recentProjects': recentProjectRoutes(state.recentProjects, state.route), 'lanhu/groups': state.groups || {}, 'lanhu/seenLinks': state.seenLinks || [] } };
     } catch (error) {
       if (!route && (error as NodeJS.ErrnoException).code === 'ENOENT') return { content: [], _meta: { 'lanhu/savedRoute': null } };
       return { isError: true, content: [], _meta: { 'lanhu/error': { message: '无法读取或保存最近打开的项目' } } };

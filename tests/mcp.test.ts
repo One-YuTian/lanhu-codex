@@ -110,3 +110,34 @@ it('生产清单不声明 PORT，旧 HTTP 启动参数明确拒绝', async () =>
   const client = new Client({ name: 'removed-http', version: '1' }); clients.push(client);
   await expect(client.connect(new StdioClientTransport({ command: process.execPath, args: [path.resolve('package/index.cjs'), '--http'], stderr: 'pipe' }))).rejects.toThrow();
 });
+
+it('打开图片压缩面板仅返回 UI 数据，不追加对话文案', async () => {
+  const { client } = await connect();
+  const result = await call(client, 'lanhu_compressed_picture');
+  expect(result.isError).toBeUndefined();
+  expect(result.content).toEqual([]);
+  expect(result._meta?.['lanhu/compression']).toMatchObject({ items: [] });
+  const tools = (await client.listTools()).tools;
+  const run = tools.find(tool => tool.name === 'lanhu_compression_run')!;
+  expect(run.annotations).toMatchObject({ destructiveHint: true, openWorldHint: true });
+  expect(tools.filter(tool => ['lanhu_compressed_picture', 'lanhu_compression_list', 'lanhu_compression_run'].includes(tool.name)).map(tool => tool.description).join(' ')).not.toMatch(/TinyPNG|X-Forwarded-For|临时文件/);
+});
+
+it('画布标签与压缩标签使用同款彩色图标，Global 保持原工具和黑白图标', async () => {
+  const { client } = await connect(); const tools = (await client.listTools()).tools;
+  const global = tools.find(tool => tool.name === 'lanhu_open_canvas')!;
+  const canvas = tools.find(tool => tool.name === 'lanhu_open_canvas_thread')!;
+  const compression = tools.find(tool => tool.name === 'lanhu_compressed_picture')!;
+  const logo = await readFile('assets/logo.png'), sidebar = await readFile('assets/sidebar-icon.png');
+  expect(global.icons?.[0].src).toBe(`data:image/png;base64,${sidebar.toString('base64')}`);
+  expect(canvas.icons?.[0].src).toBe(`data:image/png;base64,${logo.toString('base64')}`);
+  expect(canvas.icons).toEqual(compression.icons);
+  expect(global._meta?.['openai/ui']).toMatchObject({ entrypoints: [{ type: 'global' }] });
+  expect(canvas._meta?.['openai/ui']).toMatchObject({ entrypoints: [{ type: 'thread' }] });
+  expect(global._meta?.ui).toMatchObject({ visibility: ['app'] });
+  expect(global._meta?.ui).toMatchObject({ resourceUri: (canvas._meta?.ui as any).resourceUri });
+  for (const name of ['lanhu_open_canvas','lanhu_open_canvas_thread']) {
+    const result = await call(client, name, { project_id: 'project', team_id: 'team' });
+    expect(result.isError).toBeUndefined(); expect(result._meta?.['lanhu/route']).toEqual({ project_id: 'project', team_id: 'team' });
+  }
+});

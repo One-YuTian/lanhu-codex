@@ -22,14 +22,22 @@ export function registerCanvas(server: McpServer, bridge: Bridge) {
         'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'inline' } } }] };
   });
   const id = z.string().trim().min(1).max(256).regex(/^[\w-]+$/);
+  const inputSchema = { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() };
+  const openCanvas = async (args: { project_id?: string; team_id?: string; image_id?: string }) => {
+    if (!args.project_id && (args.team_id || args.image_id)) return { isError: true, content: [{ type: 'text' as const, text: '指定团队或设计稿时请同时提供项目 ID。' }] };
+    return { content: [{ type: 'text' as const, text: '蓝湖已打开。' }], _meta: { 'lanhu/route': args } };
+  };
+  // Keep the Global tool name and monochrome icon, including existing deep links.
   server.registerTool('lanhu_open_canvas', { title: '蓝湖',
-    description: '打开蓝湖 UI，从对话调用时默认内联显示，与对话共存，可手动切换全屏；也支持会话侧边标签入口。不传参数时显示项目管理面板，默认使用最近选择的团队，可浏览团队文件夹和项目或粘贴蓝湖链接；也可按项目、团队及可选设计稿 ID 浏览最新设计与标注。无需 Chrome 扩展，可使用配置中保存的 Cookie。',
-    inputSchema: { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() }, annotations: { readOnlyHint: true, openWorldHint: false },
-    _meta: { ui: { resourceUri: CANVAS_URI }, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }], preferredModelDisplayMode: 'inline' } satisfies OpenAIUiToolMetadata }
-  }, async args => {
-    if (!args.project_id && (args.team_id || args.image_id)) return { isError: true, content: [{ type: 'text', text: '指定团队或设计稿时请同时提供项目 ID。' }] };
-    return { content: [{ type: 'text', text: '蓝湖已打开。' }], _meta: { 'lanhu/route': args } };
-  });
+    description: '蓝湖 Global 入口，打开画布并恢复最近项目。', inputSchema,
+    annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: { ui: { resourceUri: CANVAS_URI, visibility: ['app'] }, 'openai/ui': { entrypoints: [{ type: 'global' }], preferredModelDisplayMode: 'inline' } satisfies OpenAIUiToolMetadata }
+  }, openCanvas);
+  server.registerTool('lanhu_open_canvas_thread', { title: '蓝湖',
+    description: '打开蓝湖会话画布，默认内联显示，可手动全屏；不传参数时恢复最近项目，没有项目记忆时显示项目管理。也可指定项目、团队及设计稿 ID。',
+    inputSchema, annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: { ui: { resourceUri: CANVAS_URI }, 'openai/ui': { entrypoints: [{ type: 'thread' }], preferredModelDisplayMode: 'inline' } satisfies OpenAIUiToolMetadata }
+  }, openCanvas);
   const read = canvasReader(bridge);
   const loginStatus = canvasLoginStatus(bridge);
   const routes = { teams: 'lanhu_get_teams', projects: 'lanhu_get_projects', profile: 'lanhu_get_profile', project: 'lanhu_get_project', images: 'lanhu_get_project_images', sectors: 'lanhu_get_project_sectors', design: 'lanhu_get_design', schema: 'lanhu_get_design_schema', slices: 'lanhu_get_design_slices' };

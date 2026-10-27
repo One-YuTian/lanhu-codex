@@ -1,4 +1,4 @@
-import { savedProject } from './project-memory.js';
+import { savedProject, recentProjectRoutes, rememberRecentProject } from './project-memory.js';
 import { extractLanhuLinks, projectMemoryKey } from './lanhu-links.js';
 let adapter;
 let panelRoute = '';
@@ -16,10 +16,18 @@ export async function recallProject() {
   try { return savedProject(adapter ? await adapter.recallProject() : JSON.parse(localStorage.getItem('lanhu:last-project') || 'null')); }
   catch { return null; }
 }
+export async function recallRecentProjects() {
+  try { const history = recentProjectRoutes(adapter ? await adapter.recallRecentProjects() : JSON.parse(localStorage.getItem('lanhu:recent-projects') || '[]')); return history.length ? history : recentProjectRoutes([], await recallProject()); }
+  catch { return []; }
+}
 export async function rememberProject(value) {
   const route = savedProject(value); if (!route) return;
   if (adapter) await adapter.rememberProject(route);
-  else localStorage.setItem('lanhu:last-project', JSON.stringify(route));
+  else {
+    const history = rememberRecentProject(recentProjectRoutes(JSON.parse(localStorage.getItem('lanhu:recent-projects') || '[]'), savedProject(JSON.parse(localStorage.getItem('lanhu:last-project') || 'null'))), route);
+    localStorage.setItem('lanhu:last-project', JSON.stringify(route));
+    localStorage.setItem('lanhu:recent-projects', JSON.stringify(history));
+  }
 }
 export async function recallSidebarWidth() {
   try { return adapter ? await adapter.recallSidebarWidth() : Number(localStorage.getItem('lanhu:sidebar-width')) || null; }

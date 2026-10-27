@@ -1,5 +1,5 @@
 import { extractLanhuLinks, localLanhuRoute } from './lanhu-links.js';
-import { savedProject } from './project-memory.js';
+import { savedProject, sameProject } from './project-memory.js';
 import { unwrap } from './model.js';
 import { canvasFetch, clipboardSeen, markClipboardSeen, readClipboardLinks } from './transport.js';
 import { knownProject } from './project-manager.js';
@@ -8,7 +8,7 @@ export async function linkHash(link) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(link));
   return [...new Uint8Array(bytes)].map(value => value.toString(16).padStart(2, '0')).join('');
 }
-export function createClipboardDetector({ resolve, inspect, known = () => null, ask, open, seen = clipboardSeen, mark = markClipboardSeen, hash = linkHash, enabled = () => true }) {
+export function createClipboardDetector({ resolve, inspect, known = () => null, ask, open, seen = clipboardSeen, mark = markClipboardSeen, hash = linkHash, enabled = () => true, getRoute = () => null }) {
   let busy = false;
   const attempted = new Set();
   return async text => {
@@ -24,15 +24,16 @@ export function createClipboardDetector({ resolve, inspect, known = () => null, 
         attempted.add(key);
         try {
           const route = savedProject(localLanhuRoute(link) || await resolve(link));
-          if (!route) continue;
+          if (!route || sameProject(route, getRoute())) continue;
           const fallback = known(route);
           const detail = await inspect(route).catch(() => null);
           const project = detail || fallback;
-          if (!project || !enabled()) continue;
+          if (!project || !enabled() || sameProject(route, getRoute())) continue;
           const projectKey = await hash(`project:${route.team_id || project.team_id || ''}:${route.project_id}`);
           if (handled.has(projectKey)) continue;
           // Persist before presenting; both decisions and Escape are one-time.
           await mark(key); await mark(projectKey); handled.add(key); handled.add(projectKey);
+          if (sameProject(route, getRoute())) continue;
           if (await ask(project, route)) open({ ...route, ...(project.team_id ? { team_id: project.team_id } : {}) });
           break;
         } catch { /* Invalid, inaccessible and offline links never interrupt the UI. */ }
@@ -41,10 +42,10 @@ export function createClipboardDetector({ resolve, inspect, known = () => null, 
     finally { busy = false; }
   };
 }
-export function installClipboardProjects({ root = document, host = window, enabled, open }) {
+export function installClipboardProjects({ root = document, host = window, enabled, open, getRoute }) {
   const dialog = root.querySelector('#clipboard-project-dialog');
   const allowed = () => enabled() && root.visibilityState !== 'hidden' && !root.querySelector('dialog[open]');
-  const check = createClipboardDetector({ enabled: allowed, known: knownProject, open,
+  const check = createClipboardDetector({ enabled: allowed, known: knownProject, open, getRoute,
     resolve: async link => {
       const response = await canvasFetch(`/api/resolve?${new URLSearchParams({ url: link })}`);
       return response.ok ? (await response.json()).route : null;

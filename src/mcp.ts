@@ -6,13 +6,16 @@ import { FileCookiePreferences, SETTINGS_CAPABILITY, Settings, type CookiePrefer
 import { LanhuApi } from './lanhu-api';
 import { registerApiTools } from './api-tools';
 import { registerCanvas } from './canvas-panel';
+import { registerCompression } from './compression-panel';
 import { registerMentions } from './mentions';
-import { sidebarIcons } from './sidebar-icon';
+import { sidebarIcons, tabIcons } from './sidebar-icon';
+import { configureToolIcons } from './tool-icons';
 import { MCP_VERSION } from './runtime-version';
 import { loginAction, verifyLogin } from './login';
 
 export function createMcpServer(bridge: Bridge, preferences: CookiePreferences = new FileCookiePreferences(), sharedSettings?: Settings): McpServer {
   const server = new McpServer({ name: 'lanhu-mcp', version: MCP_VERSION, icons: sidebarIcons });
+  configureToolIcons(server, { lanhu_open_canvas: sidebarIcons, lanhu_open_canvas_thread: tabIcons, lanhu_compressed_picture: tabIcons });
   const settings = sharedSettings ?? new Settings(bridge, preferences);
   // MCP <= 2025-11-25 advertises extensions on initialize. This wire format is
   // explicitly supported by the OpenAI Structured Settings specification.
@@ -45,7 +48,7 @@ export function createMcpServer(bridge: Bridge, preferences: CookiePreferences =
     title: '读取蓝湖设置', description: '供插件详情页读取原生设置表单，当前 Cookie 以普通文本返回。', inputSchema: {},
     outputSchema: { schema: z.record(z.string(), z.unknown()), values: valuesSchema },
     annotations: { readOnlyHint: true }, _meta: appOnly
-  }, async () => ({ content: [], structuredContent: settings.read() }));
+  }, async () => ({ content: [], structuredContent: await settings.readVerified() }));
   server.registerTool(SETTINGS_CAPABILITY.updateTool, {
     title: '更新蓝湖设置', description: '供插件详情页更新本机 COOKIE，不需要端口或 Chrome 连接。',
     inputSchema: { set: z.object({ COOKIE: z.string() }).strict() },
@@ -55,6 +58,7 @@ export function createMcpServer(bridge: Bridge, preferences: CookiePreferences =
     catch (error) { return { isError: true, content: [{ type: 'text' as const, text: JSON.stringify(errorInfo(error)) }] }; }
   });
   registerCanvas(server, bridge);
+  registerCompression(server, bridge);
   registerMentions(server, bridge.drafts);
   server.registerTool('lanhu_get_selection', {
     title: '读取蓝湖选区完整信息',

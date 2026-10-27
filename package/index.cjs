@@ -2235,8 +2235,8 @@ var require_resolve = __commonJS({
       }
       return count;
     }
-    function getFullPath(resolver, id = "", normalize) {
-      if (normalize !== false)
+    function getFullPath(resolver, id = "", normalize2) {
+      if (normalize2 !== false)
         id = normalizeId(id);
       const p = resolver.parse(id);
       return _getFullPath(resolver, p);
@@ -3262,8 +3262,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path6) {
-      let input2 = path6;
+    function removeDotSegments(path10) {
+      let input2 = path10;
       const output2 = [];
       let nextSlash = -1;
       let len = 0;
@@ -3337,11 +3337,11 @@ var require_utils = __commonJS({
       }
       return output2.join("");
     }
-    function removeDotSegmentsRelative(path6) {
-      if (path6 === "" || path6[0] === "/") {
-        return removeDotSegments(path6);
+    function removeDotSegmentsRelative(path10) {
+      if (path10 === "" || path10[0] === "/") {
+        return removeDotSegments(path10);
       }
-      const segments = path6.split("/");
+      const segments = path10.split("/");
       const last = segments.length - 1;
       const output2 = [];
       let trailingDirectory = false;
@@ -3704,8 +3704,8 @@ var require_schemes = __commonJS({
       }
       if (wsComponent.resourceName) {
         const queryIndex = wsComponent.resourceName.indexOf("?");
-        const path6 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
-        wsComponent.path = path6 && path6 !== "/" ? path6 : void 0;
+        const path10 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
+        wsComponent.path = path10 && path10 !== "/" ? path10 : void 0;
         wsComponent.query = queryIndex === -1 ? void 0 : wsComponent.resourceName.slice(queryIndex + 1);
         wsComponent.resourceName = void 0;
       }
@@ -3865,7 +3865,7 @@ var require_fast_uri = __commonJS({
       }
       return stringScheme;
     }
-    function normalize(uri, options) {
+    function normalize2(uri, options) {
       if (typeof uri === "string") {
         uri = /** @type {T} */
         normalizeString(uri, options);
@@ -4265,7 +4265,7 @@ var require_fast_uri = __commonJS({
     }
     var fastUri = {
       SCHEMES,
-      normalize,
+      normalize: normalize2,
       resolve,
       resolveComponent,
       equal,
@@ -7255,7 +7255,7 @@ var require_dist = __commonJS({
   }
 });
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 var import_node_process = __toESM(require("node:process"), 1);
 
 // node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/classic/external.js
@@ -8075,10 +8075,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema) {
   return mergeDefs(schema._zod.def);
 }
-function getElementAtPath(obj, path6) {
-  if (!path6)
+function getElementAtPath(obj, path10) {
+  if (!path10)
     return obj;
-  return path6.reduce((acc, key) => acc?.[key], obj);
+  return path10.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -8418,11 +8418,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path6, issues) {
+function prefixIssues(path10, issues) {
   return issues.map((iss) => {
     var _a3;
     (_a3 = iss).path ?? (_a3.path = []);
-    iss.path.unshift(path6);
+    iss.path.unshift(path10);
     return iss;
   });
 }
@@ -8884,16 +8884,16 @@ function flattenError(error62, mapper = (issue2) => issue2.message) {
 }
 function formatError(error62, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error63, path6 = []) => {
+  const processError = (error63, path10 = []) => {
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path10, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path10, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path10, ...issue2.path]);
       } else {
-        const fullpath = [...path6, ...issue2.path];
+        const fullpath = [...path10, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -8932,17 +8932,17 @@ function formatError(error62, mapper = (issue2) => issue2.message) {
 }
 function treeifyError(error62, mapper = (issue2) => issue2.message) {
   const result = { errors: [] };
-  const processError = (error63, path6 = []) => {
+  const processError = (error63, path10 = []) => {
     var _a3;
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path10, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path10, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path10, ...issue2.path]);
       } else {
-        const fullpath = [...path6, ...issue2.path];
+        const fullpath = [...path10, ...issue2.path];
         if (fullpath.length === 0) {
           result.errors.push(mapper(issue2));
           continue;
@@ -8981,8 +8981,8 @@ function treeifyError(error62, mapper = (issue2) => issue2.message) {
 }
 function toDotPath(_path) {
   const segs = [];
-  const path6 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
-  for (const seg of path6) {
+  const path10 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
+  for (const seg of path10) {
     if (typeof seg === "number")
       segs.push(`[${seg}]`);
     else if (typeof seg === "symbol")
@@ -26120,13 +26120,13 @@ function resolveRef(ref, ctx) {
   if (!ref.startsWith("#")) {
     throw new Error("External $ref is not supported, only local refs (#/...) are allowed");
   }
-  const path6 = ref.slice(1).split("/").filter(Boolean);
-  if (path6.length === 0) {
+  const path10 = ref.slice(1).split("/").filter(Boolean);
+  if (path10.length === 0) {
     return ctx.rootSchema;
   }
   const defsKey = ctx.version === "draft-2020-12" ? "$defs" : "definitions";
-  if (path6[0] === defsKey) {
-    const key = path6[1] === void 0 ? void 0 : decodeJSONPointerSegment(path6[1]);
+  if (path10[0] === defsKey) {
+    const key = path10[1] === void 0 ? void 0 : decodeJSONPointerSegment(path10[1]);
     if (!key || !ctx.defs[key]) {
       throw new Error(`Reference not found: ${ref}`);
     }
@@ -26975,7 +26975,7 @@ function date4(params) {
   return _coercedDate(ZodDate, params);
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/types.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/types.js
 var LATEST_PROTOCOL_VERSION = "2025-11-25";
 var SUPPORTED_PROTOCOL_VERSIONS = [LATEST_PROTOCOL_VERSION, "2025-06-18", "2025-03-26", "2024-11-05", "2024-10-07"];
 var RELATED_TASK_META_KEY = "io.modelcontextprotocol/related-task";
@@ -28506,7 +28506,7 @@ var UrlElicitationRequiredError = class extends McpError {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
 var STDIO_DEFAULT_MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 var ReadBuffer = class {
   constructor(options) {
@@ -28543,7 +28543,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = import_node_process.default.stdin, _stdout = import_node_process.default.stdout, options) {
     this._stdin = _stdin;
@@ -29176,8 +29176,8 @@ function getErrorMap2() {
 
 // node_modules/.pnpm/zod@4.6.7/node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data: data2, path: path6, errorMaps, issueData } = params;
-  const fullPath = [...path6, ...issueData.path || []];
+  const { data: data2, path: path10, errorMaps, issueData } = params;
+  const fullPath = [...path10, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -29292,11 +29292,11 @@ var errorUtil;
 
 // node_modules/.pnpm/zod@4.6.7/node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path6, key) {
+  constructor(parent, value, path10, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path6;
+    this._path = path10;
     this._key = key;
   }
   get path() {
@@ -32763,7 +32763,7 @@ function object2(shape, params) {
   return new ZodMiniObject(def);
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-compat.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-compat.js
 function isZ4Schema(s) {
   const schema = s;
   return !!schema._zod;
@@ -32847,11 +32847,11 @@ function normalizeObjectSchema(schema) {
   }
   return void 0;
 }
-function getDotPath(path6) {
-  if (path6.length === 0) {
+function getDotPath(path10) {
+  if (path10.length === 0) {
     return "object root";
   }
-  return path6.reduce((acc, seg, index) => {
+  return path10.reduce((acc, seg, index) => {
     if (index === 0) {
       return String(seg);
     }
@@ -32923,7 +32923,7 @@ function getLiteralValue(schema) {
   return void 0;
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js
 function isTerminal(status) {
   return status === "completed" || status === "failed" || status === "cancelled";
 }
@@ -34212,7 +34212,7 @@ var zodToJsonSchema = (schema, options) => {
   return combined;
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-json-schema-compat.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-json-schema-compat.js
 function mapMiniTarget(t) {
   if (!t)
     return "draft-7";
@@ -34254,7 +34254,7 @@ function parseWithCompat(schema, data2) {
   return result.data;
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -35231,7 +35231,7 @@ function mergeCapabilities(base, additional) {
   return result;
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/validation/ajv-provider.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/validation/ajv-provider.js
 var import_ajv = __toESM(require_ajv(), 1);
 var import_ajv_formats = __toESM(require_dist(), 1);
 function createDefaultAjvInstance() {
@@ -35299,7 +35299,7 @@ var AjvJsonSchemaValidator = class {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/server.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/server.js
 var ExperimentalServerTasks = class {
   constructor(_server) {
     this._server = _server;
@@ -35512,7 +35512,7 @@ var ExperimentalServerTasks = class {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/helpers.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/helpers.js
 function assertToolsCallTaskCapability(requests, method, entityName) {
   if (!requests) {
     throw new Error(`${entityName} does not support task creation (required for ${method})`);
@@ -35547,7 +35547,7 @@ function assertClientRequestTaskCapability(requests, method, entityName) {
   }
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -35918,7 +35918,7 @@ var Server = class extends Protocol {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/completable.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/completable.js
 var COMPLETABLE_SYMBOL = /* @__PURE__ */ Symbol.for("mcp.completable");
 function isCompletable(schema) {
   return !!schema && typeof schema === "object" && COMPLETABLE_SYMBOL in schema;
@@ -35932,7 +35932,7 @@ var McpZodTypeKind;
   McpZodTypeKind2["Completable"] = "McpCompletable";
 })(McpZodTypeKind || (McpZodTypeKind = {}));
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/uriTemplate.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/uriTemplate.js
 var MAX_TEMPLATE_LENGTH = 1e6;
 var MAX_VARIABLE_LENGTH = 1e6;
 var MAX_TEMPLATE_EXPRESSIONS = 1e4;
@@ -36154,7 +36154,7 @@ var UriTemplate = class _UriTemplate {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/toolNameValidation.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/toolNameValidation.js
 var TOOL_NAME_REGEX = /^[A-Za-z0-9._-]{1,128}$/;
 function validateToolName(name) {
   const warnings = [];
@@ -36212,7 +36212,7 @@ function validateAndWarnToolName(name) {
   return result.isValid;
 }
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/mcp-server.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/mcp-server.js
 var ExperimentalMcpServerTasks = class {
   constructor(_mcpServer) {
     this._mcpServer = _mcpServer;
@@ -36227,7 +36227,7 @@ var ExperimentalMcpServerTasks = class {
   }
 };
 
-// node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_@cfworker+json-schema@4.1.1_zod@4.6.7/node_modules/@modelcontextprotocol/sdk/dist/esm/server/mcp.js
+// node_modules/.pnpm/@modelcontextprotocol+sdk@1_21094f0cd8613470299b4faa48e81ed4/node_modules/@modelcontextprotocol/sdk/dist/esm/server/mcp.js
 function toolInputElementCount(value, max) {
   let count = 0;
   const stack = [value];
@@ -37088,77 +37088,6 @@ var import_promises = require("node:fs/promises");
 var import_node_os = require("node:os");
 var import_node_path = __toESM(require("node:path"), 1);
 var import_node_crypto2 = require("node:crypto");
-var SETTINGS_CAPABILITY = { readTool: "settings_read", updateTool: "settings_update" };
-var preferencesSchema = external_exports.object({ version: external_exports.union([external_exports.literal(1), external_exports.literal(2)]), COOKIE: external_exports.union([external_exports.literal(""), manualCookieSchema]).optional() });
-function settingsFile(env = process.env) {
-  const directory = env.PLUGIN_DATA?.trim() || import_node_path.default.join((0, import_node_os.homedir)(), ".lanhu-codex");
-  return import_node_path.default.join(directory, "settings.json");
-}
-var FileCookiePreferences = class {
-  constructor(file2 = settingsFile()) {
-    this.file = file2;
-  }
-  file;
-  writes = Promise.resolve();
-  async loadCookie() {
-    try {
-      return preferencesSchema.parse(JSON.parse(await (0, import_promises.readFile)(this.file, "utf8"))).COOKIE || void 0;
-    } catch {
-      return void 0;
-    }
-  }
-  saveCookie(cookie) {
-    const parsed = external_exports.union([external_exports.literal(""), manualCookieSchema]).safeParse(cookie);
-    if (!parsed.success) return Promise.reject(new AppError("INVALID_COOKIE", "Cookie \u683C\u5F0F\u65E0\u6548"));
-    const task = this.writes.then(async () => {
-      const temporary = `${this.file}.${(0, import_node_crypto2.randomUUID)()}.tmp`;
-      try {
-        await (0, import_promises.mkdir)(import_node_path.default.dirname(this.file), { recursive: true });
-        await (0, import_promises.writeFile)(temporary, JSON.stringify({ version: 2, COOKIE: parsed.data }), { mode: 384, flag: "wx" });
-        await (0, import_promises.rename)(temporary, this.file);
-      } catch {
-        await (0, import_promises.unlink)(temporary).catch(() => void 0);
-        throw new AppError("SETTINGS_SAVE_FAILED", "\u65E0\u6CD5\u4FDD\u5B58\u672C\u5730\u8BBE\u7F6E\uFF1B\u8BF7\u68C0\u67E5\u8BBE\u7F6E\u76EE\u5F55\u6743\u9650");
-      }
-    });
-    this.writes = task.catch(() => void 0);
-    return task;
-  }
-};
-var Settings = class {
-  constructor(bridge, preferences) {
-    this.bridge = bridge;
-    this.preferences = preferences;
-  }
-  bridge;
-  preferences;
-  queue = Promise.resolve();
-  read() {
-    return {
-      schema: { type: "object", properties: {
-        COOKIE: { type: "string", title: "COOKIE", description: `\u672C\u673A\u4FDD\u5B58\u7684\u84DD\u6E56 Cookie\uFF0C\u65E0\u9700 Chrome \u8FDE\u63A5\u6216\u7AEF\u53E3\u3002\u4E0A\u4E00\u6B21\u66F4\u65B0\u65F6\u95F4\uFF1A${this.bridge.cookieUpdatedAt() ?? "\u5C1A\u672A\u66F4\u65B0"}\uFF08UTC\uFF09\u3002\u7559\u7A7A\u5220\u9664\u4FDD\u5B58\u503C\u3002` }
-      }, required: ["COOKIE"] },
-      values: { COOKIE: this.bridge.settingsCookie() }
-    };
-  }
-  update(set2, hooks = {}) {
-    const task = this.queue.then(async () => {
-      if (Object.keys(set2).length !== 1 || !Object.hasOwn(set2, "COOKIE")) throw new AppError("INVALID_SETTINGS", "\u53EA\u5141\u8BB8\u66F4\u65B0 COOKIE");
-      if (typeof set2.COOKIE !== "string") throw new AppError("INVALID_COOKIE", "COOKIE \u5FC5\u987B\u4E3A\u5B57\u7B26\u4E32");
-      const parsed = external_exports.union([external_exports.literal(""), manualCookieSchema]).safeParse(set2.COOKIE.trim());
-      if (!parsed.success) throw new AppError("INVALID_COOKIE", "\u683C\u5F0F\u5E94\u4E3A session=abc; token=xyz\uFF0C\u4E0D\u5305\u542B Cookie: \u524D\u7F00\u6216\u6362\u884C");
-      hooks.beforeSave?.();
-      await this.preferences.saveCookie(parsed.data);
-      if (parsed.data) this.bridge.setCookie(parsed.data);
-      else this.bridge.clearCookie();
-      process.env.COOKIE = parsed.data;
-      hooks.afterSave?.();
-      return { values: this.read().values };
-    });
-    this.queue = task.catch(() => void 0);
-    return task;
-  }
-};
 
 // panel/canvas/model.js
 function parseRoute(value) {
@@ -37181,10 +37110,30 @@ function savedProject(value) {
   }
   return route;
 }
+function sameProject(left, right) {
+  return Boolean(left?.project_id && right?.project_id && left.project_id === right.project_id && (!left.team_id || !right.team_id || left.team_id === right.team_id));
+}
+function recentProjectRoutes(value, fallback) {
+  const result = [];
+  for (const entry of Array.isArray(value) ? value : []) {
+    const route = savedProject(entry);
+    if (!route || result.some((item) => sameProject(item, route))) continue;
+    result.push({ project_id: route.project_id, ...route.team_id ? { team_id: route.team_id } : {} });
+    if (result.length >= 8) break;
+  }
+  const previous = savedProject(fallback);
+  if (!result.length && previous) result.push({ project_id: previous.project_id, ...previous.team_id ? { team_id: previous.team_id } : {} });
+  return result;
+}
+function rememberRecentProject(value, route) {
+  const current = savedProject(route);
+  return current ? recentProjectRoutes([current, ...recentProjectRoutes(value)]) : recentProjectRoutes(value);
+}
 
 // panel/canvas/lanhu-links.js
 function extractLanhuLinks(text) {
-  const found = String(text || "").slice(0, 65536).match(/(?<![\w.@/-])(?:https?:\/\/)?(?:www\.)?lanhuapp\.com(?![\w.-])(?:[/?#][A-Za-z0-9\-._~:/?#@!$&()*+,;=%\[\]]*)?/gi) || [];
+  const normalized = String(text || "").slice(0, 65536).replace(/\\&/g, "&").replace(/&amp;/gi, "&");
+  const found = normalized.match(/(?<![\w.@/-])(?:https?:\/\/)?(?:www\.)?lanhuapp\.com(?![\w.-])(?:[/?#][A-Za-z0-9\-._~:/?#@!$&()*+,;=%\[\]]*)?/gi) || [];
   const result = /* @__PURE__ */ new Set();
   for (const item of found) {
     try {
@@ -37442,7 +37391,8 @@ var LanhuApi = class {
       "Content-Type": "application/json",
       Accept: "application/json"
     }, 1024 * 1024, JSON.stringify({ short_id, ...sign ? { sign } : {} }))).bytes);
-    if (Number(response.code) !== 0 || typeof response.data?.url !== "string") return null;
+    const resolved = Number(response.code) === 0 || Number(response.code) === 30010 && response.success === true;
+    if (!resolved || typeof response.data?.url !== "string") return null;
     return localLanhuRoute(response.data.url);
   }
   documents(params) {
@@ -37462,7 +37412,7 @@ var LanhuApi = class {
     return { teams: array2(raw.result ?? raw.data).map((team) => ({ id: team.id, name: team.name })) };
   }
   async projects(team_id, folder_id) {
-    const normalize = (project) => ({
+    const normalize2 = (project) => ({
       id: project.id,
       name: project.name,
       team_id,
@@ -37473,7 +37423,7 @@ var LanhuApi = class {
     if (folder_id) {
       const raw2 = await this.request("/api/account/folder_projects", { team_id, folder_id, default_order: "desc", pageNo: 1, pageSize: 999999 });
       const payload = raw2.data ?? raw2.result ?? raw2;
-      return { projects: array2(Array.isArray(payload) ? payload : object3(payload).projects_info).map(normalize) };
+      return { projects: array2(Array.isArray(payload) ? payload : object3(payload).projects_info).map(normalize2) };
     }
     const [raw, folders] = await Promise.all([
       this.request("/api/project/team_projects", { team_id }),
@@ -37482,7 +37432,7 @@ var LanhuApi = class {
     const teams = array2(data(raw).team_projects);
     const projects = array2(teams.find((team) => team.tid === team_id)?.projects);
     return {
-      projects: projects.map(normalize),
+      projects: projects.map(normalize2),
       folders: array2(data(folders).folders_info).map((folder) => ({ id: folder.id, name: folder.name, parent_id: folder.parent_id }))
     };
   }
@@ -37586,6 +37536,141 @@ var LanhuApi = class {
     }
     const { items, ...pagination } = page(slices, params);
     return { status: "success", image_id: params.image_id, slice_scale: scale, total_slices: slices.length, ...pagination, slices: items };
+  }
+};
+
+// src/login.ts
+var loginAction = () => ({ method: "manual_cookie", url: LANHU_LOGIN_URL });
+function canvasLoginStatus(bridge) {
+  let credential, expires = 0;
+  let pending;
+  const read = () => {
+    const cookie = bridge.settingsCookie();
+    if (pending && credential === cookie && Date.now() < expires) return pending;
+    credential = cookie;
+    expires = Date.now() + 3e4;
+    pending = verifyLogin(cookie).then(() => ({ mode: "mcp", loggedIn: true }), (error62) => {
+      const info = errorInfo(error62);
+      if (["LOGIN_REQUIRED", "LOGIN_REJECTED", "COOKIE_SCOPE_MISMATCH", "LOGIN_UNVERIFIED"].includes(info.code))
+        return { mode: "mcp", loggedIn: false, login_action: loginAction() };
+      throw error62;
+    });
+    return pending;
+  };
+  return Object.assign(read, { invalidate: () => {
+    expires = 0;
+  } });
+}
+async function verifyLogin(cookie, fetcher = fetch) {
+  if (!checkLoginCookie(cookie).loggedIn) throw new AppError("LOGIN_REQUIRED", "\u84DD\u6E56 Cookie \u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie");
+  const candidate = new Bridge({ cookie });
+  try {
+    const raw = await new LanhuApi(candidate, fetcher).request("/api/account/user/detail", {});
+    const user = raw.data ?? raw.result;
+    if (!user || typeof user !== "object" || Array.isArray(user) || ![user.id, user.user_id, user.uid].some((value) => typeof value === "string" && value.trim() || typeof value === "number" && value > 0)) {
+      throw new AppError("LOGIN_UNVERIFIED", "\u84DD\u6E56\u672A\u8FD4\u56DE\u53EF\u786E\u8BA4\u7684\u7528\u6237\u8EAB\u4EFD\uFF0C\u672A\u4FDD\u5B58 Cookie");
+    }
+    return { loggedIn: true, verification: "upstream", checkedAt: Date.now() };
+  } finally {
+    await candidate.close();
+  }
+}
+
+// src/settings.ts
+var SETTINGS_CAPABILITY = { readTool: "settings_read", updateTool: "settings_update" };
+var preferencesSchema = external_exports.object({ version: external_exports.union([external_exports.literal(1), external_exports.literal(2)]), COOKIE: external_exports.union([external_exports.literal(""), manualCookieSchema]).optional() });
+function settingsFile(env = process.env) {
+  const directory = env.PLUGIN_DATA?.trim() || import_node_path.default.join((0, import_node_os.homedir)(), ".lanhu-codex");
+  return import_node_path.default.join(directory, "settings.json");
+}
+var FileCookiePreferences = class {
+  constructor(file2 = settingsFile()) {
+    this.file = file2;
+  }
+  file;
+  writes = Promise.resolve();
+  async loadCookie() {
+    try {
+      return preferencesSchema.parse(JSON.parse(await (0, import_promises.readFile)(this.file, "utf8"))).COOKIE || void 0;
+    } catch {
+      return void 0;
+    }
+  }
+  saveCookie(cookie) {
+    const parsed = external_exports.union([external_exports.literal(""), manualCookieSchema]).safeParse(cookie);
+    if (!parsed.success) return Promise.reject(new AppError("INVALID_COOKIE", "Cookie \u683C\u5F0F\u65E0\u6548"));
+    const task = this.writes.then(async () => {
+      const temporary = `${this.file}.${(0, import_node_crypto2.randomUUID)()}.tmp`;
+      try {
+        await (0, import_promises.mkdir)(import_node_path.default.dirname(this.file), { recursive: true });
+        await (0, import_promises.writeFile)(temporary, JSON.stringify({ version: 2, COOKIE: parsed.data }), { mode: 384, flag: "wx" });
+        await (0, import_promises.rename)(temporary, this.file);
+      } catch {
+        await (0, import_promises.unlink)(temporary).catch(() => void 0);
+        throw new AppError("SETTINGS_SAVE_FAILED", "\u65E0\u6CD5\u4FDD\u5B58\u672C\u5730\u8BBE\u7F6E\uFF1B\u8BF7\u68C0\u67E5\u8BBE\u7F6E\u76EE\u5F55\u6743\u9650");
+      }
+    });
+    this.writes = task.catch(() => void 0);
+    return task;
+  }
+};
+function formatCookieUpdatedAt(value) {
+  if (!value || !Number.isFinite(Date.parse(value))) return "\u5C1A\u672A\u66F4\u65B0";
+  const parts = new Intl.DateTimeFormat("zh-CN", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(new Date(value));
+  const get = (type) => parts.find((part) => part.type === type)?.value;
+  return `${get("year")}\u5E74${get("month")}\u6708${get("day")}\u65E5${get("hour")}:${get("minute")}:${get("second")}`;
+}
+var Settings = class {
+  constructor(bridge, preferences) {
+    this.bridge = bridge;
+    this.preferences = preferences;
+    this.login = canvasLoginStatus(bridge);
+  }
+  bridge;
+  preferences;
+  queue = Promise.resolve();
+  login;
+  verifiedCookie;
+  loggedIn = false;
+  async readVerified() {
+    const cookie = this.bridge.settingsCookie();
+    try {
+      const result = await this.login();
+      if (cookie === this.bridge.settingsCookie()) {
+        this.loggedIn = result.loggedIn;
+        this.verifiedCookie = cookie;
+      }
+    } catch {
+    }
+    return this.read();
+  }
+  read() {
+    return {
+      schema: { type: "object", properties: {
+        COOKIE: { type: "string", title: "COOKIE", description: `\u84DD\u6E56 Cookie\uFF0CCookie ${this.loggedIn && this.verifiedCookie === this.bridge.settingsCookie() ? "\u5DF2\u767B\u5F55" : "\u672A\u767B\u5F55"}\uFF0C\u4E0A\u4E00\u6B21\u66F4\u65B0\u65F6\u95F4\uFF1A${formatCookieUpdatedAt(this.bridge.cookieUpdatedAt())}\u3002` }
+      }, required: ["COOKIE"] },
+      values: { COOKIE: this.bridge.settingsCookie() }
+    };
+  }
+  update(set2, hooks = {}) {
+    const task = this.queue.then(async () => {
+      if (Object.keys(set2).length !== 1 || !Object.hasOwn(set2, "COOKIE")) throw new AppError("INVALID_SETTINGS", "\u53EA\u5141\u8BB8\u66F4\u65B0 COOKIE");
+      if (typeof set2.COOKIE !== "string") throw new AppError("INVALID_COOKIE", "COOKIE \u5FC5\u987B\u4E3A\u5B57\u7B26\u4E32");
+      const parsed = external_exports.union([external_exports.literal(""), manualCookieSchema]).safeParse(set2.COOKIE.trim());
+      if (!parsed.success) throw new AppError("INVALID_COOKIE", "\u683C\u5F0F\u5E94\u4E3A session=abc; token=xyz\uFF0C\u4E0D\u5305\u542B Cookie: \u524D\u7F00\u6216\u6362\u884C");
+      hooks.beforeSave?.();
+      await this.preferences.saveCookie(parsed.data);
+      if (parsed.data) this.bridge.setCookie(parsed.data);
+      else this.bridge.clearCookie();
+      this.login.invalidate();
+      this.loggedIn = false;
+      this.verifiedCookie = void 0;
+      process.env.COOKIE = parsed.data;
+      hooks.afterSave?.();
+      return { values: this.read().values };
+    });
+    this.queue = task.catch(() => void 0);
+    return task;
   }
 };
 
@@ -37908,7 +37993,10 @@ function registerCanvasPreferences(server) {
           const temporary = `${file2}.${(0, import_node_crypto3.randomUUID)()}.tmp`;
           try {
             const state2 = await readState();
-            if (route) state2.route = route;
+            if (route) {
+              state2.recentProjects = rememberRecentProject(recentProjectRoutes(state2.recentProjects, state2.route), route);
+              state2.route = route;
+            }
             if (team_id) state2.team_id = team_id;
             if (sidebar_width !== void 0) state2.sidebar_width = sidebar_width;
             if (group) state2.groups = { ...state2.groups, [projectMemoryKey(group)]: group.group_id };
@@ -37929,49 +38017,12 @@ function registerCanvasPreferences(server) {
       }
       await queues.get(file2)?.catch(() => void 0);
       const state = await readState();
-      return { content: [], _meta: { "lanhu/sidebarWidth": external_exports.number().int().min(200).max(480).safeParse(state.sidebar_width).success ? state.sidebar_width : null, "lanhu/team": id.safeParse(state.team_id).success ? state.team_id : null, "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
+      return { content: [], _meta: { "lanhu/sidebarWidth": external_exports.number().int().min(200).max(480).safeParse(state.sidebar_width).success ? state.sidebar_width : null, "lanhu/team": id.safeParse(state.team_id).success ? state.team_id : null, "lanhu/savedRoute": route ?? savedProject(state.route), "lanhu/recentProjects": recentProjectRoutes(state.recentProjects, state.route), "lanhu/groups": state.groups || {}, "lanhu/seenLinks": state.seenLinks || [] } };
     } catch (error62) {
       if (!route && error62.code === "ENOENT") return { content: [], _meta: { "lanhu/savedRoute": null } };
       return { isError: true, content: [], _meta: { "lanhu/error": { message: "\u65E0\u6CD5\u8BFB\u53D6\u6216\u4FDD\u5B58\u6700\u8FD1\u6253\u5F00\u7684\u9879\u76EE" } } };
     }
   });
-}
-
-// src/login.ts
-var loginAction = () => ({ method: "manual_cookie", url: LANHU_LOGIN_URL });
-function canvasLoginStatus(bridge) {
-  let credential, expires = 0;
-  let pending;
-  const read = () => {
-    const cookie = bridge.settingsCookie();
-    if (pending && credential === cookie && Date.now() < expires) return pending;
-    credential = cookie;
-    expires = Date.now() + 3e4;
-    pending = verifyLogin(cookie).then(() => ({ mode: "mcp", loggedIn: true }), (error62) => {
-      const info = errorInfo(error62);
-      if (["LOGIN_REQUIRED", "LOGIN_REJECTED", "COOKIE_SCOPE_MISMATCH", "LOGIN_UNVERIFIED"].includes(info.code))
-        return { mode: "mcp", loggedIn: false, login_action: loginAction() };
-      throw error62;
-    });
-    return pending;
-  };
-  return Object.assign(read, { invalidate: () => {
-    expires = 0;
-  } });
-}
-async function verifyLogin(cookie, fetcher = fetch) {
-  if (!checkLoginCookie(cookie).loggedIn) throw new AppError("LOGIN_REQUIRED", "\u84DD\u6E56 Cookie \u7F3A\u5931\u6216\u683C\u5F0F\u65E0\u6548\uFF0C\u8BF7\u5728\u84DD\u6E56\u9762\u677F\u624B\u52A8\u586B\u5199 Cookie");
-  const candidate = new Bridge({ cookie });
-  try {
-    const raw = await new LanhuApi(candidate, fetcher).request("/api/account/user/detail", {});
-    const user = raw.data ?? raw.result;
-    if (!user || typeof user !== "object" || Array.isArray(user) || ![user.id, user.user_id, user.uid].some((value) => typeof value === "string" && value.trim() || typeof value === "number" && value > 0)) {
-      throw new AppError("LOGIN_UNVERIFIED", "\u84DD\u6E56\u672A\u8FD4\u56DE\u53EF\u786E\u8BA4\u7684\u7528\u6237\u8EAB\u4EFD\uFF0C\u672A\u4FDD\u5B58 Cookie");
-    }
-    return { loggedIn: true, verification: "upstream", checkedAt: Date.now() };
-  } finally {
-    await candidate.close();
-  }
 }
 
 // src/canvas-clipboard.ts
@@ -37993,7 +38044,7 @@ async function clipboardLinks(platform = process.platform, run2 = execute) {
 }
 
 // package.json
-var version2 = "0.2.3";
+var version2 = "0.2.16";
 
 // src/runtime-version.ts
 var MCP_VERSION = version2;
@@ -38016,16 +38067,25 @@ function registerCanvas(server, bridge) {
     }] };
   });
   const id = external_exports.string().trim().min(1).max(256).regex(/^[\w-]+$/);
-  server.registerTool("lanhu_open_canvas", {
-    title: "\u84DD\u6E56",
-    description: "\u6253\u5F00\u84DD\u6E56 UI\uFF0C\u4ECE\u5BF9\u8BDD\u8C03\u7528\u65F6\u9ED8\u8BA4\u5185\u8054\u663E\u793A\uFF0C\u4E0E\u5BF9\u8BDD\u5171\u5B58\uFF0C\u53EF\u624B\u52A8\u5207\u6362\u5168\u5C4F\uFF1B\u4E5F\u652F\u6301\u4F1A\u8BDD\u4FA7\u8FB9\u6807\u7B7E\u5165\u53E3\u3002\u4E0D\u4F20\u53C2\u6570\u65F6\u663E\u793A\u9879\u76EE\u7BA1\u7406\u9762\u677F\uFF0C\u9ED8\u8BA4\u4F7F\u7528\u6700\u8FD1\u9009\u62E9\u7684\u56E2\u961F\uFF0C\u53EF\u6D4F\u89C8\u56E2\u961F\u6587\u4EF6\u5939\u548C\u9879\u76EE\u6216\u7C98\u8D34\u84DD\u6E56\u94FE\u63A5\uFF1B\u4E5F\u53EF\u6309\u9879\u76EE\u3001\u56E2\u961F\u53CA\u53EF\u9009\u8BBE\u8BA1\u7A3F ID \u6D4F\u89C8\u6700\u65B0\u8BBE\u8BA1\u4E0E\u6807\u6CE8\u3002\u65E0\u9700 Chrome \u6269\u5C55\uFF0C\u53EF\u4F7F\u7528\u914D\u7F6E\u4E2D\u4FDD\u5B58\u7684 Cookie\u3002",
-    inputSchema: { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() },
-    annotations: { readOnlyHint: true, openWorldHint: false },
-    _meta: { ui: { resourceUri: CANVAS_URI }, "openai/ui": { entrypoints: [{ type: "global" }, { type: "thread" }], preferredModelDisplayMode: "inline" } }
-  }, async (args) => {
+  const inputSchema = { project_id: id.optional(), team_id: id.optional(), image_id: id.optional() };
+  const openCanvas = async (args) => {
     if (!args.project_id && (args.team_id || args.image_id)) return { isError: true, content: [{ type: "text", text: "\u6307\u5B9A\u56E2\u961F\u6216\u8BBE\u8BA1\u7A3F\u65F6\u8BF7\u540C\u65F6\u63D0\u4F9B\u9879\u76EE ID\u3002" }] };
     return { content: [{ type: "text", text: "\u84DD\u6E56\u5DF2\u6253\u5F00\u3002" }], _meta: { "lanhu/route": args } };
-  });
+  };
+  server.registerTool("lanhu_open_canvas", {
+    title: "\u84DD\u6E56",
+    description: "\u84DD\u6E56 Global \u5165\u53E3\uFF0C\u6253\u5F00\u753B\u5E03\u5E76\u6062\u590D\u6700\u8FD1\u9879\u76EE\u3002",
+    inputSchema,
+    annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: { ui: { resourceUri: CANVAS_URI, visibility: ["app"] }, "openai/ui": { entrypoints: [{ type: "global" }], preferredModelDisplayMode: "inline" } }
+  }, openCanvas);
+  server.registerTool("lanhu_open_canvas_thread", {
+    title: "\u84DD\u6E56",
+    description: "\u6253\u5F00\u84DD\u6E56\u4F1A\u8BDD\u753B\u5E03\uFF0C\u9ED8\u8BA4\u5185\u8054\u663E\u793A\uFF0C\u53EF\u624B\u52A8\u5168\u5C4F\uFF1B\u4E0D\u4F20\u53C2\u6570\u65F6\u6062\u590D\u6700\u8FD1\u9879\u76EE\uFF0C\u6CA1\u6709\u9879\u76EE\u8BB0\u5FC6\u65F6\u663E\u793A\u9879\u76EE\u7BA1\u7406\u3002\u4E5F\u53EF\u6307\u5B9A\u9879\u76EE\u3001\u56E2\u961F\u53CA\u8BBE\u8BA1\u7A3F ID\u3002",
+    inputSchema,
+    annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: { ui: { resourceUri: CANVAS_URI }, "openai/ui": { entrypoints: [{ type: "thread" }], preferredModelDisplayMode: "inline" } }
+  }, openCanvas);
   const read = canvasReader(bridge);
   const loginStatus = canvasLoginStatus(bridge);
   const routes = { teams: "lanhu_get_teams", projects: "lanhu_get_projects", profile: "lanhu_get_profile", project: "lanhu_get_project", images: "lanhu_get_project_images", sectors: "lanhu_get_project_sectors", design: "lanhu_get_design", schema: "lanhu_get_design_schema", slices: "lanhu_get_design_slices" };
@@ -38074,6 +38134,474 @@ function registerCanvas(server, bridge) {
   });
 }
 
+// src/compression-panel.ts
+var import_promises6 = require("node:fs/promises");
+var import_node_path7 = __toESM(require("node:path"), 1);
+
+// src/compression.ts
+var import_node_crypto4 = require("node:crypto");
+var import_promises4 = require("node:fs/promises");
+var import_node_path4 = __toESM(require("node:path"), 1);
+var import_node_url = require("node:url");
+var import_node_zlib = require("node:zlib");
+var MAX_IMAGE_BYTES = 52e5;
+var imageExtension = /\.(jpe?g|png|webp)$/i;
+var digest = (data2) => (0, import_node_crypto4.createHash)("sha256").update(data2).digest("hex");
+function validateImage(data2, name) {
+  const ext = import_node_path4.default.extname(name).toLowerCase();
+  if (ext === ".png") {
+    if (!data2.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex"))) throw new Error("PNG \u6587\u4EF6\u5934\u65E0\u6548");
+    let offset = 8, ended = false, header = false;
+    const idat = [];
+    while (offset + 12 <= data2.length) {
+      const size = data2.readUInt32BE(offset), end = offset + size + 12;
+      if (end > data2.length) throw new Error("PNG \u6570\u636E\u4E0D\u5B8C\u6574");
+      const type = data2.toString("ascii", offset + 4, offset + 8);
+      if (!header && (type !== "IHDR" || size !== 13)) throw new Error("PNG \u7F3A\u5C11 IHDR");
+      header = true;
+      let crc = 4294967295;
+      for (const byte of data2.subarray(offset + 4, end - 4)) {
+        crc ^= byte;
+        for (let bit = 0; bit < 8; bit++) crc = crc >>> 1 ^ (crc & 1 ? 3988292384 : 0);
+      }
+      if ((crc ^ 4294967295) >>> 0 !== data2.readUInt32BE(end - 4)) throw new Error("PNG \u6821\u9A8C\u5931\u8D25");
+      if (type === "IDAT") idat.push(data2.subarray(offset + 8, end - 4));
+      offset = end;
+      if (type === "IEND") {
+        ended = size === 0 && offset === data2.length;
+        break;
+      }
+    }
+    if (!ended || !idat.length) throw new Error("PNG \u6570\u636E\u4E0D\u5B8C\u6574");
+    (0, import_node_zlib.inflateSync)(Buffer.concat(idat), { maxOutputLength: 128 * 1024 * 1024 });
+  } else if (ext === ".webp") {
+    if (data2.length < 20 || data2.toString("ascii", 0, 4) !== "RIFF" || data2.toString("ascii", 8, 12) !== "WEBP" || data2.readUInt32LE(4) + 8 !== data2.length) throw new Error("WebP \u6570\u636E\u4E0D\u5B8C\u6574");
+    let offset = 12, image = false;
+    while (offset + 8 <= data2.length) {
+      const type = data2.toString("ascii", offset, offset + 4), size = data2.readUInt32LE(offset + 4);
+      offset += 8 + size + size % 2;
+      if (offset > data2.length) throw new Error("WebP \u5206\u5757\u4E0D\u5B8C\u6574");
+      if (["VP8 ", "VP8L", "ANMF"].includes(type)) image = true;
+    }
+    if (offset !== data2.length || !image) throw new Error("WebP \u56FE\u7247\u6570\u636E\u65E0\u6548");
+  } else if (ext === ".jpg" || ext === ".jpeg") {
+    if (data2.length < 4 || data2[0] !== 255 || data2[1] !== 216 || data2[data2.length - 2] !== 255 || data2[data2.length - 1] !== 217) throw new Error("JPEG \u6570\u636E\u4E0D\u5B8C\u6574");
+  } else throw new Error("\u4EC5\u652F\u6301 JPG\u3001JPEG\u3001PNG\u3001WebP");
+}
+async function limitedBody(response, limit, progress) {
+  if (!response.ok) {
+    await response.body?.cancel();
+    throw new Error(`TinyPNG \u8FD4\u56DE HTTP ${response.status}${response.status === 429 ? "\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5" : ""}`);
+  }
+  const advertised = response.headers.get("content-length");
+  if (advertised && Number(advertised) > limit) {
+    await response.body?.cancel();
+    throw new Error("\u54CD\u5E94\u8D85\u8FC7\u5141\u8BB8\u5927\u5C0F");
+  }
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("\u7B2C\u4E09\u65B9\u8FD4\u56DE\u7A7A\u54CD\u5E94");
+  const chunks = [];
+  let size = 0;
+  try {
+    for (; ; ) {
+      const result = await reader.read();
+      if (result.done) break;
+      size += result.value.length;
+      if (size > limit) throw new Error("\u54CD\u5E94\u8D85\u8FC7\u5141\u8BB8\u5927\u5C0F");
+      chunks.push(result.value);
+      progress?.(size, Number(advertised) || 0);
+    }
+  } catch (error62) {
+    await reader.cancel().catch(() => void 0);
+    throw error62;
+  } finally {
+    reader.releaseLock();
+  }
+  if (advertised && !response.headers.get("content-encoding") && Number(advertised) !== size) throw new Error("\u4E0B\u8F7D\u957F\u5EA6\u4E0D\u5339\u914D");
+  return Buffer.concat(chunks);
+}
+async function compressImage(input2, name, phase = () => {
+}, fetcher = fetch, progress = () => {
+}) {
+  if (!input2.length || input2.length > MAX_IMAGE_BYTES) throw new Error("\u56FE\u7247\u4E3A\u7A7A\u6216\u8D85\u8FC7 TinyPNG \u7F51\u9875\u63A5\u53E3\u7684 5.2 MB \u4E0A\u9650");
+  validateImage(input2, name);
+  phase("uploading");
+  progress(10);
+  const ip = Array.from((0, import_node_crypto4.randomBytes)(4), (value) => 1 + value % 254).join(".");
+  const response = await fetcher("https://tinypng.com/backend/opt/shrink", {
+    method: "POST",
+    redirect: "error",
+    signal: AbortSignal.timeout(6e4),
+    headers: { "Content-Type": "application/octet-stream", "User-Agent": "Mozilla/5.0", "X-Forwarded-For": ip },
+    body: new Uint8Array(input2)
+  });
+  const payload = JSON.parse((await limitedBody(response, 64 * 1024)).toString("utf8"));
+  if (payload.error) throw new Error(String(payload.message || payload.error).slice(0, 300));
+  const output2 = payload.output;
+  if (!output2 || !Number.isSafeInteger(output2.size) || output2.size <= 0 || output2.size > MAX_IMAGE_BYTES) throw new Error("\u538B\u7F29\u670D\u52A1\u8FD4\u56DE\u65E0\u6548\u5927\u5C0F");
+  const url2 = new URL(output2.url);
+  if (url2.protocol !== "https:" || !["tinypng.com", "www.tinypng.com"].includes(url2.hostname) || url2.port || url2.username || url2.password || !/^\/(?:web\/output|backend\/opt\/output)\/[A-Za-z0-9_-]+$/.test(url2.pathname)) throw new Error("\u538B\u7F29\u670D\u52A1\u8FD4\u56DE\u65E0\u6548\u4E0B\u8F7D\u5730\u5740");
+  phase("downloading");
+  progress(50);
+  const binary = await limitedBody(await fetcher(url2, { redirect: "error", signal: AbortSignal.timeout(6e4) }), MAX_IMAGE_BYTES, (received, total) => progress(50 + Math.min(1, received / (total || output2.size)) * 38));
+  if (binary.length !== output2.size) throw new Error("\u538B\u7F29\u7ED3\u679C\u5C1A\u672A\u4E0B\u8F7D\u5B8C\u6574\uFF0C\u4FDD\u7559\u539F\u56FE");
+  validateImage(binary, name);
+  return { binary, size: binary.length, originalSize: input2.length, unchanged: binary.length >= input2.length };
+}
+var CompressionQueue = class {
+  items = /* @__PURE__ */ new Map();
+  active = /* @__PURE__ */ new Set();
+  revision = 0;
+  identities = /* @__PURE__ */ new Map();
+  snapshot() {
+    return [...this.items.values()].map((item) => ({ ...item }));
+  }
+  async preview(id) {
+    const item = this.items.get(id);
+    if (!item) throw new Error("\u56FE\u7247\u4E0D\u5728\u5217\u8868\u4E2D");
+    const handle = await (0, import_promises4.open)(item.path, "r");
+    try {
+      const stat = await handle.stat();
+      if (!stat.isFile() || stat.size > MAX_IMAGE_BYTES) throw new Error("\u56FE\u7247\u4E0D\u652F\u6301\u9884\u89C8");
+      const bytes = Buffer.alloc(stat.size);
+      let offset = 0;
+      while (offset < bytes.length) {
+        const { bytesRead } = await handle.read(bytes, offset, bytes.length - offset, offset);
+        if (!bytesRead) throw new Error("\u56FE\u7247\u9884\u89C8\u4E0D\u5B8C\u6574");
+        offset += bytesRead;
+      }
+      return bytes;
+    } finally {
+      await handle.close();
+    }
+  }
+  async previewChunk(id, offset = 0, length = 192 * 1024) {
+    const item = this.items.get(id);
+    if (!item) throw new Error("\u56FE\u7247\u4E0D\u5728\u5217\u8868\u4E2D");
+    const handle = await (0, import_promises4.open)(item.path, "r");
+    try {
+      const stat = await handle.stat();
+      if (!stat.isFile() || stat.size > 32 * 1024 * 1024 || offset > stat.size) throw new Error("\u56FE\u7247\u4E0D\u652F\u6301\u9884\u89C8");
+      const bytes = Buffer.alloc(Math.min(length, stat.size - offset));
+      let received = 0;
+      while (received < bytes.length) {
+        const result = await handle.read(bytes, received, bytes.length - received, offset + received);
+        if (!result.bytesRead) throw new Error("\u56FE\u7247\u9884\u89C8\u4E0D\u5B8C\u6574");
+        received += result.bytesRead;
+      }
+      const extension = import_node_path4.default.extname(item.name).toLowerCase();
+      return {
+        base64: bytes.toString("base64"),
+        total: stat.size,
+        offset,
+        next: offset + received,
+        revision: `${stat.dev}:${stat.ino}:${stat.mtimeMs}:${stat.size}`,
+        mime: extension === ".png" ? "image/png" : extension === ".webp" ? "image/webp" : "image/jpeg"
+      };
+    } finally {
+      await handle.close();
+    }
+  }
+  async add(paths) {
+    const errors = [];
+    let duplicates = 0, visited = 0;
+    const seenDirectories = /* @__PURE__ */ new Set();
+    const visit2 = async (input2) => {
+      if (++visited > 1e5) throw new Error("\u76EE\u5F55\u8FC7\u5927\uFF0C\u8BF7\u5206\u6279\u6DFB\u52A0");
+      const candidate = input2.startsWith("file:") ? (0, import_node_url.fileURLToPath)(input2) : input2;
+      if (!import_node_path4.default.isAbsolute(candidate)) throw new Error("\u8BF7\u63D0\u4F9B\u672C\u673A\u7EDD\u5BF9\u8DEF\u5F84");
+      const stat = await (0, import_promises4.lstat)(candidate);
+      if (stat.isSymbolicLink()) return;
+      const resolved = await (0, import_promises4.realpath)(candidate);
+      const key = process.platform === "win32" ? resolved.toLowerCase() : resolved;
+      if (stat.isDirectory()) {
+        if (seenDirectories.has(key)) return;
+        seenDirectories.add(key);
+        for (const entry of await (0, import_promises4.readdir)(resolved)) {
+          if (visited >= 1e5 || this.items.size >= 5e3) {
+            errors.push({ path: resolved, error: "\u8FBE\u5230\u626B\u63CF\u6216\u5217\u8868\u4E0A\u9650\uFF0C\u8BF7\u5206\u6279\u6DFB\u52A0" });
+            break;
+          }
+          try {
+            await visit2(import_node_path4.default.join(resolved, entry));
+          } catch (error62) {
+            if (errors.length < 100) errors.push({ path: import_node_path4.default.join(resolved, entry), error: String(error62.message) });
+          }
+        }
+      } else if (stat.isFile() && imageExtension.test(resolved)) {
+        const identity = `${stat.dev}:${stat.ino}`;
+        if (this.items.has(key) || this.identities.has(identity)) {
+          duplicates++;
+          return;
+        }
+        if (this.items.size >= 5e3) throw new Error("\u5217\u8868\u6700\u591A 5000 \u5F20\uFF0C\u8BF7\u5206\u6279\u5904\u7406");
+        this.identities.set(identity, key);
+        this.items.set(key, { id: key, path: resolved, name: import_node_path4.default.basename(resolved), originalSize: stat.size, status: "waiting", progress: 0, revision: ++this.revision });
+      }
+    };
+    for (const input2 of paths) {
+      try {
+        await visit2(input2);
+      } catch (error62) {
+        errors.push({ path: input2, error: error62.message });
+      }
+    }
+    return { items: this.snapshot(), errors, duplicates };
+  }
+  remove(ids) {
+    for (const id of ids) if (!this.active.has(id)) {
+      this.items.delete(id);
+      for (const [identity, key] of this.identities) if (key === id) this.identities.delete(identity);
+    }
+    return this.snapshot();
+  }
+  async process(id, fetcher = fetch) {
+    const item = this.items.get(id);
+    if (!item) throw new Error("\u56FE\u7247\u4E0D\u5728\u5217\u8868\u4E2D\uFF0C\u8BF7\u5148\u6DFB\u52A0");
+    if (this.active.has(id)) throw new Error("\u56FE\u7247\u6B63\u5728\u5904\u7406");
+    if (["done", "unchanged"].includes(item.status)) return { ...item };
+    this.active.add(id);
+    item.error = void 0;
+    item.progress = 0;
+    item.status = "uploading";
+    item.revision = ++this.revision;
+    let temporary;
+    try {
+      const before = await (0, import_promises4.lstat)(item.path);
+      if (!before.isFile() || before.isSymbolicLink() || before.nlink > 1) throw new Error("\u4EC5\u66FF\u6362\u666E\u901A\u6587\u4EF6\uFF1B\u7B26\u53F7\u94FE\u63A5\u6216\u786C\u94FE\u63A5\u8BF7\u5148\u590D\u5236\u4E3A\u72EC\u7ACB\u6587\u4EF6");
+      if (before.size > MAX_IMAGE_BYTES) throw new Error("\u56FE\u7247\u8D85\u8FC7 5.2 MB \u4E0A\u9650");
+      const input2 = await (0, import_promises4.readFile)(item.path);
+      item.originalSize = input2.length;
+      const result = await compressImage(input2, item.name, (value) => {
+        item.status = value;
+        item.revision = ++this.revision;
+      }, fetcher, (value) => {
+        item.progress = value;
+        item.revision = ++this.revision;
+      });
+      item.size = result.size;
+      if (result.unchanged) {
+        item.status = "unchanged";
+        item.progress = 100;
+        item.revision = ++this.revision;
+        return { ...item };
+      }
+      item.status = "replacing";
+      item.progress = 92;
+      temporary = import_node_path4.default.join(import_node_path4.default.dirname(item.path), `.${item.name}.${(0, import_node_crypto4.randomUUID)()}.lanhu-compress.tmp`);
+      const handle = await (0, import_promises4.open)(temporary, "wx", before.mode & 511);
+      try {
+        await handle.writeFile(result.binary);
+        await handle.sync();
+      } finally {
+        await handle.close();
+      }
+      const current = await (0, import_promises4.lstat)(item.path);
+      if (!current.isFile() || current.isSymbolicLink() || current.nlink > 1 || current.dev !== before.dev || current.ino !== before.ino || current.mtimeMs !== before.mtimeMs || digest(await (0, import_promises4.readFile)(item.path)) !== digest(input2)) throw new Error("\u539F\u56FE\u7247\u5DF2\u88AB\u5916\u90E8\u4FEE\u6539\uFF0C\u53D6\u6D88\u66FF\u6362");
+      await (0, import_promises4.rename)(temporary, item.path);
+      temporary = void 0;
+      item.status = "done";
+      item.progress = 100;
+      item.revision = ++this.revision;
+    } catch (error62) {
+      item.status = "error";
+      item.error = error62.message;
+      item.revision = ++this.revision;
+    } finally {
+      try {
+        if (temporary) await (0, import_promises4.unlink)(temporary).catch((error62) => {
+          if (error62.code !== "ENOENT") throw error62;
+        });
+      } catch {
+        item.status = "error";
+        item.revision = ++this.revision;
+        item.error = `${item.error ? item.error + "\uFF1B" : ""}\u4E34\u65F6\u6587\u4EF6\u6E05\u7406\u5931\u8D25\uFF1A${temporary}`;
+      } finally {
+        this.active.delete(id);
+      }
+    }
+    return { ...item };
+  }
+};
+
+// src/compression-preferences.ts
+var import_promises5 = require("node:fs/promises");
+var import_node_path5 = __toESM(require("node:path"), 1);
+var import_node_crypto5 = require("node:crypto");
+var writes = /* @__PURE__ */ new Map();
+function normalize(value) {
+  return { auto_start: value.auto_start !== false, concurrency: Number.isInteger(value.concurrency) && value.concurrency >= 1 && value.concurrency <= 20 ? value.concurrency : 5 };
+}
+async function compressionPreferences(update, file2 = import_node_path5.default.join(import_node_path5.default.dirname(settingsFile()), "compression-state.json")) {
+  const read = async () => {
+    try {
+      return normalize(JSON.parse(await (0, import_promises5.readFile)(file2, "utf8")));
+    } catch (error62) {
+      if (error62.code === "ENOENT") return normalize({});
+      throw error62;
+    }
+  };
+  if (update !== void 0) {
+    const patch = typeof update === "boolean" ? { auto_start: update } : update;
+    if (patch.concurrency !== void 0 && (!Number.isInteger(patch.concurrency) || patch.concurrency < 1 || patch.concurrency > 20)) throw new Error("\u5E76\u53D1\u6570\u9700\u4E3A 1\u201320 \u7684\u6574\u6570");
+    const task = (writes.get(file2) ?? Promise.resolve()).catch(() => void 0).then(async () => {
+      const temporary = `${file2}.${(0, import_node_crypto5.randomUUID)()}.tmp`;
+      try {
+        const state = { ...await read(), ...patch };
+        await (0, import_promises5.mkdir)(import_node_path5.default.dirname(file2), { recursive: true });
+        await (0, import_promises5.writeFile)(temporary, JSON.stringify(state), { flag: "wx", mode: 384 });
+        await (0, import_promises5.rename)(temporary, file2);
+      } finally {
+        await (0, import_promises5.unlink)(temporary).catch((error62) => {
+          if (error62.code !== "ENOENT") throw error62;
+        });
+      }
+    });
+    writes.set(file2, task);
+    try {
+      await task;
+    } finally {
+      if (writes.get(file2) === task) writes.delete(file2);
+    }
+  }
+  await writes.get(file2);
+  return read();
+}
+
+// src/compression-import.ts
+var import_node_child_process2 = require("node:child_process");
+var import_node_util2 = require("node:util");
+var import_node_path6 = __toESM(require("node:path"), 1);
+var execute2 = (0, import_node_util2.promisify)(import_node_child_process2.execFile);
+function pickerCommand(platform = process.platform) {
+  if (platform === "win32") {
+    const script = `
+$ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.Application]::EnableVisualStyles()
+$dialog = New-Object System.Windows.Forms.OpenFileDialog
+$dialog.Title = '\u9009\u62E9\u56FE\u7247'
+$dialog.Filter = 'Images (*.jpg;*.jpeg;*.png;*.webp)|*.jpg;*.jpeg;*.png;*.webp'
+$dialog.Multiselect = $true
+try {
+  if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
+    ConvertTo-Json -InputObject @($dialog.FileNames) -Compress
+  } else { '[]' }
+} finally { $dialog.Dispose() }
+`;
+    return { command: "powershell.exe", args: ["-NoProfile", "-STA", "-NonInteractive", "-EncodedCommand", Buffer.from(script, "utf16le").toString("base64")], json: true };
+  }
+  if (platform === "darwin") return { command: "/usr/bin/osascript", args: ["-l", "JavaScript", "-e", `const app=Application.currentApplication();app.includeStandardAdditions=true;try{const files=app.chooseFile({withPrompt:'\u9009\u62E9\u56FE\u7247',multipleSelectionsAllowed:true});JSON.stringify((Array.isArray(files)?files:[files]).map(String))}catch(e){if(e.errorNumber===-128)JSON.stringify([]);else throw e}`], json: true };
+  return { command: "zenity", args: ["--file-selection", "--multiple", "--separator=\n", "--file-filter=Images | *.jpg *.jpeg *.png *.webp", "--title=\u9009\u62E9\u56FE\u7247"], json: false };
+}
+async function pickImages(runner = execute2) {
+  const spec = pickerCommand();
+  try {
+    const { stdout } = await runner(spec.command, spec.args, { windowsHide: true, encoding: "utf8", maxBuffer: 2 * 1024 * 1024, timeout: 3e5 });
+    const output2 = String(stdout).trim(), values = !output2 ? [] : spec.json ? JSON.parse(output2) : output2.split("\n");
+    if (!Array.isArray(values) || values.some((value) => typeof value !== "string" || !import_node_path6.default.isAbsolute(value) || !/\.(jpe?g|png|webp)$/i.test(value))) throw new Error("\u9009\u62E9\u5668\u8FD4\u56DE\u4E86\u65E0\u6548\u56FE\u7247\u8DEF\u5F84");
+    return values;
+  } catch (error62) {
+    if (process.platform !== "win32" && error62.code === 1) return [];
+    throw new Error("\u65E0\u6CD5\u6253\u5F00\u7CFB\u7EDF\u6587\u4EF6\u9009\u62E9\u5668\uFF0C\u8BF7\u68C0\u67E5\u672C\u673A\u684C\u9762\u4F1A\u8BDD");
+  }
+}
+
+// src/compression-panel.ts
+var COMPRESSION_URI = `ui://lanhu/compression/${MCP_VERSION}`;
+var queues2 = /* @__PURE__ */ new WeakMap();
+function registerCompression(server, bridge) {
+  let queue = queues2.get(bridge);
+  if (!queue) {
+    queue = new CompressionQueue();
+    queues2.set(bridge, queue);
+  }
+  const state = queue;
+  server.registerResource("lanhu-compression", COMPRESSION_URI, { mimeType: "text/html;profile=mcp-app" }, async () => {
+    const root2 = /[\\/]src$/.test(__dirname) ? import_node_path7.default.resolve(__dirname, "../package") : /[\\/]dev$/.test(__dirname) ? import_node_path7.default.resolve(__dirname, "..") : __dirname;
+    return { contents: [{
+      uri: COMPRESSION_URI,
+      mimeType: "text/html;profile=mcp-app",
+      text: await (0, import_promises6.readFile)(import_node_path7.default.join(root2, "compression.html"), "utf8"),
+      _meta: { ui: { prefersBorder: true, csp: { connectDomains: [], resourceDomains: [], frameDomains: [] } }, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode: "inline" } }
+    }] };
+  });
+  server.registerTool("lanhu_compressed_picture", {
+    title: "\u84DD\u6E56\u56FE\u7247\u538B\u7F29",
+    description: "\u6253\u5F00\u5185\u8054\u56FE\u7247\u538B\u7F29\u9762\u677F\u3002\u53EF\u7528 paths \u6DFB\u52A0\u7528\u6237\u6307\u5B9A\u7684\u56FE\u7247\u6216\u76EE\u5F55\u7EDD\u5BF9\u8DEF\u5F84\u3002\u4EC5\u9700\u6253\u5F00\u9762\u677F\u65F6\uFF0C\u8C03\u7528\u540E\u7ED3\u675F\uFF0C\u4E0D\u8FFD\u52A0\u8BF4\u660E\u3002",
+    inputSchema: { paths: external_exports.array(external_exports.string().min(1).max(32768)).max(100).optional() },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+    _meta: { ui: { resourceUri: COMPRESSION_URI }, "openai/ui": { entrypoints: [{ type: "thread" }], preferredModelDisplayMode: "inline" } }
+  }, async ({ paths }) => ({ content: [], _meta: { "lanhu/compression": paths?.length ? await state.add(paths) : { items: state.snapshot() } } }));
+  server.registerTool("lanhu_compression_list", {
+    title: "\u6DFB\u52A0\u6216\u67E5\u770B\u5F85\u538B\u7F29\u56FE\u7247",
+    description: "\u6DFB\u52A0\u7528\u6237\u6307\u5B9A\u7684\u56FE\u7247\u6216\u76EE\u5F55\uFF0C\u6216\u8BFB\u53D6\u5F53\u524D\u4EFB\u52A1\u5217\u8868\u3002\u4F20 paths \u6DFB\u52A0\u8DEF\u5F84\uFF1B\u4E0D\u4F20\u65F6\u53EA\u67E5\u8BE2\u3002\u5DF2\u5F00\u542F\u81EA\u52A8\u5F00\u59CB\u7684\u9762\u677F\u4F1A\u5904\u7406\u65B0\u589E\u9879\u3002",
+    inputSchema: { paths: external_exports.array(external_exports.string().min(1).max(32768)).max(100).optional() },
+    annotations: { readOnlyHint: true, openWorldHint: false }
+  }, async ({ paths }) => ({ content: [{ type: "text", text: JSON.stringify(paths?.length ? await state.add(paths) : { items: state.snapshot() }) }] }));
+  server.registerTool("lanhu_compression_run", {
+    title: "\u538B\u7F29\u5E76\u5B89\u5168\u66FF\u6362\u56FE\u7247",
+    description: "\u6309\u7528\u6237\u6307\u4EE4\u5C06\u5217\u8868\u4E2D\u7684\u4E00\u5F20\u56FE\u7247\u53D1\u9001\u81F3\u538B\u7F29\u670D\u52A1\u5904\u7406\u5E76\u540C\u540D\u66FF\u6362\u539F\u56FE\u3002id \u5FC5\u987B\u53D6\u81EA\u4EFB\u52A1\u5217\u8868\uFF0C\u8FD4\u56DE status \u8868\u793A\u7ED3\u679C\u3002",
+    inputSchema: { id: external_exports.string().min(1).max(32768) },
+    annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true }
+  }, async ({ id }) => {
+    try {
+      const item = await state.process(id);
+      return { isError: item.status === "error" || void 0, content: [{ type: "text", text: JSON.stringify(item) }] };
+    } catch (error62) {
+      return { isError: true, content: [{ type: "text", text: error62.message }] };
+    }
+  });
+  server.registerTool("lanhu_compression_preferences", {
+    title: "\u56FE\u7247\u538B\u7F29\u8BBE\u7F6E",
+    description: "\u8BFB\u53D6\u6216\u4FDD\u5B58\u81EA\u52A8\u5F00\u59CB\uFF08\u9ED8\u8BA4\u662F\uFF09\u548C\u5E76\u53D1\u6570\uFF08\u9ED8\u8BA4 5\uFF0C\u8303\u56F4 1\u201320\uFF09\u3002",
+    inputSchema: { auto_start: external_exports.boolean().optional(), concurrency: external_exports.number().int().min(1).max(20).optional() },
+    _meta: { ui: { visibility: ["app"] } },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false, idempotentHint: true }
+  }, async ({ auto_start, concurrency }) => {
+    try {
+      return { content: [], _meta: { "lanhu/compression": await compressionPreferences(auto_start === void 0 && concurrency === void 0 ? void 0 : { ...auto_start !== void 0 ? { auto_start } : {}, ...concurrency !== void 0 ? { concurrency } : {} }) } };
+    } catch {
+      return { isError: true, content: [{ type: "text", text: "\u65E0\u6CD5\u8BFB\u53D6\u6216\u4FDD\u5B58\u81EA\u52A8\u5F00\u59CB\u8BBE\u7F6E" }] };
+    }
+  });
+  server.registerTool("lanhu_compression_thumbnail", {
+    title: "\u8BFB\u53D6\u56FE\u7247\u7F29\u7565\u56FE\u6E90",
+    description: "\u8FD4\u56DE\u5217\u8868\u56FE\u7247\u7684\u9884\u89C8\u6570\u636E\uFF0C\u4F9B\u9762\u677F\u663E\u793A\u3002",
+    inputSchema: { id: external_exports.string().min(1).max(32768), offset: external_exports.number().int().min(0).max(32 * 1024 * 1024).optional() },
+    _meta: { ui: { visibility: ["app"] } },
+    annotations: { readOnlyHint: true, openWorldHint: false }
+  }, async ({ id, offset }) => {
+    try {
+      return { content: [], _meta: { "lanhu/compression": await state.previewChunk(id, offset) } };
+    } catch {
+      return { isError: true, content: [{ type: "text", text: "\u65E0\u6CD5\u8BFB\u53D6\u56FE\u7247\u9884\u89C8" }] };
+    }
+  });
+  server.registerTool("lanhu_compression_import", {
+    title: "\u6DFB\u52A0\u56FE\u7247",
+    description: "\u901A\u8FC7\u7CFB\u7EDF\u539F\u751F\u6587\u4EF6\u9009\u62E9\u5668\u591A\u9009\u56FE\u7247\u5E76\u6DFB\u52A0\u961F\u5217\uFF0C\u53D6\u6D88\u4E0D\u62A5\u9519\uFF1B\u4E0D\u652F\u6301\u76EE\u5F55\u6216\u62D6\u5165\u3002",
+    inputSchema: {},
+    _meta: { ui: { visibility: ["app"] } },
+    annotations: { readOnlyHint: true, openWorldHint: false }
+  }, async () => {
+    try {
+      const selected = await pickImages();
+      return { content: [], _meta: { "lanhu/compression": selected.length ? await state.add(selected) : { cancelled: true } } };
+    } catch (error62) {
+      return { isError: true, content: [{ type: "text", text: error62.message }] };
+    }
+  });
+  server.registerTool("lanhu_compression_remove", {
+    title: "\u79FB\u9664\u538B\u7F29\u5217\u8868\u9879",
+    description: "\u4EC5\u79FB\u9664\u5F85\u538B\u7F29\u5217\u8868\u4E2D\u7684\u9879\u76EE\uFF0C\u4E0D\u5220\u9664\u78C1\u76D8\u6587\u4EF6\u3002",
+    inputSchema: { ids: external_exports.array(external_exports.string()).max(5e3) },
+    _meta: { ui: { visibility: ["app"] } },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false }
+  }, async ({ ids }) => ({ content: [], _meta: { "lanhu/compression": { items: state.remove(ids) } } }));
+}
+
 // src/mentions.ts
 function registerMentions(server, inbox) {
   server.registerTool("lanhu_prepare_annotations", {
@@ -38108,17 +38636,38 @@ function registerMentions(server, inbox) {
 
 // src/sidebar-icon.ts
 var import_node_fs = require("node:fs");
-var import_node_path4 = __toESM(require("node:path"), 1);
-var root = /[\\/]dev$/.test(__dirname) ? import_node_path4.default.resolve(__dirname, "../..") : import_node_path4.default.resolve(__dirname, "..");
+var import_node_path8 = __toESM(require("node:path"), 1);
+var root = /[\\/]dev$/.test(__dirname) ? import_node_path8.default.resolve(__dirname, "../..") : import_node_path8.default.resolve(__dirname, "..");
 var sidebarIcons = [{
-  src: `data:image/png;base64,${(0, import_node_fs.readFileSync)(import_node_path4.default.join(root, "assets/sidebar-icon.png")).toString("base64")}`,
+  src: `data:image/png;base64,${(0, import_node_fs.readFileSync)(import_node_path8.default.join(root, "assets/sidebar-icon.png")).toString("base64")}`,
   mimeType: "image/png",
   sizes: ["80x80"]
 }];
+var tabIcons = [{
+  src: `data:image/png;base64,${(0, import_node_fs.readFileSync)(import_node_path8.default.join(root, "assets/logo.png")).toString("base64")}`,
+  mimeType: "image/png",
+  sizes: ["210x210"]
+}];
+
+// src/tool-icons.ts
+function configureToolIcons(server, icons) {
+  const setHandler = server.server.setRequestHandler.bind(server.server);
+  server.server.setRequestHandler = ((schema, handler) => {
+    const method = schema.shape?.method?.value;
+    if (method !== "tools/list") return setHandler(schema, handler);
+    return setHandler(schema, async (request, extra) => {
+      const result = await handler(request, extra);
+      const list = result;
+      if (!Array.isArray(list.tools)) return result;
+      return { ...result, tools: list.tools.map((tool) => icons[tool.name] ? { ...tool, icons: icons[tool.name] } : tool) };
+    });
+  });
+}
 
 // src/mcp.ts
 function createMcpServer(bridge, preferences = new FileCookiePreferences(), sharedSettings) {
   const server = new McpServer({ name: "lanhu-mcp", version: MCP_VERSION, icons: sidebarIcons });
+  configureToolIcons(server, { lanhu_open_canvas: sidebarIcons, lanhu_open_canvas_thread: tabIcons, lanhu_compressed_picture: tabIcons });
   const settings = sharedSettings ?? new Settings(bridge, preferences);
   server.server.registerCapabilities({ experimental: { "openai/settings": SETTINGS_CAPABILITY } });
   const wrap = (action) => async () => {
@@ -38163,7 +38712,7 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
     outputSchema: { schema: external_exports.record(external_exports.string(), external_exports.unknown()), values: valuesSchema },
     annotations: { readOnlyHint: true },
     _meta: appOnly
-  }, async () => ({ content: [], structuredContent: settings.read() }));
+  }, async () => ({ content: [], structuredContent: await settings.readVerified() }));
   server.registerTool(SETTINGS_CAPABILITY.updateTool, {
     title: "\u66F4\u65B0\u84DD\u6E56\u8BBE\u7F6E",
     description: "\u4F9B\u63D2\u4EF6\u8BE6\u60C5\u9875\u66F4\u65B0\u672C\u673A COOKIE\uFF0C\u4E0D\u9700\u8981\u7AEF\u53E3\u6216 Chrome \u8FDE\u63A5\u3002",
@@ -38178,6 +38727,7 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
     }
   });
   registerCanvas(server, bridge);
+  registerCompression(server, bridge);
   registerMentions(server, bridge.drafts);
   server.registerTool("lanhu_get_selection", {
     title: "\u8BFB\u53D6\u84DD\u6E56\u9009\u533A\u5B8C\u6574\u4FE1\u606F",
@@ -38190,41 +38740,41 @@ function createMcpServer(bridge, preferences = new FileCookiePreferences(), shar
 
 // src/shared-service.ts
 var import_node_net = require("node:net");
-var import_node_crypto4 = require("node:crypto");
-var import_promises4 = require("node:fs/promises");
-var import_node_child_process2 = require("node:child_process");
-var import_node_path5 = __toESM(require("node:path"), 1);
+var import_node_crypto6 = require("node:crypto");
+var import_promises7 = require("node:fs/promises");
+var import_node_child_process3 = require("node:child_process");
+var import_node_path9 = __toESM(require("node:path"), 1);
 var import_node_os2 = require("node:os");
 function bridgeAddress(directory, platform = process.platform, userId = process.getuid?.()) {
-  const id = (0, import_node_crypto4.createHash)("sha256").update(import_node_path5.default.resolve(directory)).digest("hex").slice(0, 24);
+  const id = (0, import_node_crypto6.createHash)("sha256").update(import_node_path9.default.resolve(directory)).digest("hex").slice(0, 24);
   if (platform === "win32") return `\\\\.\\pipe\\lanhu-${BRIDGE_RUNTIME}-${id}`;
-  return import_node_path5.default.posix.join("/tmp", `lanhu-${userId}-${id}`, `${BRIDGE_RUNTIME}.sock`);
+  return import_node_path9.default.posix.join("/tmp", `lanhu-${userId}-${id}`, `${BRIDGE_RUNTIME}.sock`);
 }
 async function endpoint() {
-  const directory = import_node_path5.default.dirname(settingsFile());
-  await (0, import_promises4.mkdir)(directory, { recursive: true, mode: 448 });
-  const keyFile = import_node_path5.default.join(directory, "bridge-key");
+  const directory = import_node_path9.default.dirname(settingsFile());
+  await (0, import_promises7.mkdir)(directory, { recursive: true, mode: 448 });
+  const keyFile = import_node_path9.default.join(directory, "bridge-key");
   try {
-    await (0, import_promises4.writeFile)(keyFile, (0, import_node_crypto4.randomBytes)(32).toString("hex"), { flag: "wx", mode: 384 });
+    await (0, import_promises7.writeFile)(keyFile, (0, import_node_crypto6.randomBytes)(32).toString("hex"), { flag: "wx", mode: 384 });
   } catch (error62) {
     if (error62.code !== "EEXIST") throw error62;
   }
   let key = "";
   for (let attempt = 0; attempt < 20; attempt++) {
-    key = (await (0, import_promises4.readFile)(keyFile, "utf8")).trim();
+    key = (await (0, import_promises7.readFile)(keyFile, "utf8")).trim();
     if (/^[a-f0-9]{64}$/.test(key)) break;
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
   if (!/^[a-f0-9]{64}$/.test(key)) throw new Error("Invalid local bridge key");
   const address = bridgeAddress(directory);
   if (process.platform !== "win32") {
-    const socketDirectory = import_node_path5.default.dirname(address);
+    const socketDirectory = import_node_path9.default.dirname(address);
     try {
-      await (0, import_promises4.mkdir)(socketDirectory, { mode: 448 });
+      await (0, import_promises7.mkdir)(socketDirectory, { mode: 448 });
     } catch (error62) {
       if (error62.code !== "EEXIST") throw error62;
     }
-    const stat = await (0, import_promises4.lstat)(socketDirectory);
+    const stat = await (0, import_promises7.lstat)(socketDirectory);
     if (!stat.isDirectory() || stat.uid !== process.getuid() || (stat.mode & 63) !== 0)
       throw Object.assign(new Error("Unsafe local socket directory"), { code: "LOCAL_BRIDGE_DIRECTORY_UNSAFE" });
   }
@@ -38299,7 +38849,7 @@ async function serveSharedBridge() {
     for (const socket of clients) socket.destroy();
     server.close();
     await bridge.close();
-    if (process.platform !== "win32") await (0, import_promises4.unlink)(address).catch(() => void 0);
+    if (process.platform !== "win32") await (0, import_promises7.unlink)(address).catch(() => void 0);
   };
   const scheduleIdle = () => {
     clearTimeout(idle);
@@ -38363,7 +38913,7 @@ async function connectSharedBridge() {
   } catch {
   }
   if (!socket) {
-    const owner = (0, import_node_child_process2.spawn)(process.execPath, [process.argv[1], "--bridge-service"], { cwd: (0, import_node_os2.homedir)(), detached: true, windowsHide: true, stdio: ["ignore", "ignore", "inherit"], env: process.env });
+    const owner = (0, import_node_child_process3.spawn)(process.execPath, [process.argv[1], "--bridge-service"], { cwd: (0, import_node_os2.homedir)(), detached: true, windowsHide: true, stdio: ["ignore", "ignore", "inherit"], env: process.env });
     owner.on("error", () => void 0);
     owner.unref();
     for (let attempt = 0; attempt < 100; attempt++) {

@@ -55,3 +55,18 @@ it('原生剪贴板只返回蓝湖链接，不返回其他剪贴板内容，读�
   expect(run.mock.calls[0][2]).toMatchObject({ windowsHide: true, timeout: 3000, maxBuffer: 65536 });
   expect(await clipboardLinks('win32', vi.fn(async () => { throw new Error('denied'); }) as any)).toEqual([]);
 });
+
+it.each([direct, direct.replace('tid=team','image_id=another'), short])('当前已打开同项目时不弹窗，也不读取项目详情：%s', async link => {
+ const f=fixture();const check=createClipboardDetector({...f.options,getRoute:()=>({project_id:'project',team_id:'team',image_id:'current'})});
+ await check(link);expect(f.options.ask).not.toHaveBeenCalled();expect(f.options.inspect).not.toHaveBeenCalled();expect(f.options.open).not.toHaveBeenCalled();
+});
+it('详情解析期间切换到了剪贴板项目，迟到结果不再弹窗', async () => {
+ const f=fixture();let current={project_id:'other',team_id:'team'};let resolve!:(value:any)=>void;
+ f.options.inspect.mockImplementation(()=>new Promise(done=>{resolve=done}));
+ const check=createClipboardDetector({...f.options,getRoute:()=>current});const pending=check(direct);
+ await vi.waitFor(()=>expect(f.options.inspect).toHaveBeenCalled());current={project_id:'project',team_id:'team'};resolve({id:'project',name:'项目'});await pending;expect(f.options.ask).not.toHaveBeenCalled();
+});
+it('不同项目仍提示；两个已知不同团队不会仅凭同名 ID 误抑制', async () => {
+ const f=fixture();await createClipboardDetector({...f.options,getRoute:()=>({project_id:'other',team_id:'team'})})(direct);expect(f.options.ask).toHaveBeenCalledOnce();
+ const other=fixture();await createClipboardDetector({...other.options,getRoute:()=>({project_id:'project',team_id:'different-team'})})(direct);expect(other.options.ask).toHaveBeenCalledOnce();
+});

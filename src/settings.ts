@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { AppError, manualCookieSchema } from './shared';
 import type { Bridge } from './bridge';
+import { canvasLoginStatus } from './login';
 
 export const SETTINGS_CAPABILITY = { readTool: 'settings_read', updateTool: 'settings_update' };
 export interface CookiePreferences { loadCookie(): Promise<string | undefined>; saveCookie(cookie: string): Promise<void> }
@@ -41,13 +42,31 @@ export class FileCookiePreferences implements CookiePreferences {
   }
 }
 
+export function formatCookieUpdatedAt(value: string | null) {
+  if (!value || !Number.isFinite(Date.parse(value))) return '尚未更新';
+  const parts = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(value));
+  const get = (type: string) => parts.find(part => part.type === type)?.value;
+  return `${get('year')}年${get('month')}月${get('day')}日${get('hour')}:${get('minute')}:${get('second')}`;
+}
+
 export class Settings {
   private queue: Promise<unknown> = Promise.resolve();
-  constructor(private readonly bridge: Bridge, private readonly preferences: CookiePreferences) {}
+  private readonly login: ReturnType<typeof canvasLoginStatus>;
+  private verifiedCookie: string | undefined;
+  private loggedIn = false;
+  constructor(private readonly bridge: Bridge, private readonly preferences: CookiePreferences) { this.login = canvasLoginStatus(bridge); }
+  async readVerified() {
+    const cookie = this.bridge.settingsCookie();
+    try {
+      const result = await this.login();
+      if (cookie === this.bridge.settingsCookie()) { this.loggedIn = result.loggedIn; this.verifiedCookie = cookie; }
+    } catch { /* A network error does not invalidate a previously verified credential. */ }
+    return this.read();
+  }
   read() {
     return {
       schema: { type: 'object' as const, properties: {
-        COOKIE: { type: 'string' as const, title: 'COOKIE', description: `本机保存的蓝湖 Cookie，无需 Chrome 连接或端口。上一次更新时间：${this.bridge.cookieUpdatedAt() ?? '尚未更新'}（UTC）。留空删除保存值。` }
+        COOKIE: { type: 'string' as const, title: 'COOKIE', description: `蓝湖 Cookie，Cookie ${this.loggedIn && this.verifiedCookie === this.bridge.settingsCookie() ? '已登录' : '未登录'}，上一次更新时间：${formatCookieUpdatedAt(this.bridge.cookieUpdatedAt())}。` }
       }, required: ['COOKIE'] },
       values: { COOKIE: this.bridge.settingsCookie() }
     };
@@ -61,6 +80,7 @@ export class Settings {
       hooks.beforeSave?.();
       await this.preferences.saveCookie(parsed.data);
       if (parsed.data) this.bridge.setCookie(parsed.data); else this.bridge.clearCookie();
+      this.login.invalidate(); this.loggedIn = false; this.verifiedCookie = undefined;
       process.env.COOKIE = parsed.data;
       hooks.afterSave?.();
       return { values: this.read().values };

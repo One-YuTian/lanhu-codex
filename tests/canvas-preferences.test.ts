@@ -21,7 +21,7 @@ it('项目记忆单独落盘，不含 Cookie，重新创建 MCP 会话仍可恢�
     expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: {} }))._meta?.['lanhu/savedRoute']).toBeNull();
     const saved = await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { route } });
     expect(saved.isError).not.toBe(true);
-    expect(JSON.parse(await readFile(path.join(directory, 'canvas-state.json'), 'utf8'))).toEqual({ route });
+    expect(JSON.parse(await readFile(path.join(directory, 'canvas-state.json'), 'utf8'))).toEqual({ route, recentProjects: [{ project_id: 'project', team_id: 'team' }] });
     await current.client.close(); await current.server.close(); current = await connect();
     expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: {} }))._meta?.['lanhu/savedRoute']).toEqual(route);
     await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { team_id: 'selected-team', sidebar_width: 360 } });
@@ -40,6 +40,7 @@ it('项目记忆单独落盘，不含 Cookie，重新创建 MCP 会话仍可恢�
     expect(restored._meta?.['lanhu/groups']).toEqual({ 'team:project': 'sector-b' });
     expect(restored._meta?.['lanhu/seenLinks']).toEqual([hash]);
     expect(restored._meta?.['lanhu/savedRoute']).toEqual({ project_id: 'other' });
+    expect(restored._meta?.['lanhu/recentProjects']).toEqual([{ project_id: 'other' }, { project_id: 'project', team_id: 'team' }]);
     expect(await readFile(path.join(directory, 'canvas-state.json'), 'utf8')).not.toContain('lanhuapp.com');
     expect((await current.client.callTool({ name: 'lanhu_canvas_preferences', arguments: { route: { project_id: 'https://evil' } } })).isError).toBe(true);
     expect(savedProject({ project_id: '../private' })).toBeNull();

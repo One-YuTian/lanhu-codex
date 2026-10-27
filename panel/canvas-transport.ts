@@ -39,6 +39,11 @@ export function nativeTransport(app: Pick<App, 'callServerTool' | 'openLink'>, a
       if (result.isError) throw new Error('项目记忆读取失败');
       return result._meta?.['lanhu/savedRoute'];
     },
+    async recallRecentProjects() {
+      const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: {} });
+      if (result.isError) throw new Error('最近项目读取失败');
+      return result._meta?.['lanhu/recentProjects'] || [];
+    },
     async rememberProject(route: Record<string, string>) {
       const result = await app.callServerTool({ name: 'lanhu_canvas_preferences', arguments: { route } });
       if (result.isError) throw new Error('项目记忆保存失败');
@@ -69,7 +74,7 @@ export function nativeTransport(app: Pick<App, 'callServerTool' | 'openLink'>, a
       const args: Record<string, string | number> = { endpoint: url.pathname.slice(5) };
       for (const [key, entry] of url.searchParams) {
         if (entry === '') continue;
-        if (key === 'url') args.target_url = entry;
+        if (key === 'url') args[args.endpoint === 'resolve' ? 'url' : 'target_url'] = entry;
         else if (['width', 'height', 'offset'].includes(key)) args[key] = Number(entry);
         else args[key] = entry;
       }

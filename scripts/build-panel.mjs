@@ -26,4 +26,10 @@ export async function buildPanel() {
     .replace('<body>', () => `<body><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden"><defs>${symbols}</defs></svg>`)
     .replace('</body>', () => `<script>${canvasScript}</script></body>`);
   await writeFile(new URL('package/canvas.html', base), canvasHtml);
+  const compression = await build({ absWorkingDir: root, entryPoints: ['panel/compression.ts'], bundle: true,
+    write: false, format: 'iife', platform: 'browser', target: 'chrome119', minify: true, legalComments: 'none' });
+  const compressionScript = compression.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
+  new Script(compressionScript, { filename: 'lanhu-compression.js' });
+  const compressionHtml = (await readFile(new URL('panel/compression.html', base), 'utf8')).replace('/* SCRIPT */', () => compressionScript);
+  await writeFile(new URL('package/compression.html', base), compressionHtml);
 }

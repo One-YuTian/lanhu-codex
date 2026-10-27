@@ -180,7 +180,10 @@ export class LanhuApi {
     const sign = hash.get('sign') || source.searchParams.get('sign') || undefined;
     const response = this.json((await this.bytes(endpoint, { Cookie: cookie, Referer: 'https://lanhuapp.com/link/', 'User-Agent': userAgent,
       'Content-Type': 'application/json', Accept: 'application/json' }, 1024 * 1024, JSON.stringify({ short_id, ...(sign ? { sign } : {}) }))).bytes);
-    if (Number(response.code) !== 0 || typeof response.data?.url !== 'string') return null;
+    // Invitation metadata can report 30010 with success=true and a usable URL,
+    // even for an existing project member. Project reads still check access.
+    const resolved = Number(response.code) === 0 || (Number(response.code) === 30010 && response.success === true);
+    if (!resolved || typeof response.data?.url !== 'string') return null;
     // Resolve only; never invoke member_add or any team/project invitation action.
     return localLanhuRoute(response.data.url);
   }

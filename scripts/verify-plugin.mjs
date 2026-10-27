@@ -26,10 +26,10 @@ assert.deepEqual(mcp.env, { COOKIE: '' });
 const { type, ...portable } = mcp;
 assert.equal(type, 'stdio');
 assert.deepEqual(legacy, portable);
-for (const file of [overlay.interface.logo, overlay.interface.composerIcon, 'package/index.cjs', 'package/canvas.html']) {
+for (const file of [overlay.interface.logo, overlay.interface.composerIcon, 'package/index.cjs', 'package/canvas.html', 'package/compression.html']) {
   assert((await readFile(path.resolve(root, file))).length > 0);
 }
-for (const file of ['canvas.html']) {
+for (const file of ['canvas.html', 'compression.html']) {
   const html = await readFile(path.join(root, 'package', file), 'utf8');
   assert(!html.includes('/* SCRIPT */'));
   assert(!/<script\b[^>]*\bsrc=/.test(html));
@@ -42,7 +42,7 @@ await mkdir(cache, { recursive: true });
 const temporary = await mkdtemp(path.join(cache, 'plugin-check-'));
 const client = new Client({ name: 'lanhu-portability-check', version: '1.0.0' });
 try {
-  for (const file of ['package/index.cjs', 'package/canvas.html', 'scripts/launch-mcp', 'scripts/launch-mcp.cmd', 'assets', 'skills']) {
+  for (const file of ['package/index.cjs', 'package/canvas.html', 'package/compression.html', 'scripts/launch-mcp', 'scripts/launch-mcp.cmd', 'assets', 'skills']) {
     await mkdir(path.dirname(path.join(temporary, file)), { recursive: true });
     await cp(path.join(root, file), path.join(temporary, file), { recursive: true });
   }
@@ -54,7 +54,7 @@ try {
   });
   await client.connect(transport);
   const tools = await client.listTools();
-  for (const name of ['get_status', 'check_login', 'lanhu_open_canvas', 'lanhu_get_elements', 'lanhu_get_design_slices']) {
+  for (const name of ['get_status', 'check_login', 'lanhu_open_canvas', 'lanhu_open_canvas_thread', 'lanhu_compressed_picture', 'lanhu_compression_list', 'lanhu_compression_run', 'lanhu_get_elements', 'lanhu_get_design_slices']) {
     assert(tools.tools.some(tool => tool.name === name), `Missing tool: ${name}`);
   }
   assert.equal((await client.callTool({ name: 'get_status', arguments: {} })).isError, undefined);

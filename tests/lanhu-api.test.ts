@@ -28,8 +28,18 @@ describe('蓝湖接口导入', () => {
     destination = 'https://evil.example/#/item?pid=stolen';
     expect(await api.resolveLink('https://lanhuapp.com/link/#/invite?sid=lX0dBUHa')).toBeNull();
   });
-  it('短链接过期或需要接受邀请时不返回具体项目', async () => {
-    const { api } = fixture(() => json({ code: 30501, data: { url: 'https://lanhuapp.com/web/#/?pid=private' } }));
+  it('已登录成员的邀请解析兼容真实 30010 成功响应，保留设计稿且不执行加入操作', async () => {
+    const { api, fetcher } = fixture((url, init) => {
+      expect(url.pathname).toBe('/api/share/url/resolve');
+      expect(init.method).toBe('POST');
+      return json({ code: 30010, success: true, message: '', data: { need_pwd: 1, status: 1,
+        url: 'https://lanhuapp.com/web/#/item/project/stage?pid=p&image_id=i&tid=t' } });
+    });
+    expect(await api.resolveLink('https://lanhuapp.com/link/#/invite?sid=invite')).toEqual({ project_id: 'p', team_id: 't', image_id: 'i' });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it.each([30501, 30010])('邀请解析失败响应不返回具体项目（%s）', async code => {
+    const { api } = fixture(() => json({ code, success: false, data: { url: 'https://lanhuapp.com/web/#/?pid=private' } }));
     expect(await api.resolveLink('https://lanhuapp.com/link/#/invite?sid=invite')).toBeNull();
   });
   it.each(['root', 'data', 'result'])('文件夹项目通过 SDK 接口读取，保留请求关联（%s 响应）', async envelope => {

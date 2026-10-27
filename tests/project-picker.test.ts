@@ -56,3 +56,14 @@ it('弹窗中双击项目直接关闭弹窗并打开该项目', () => {
   expect(f.dialog.open).toBe(false);
   expect(f.openProject).toHaveBeenCalledWith({ project_id: 'double-clicked', team_id: 'team' });
 });
+
+it('选中具体项目时清除分类和文件夹高亮，取消项目选择后恢复当前分类', async () => {
+ const source=await readFile('panel/canvas/project-manager.js','utf8');
+ const make=(dataset:any)=>{const classes=new Set<string>();return {dataset,classes,classList:{toggle:(name:string,on:boolean)=>on?classes.add(name):classes.delete(name)},setAttribute:vi.fn()}};
+ const project=make({projectId:'chosen'}),category=make({view:'all'}),folder=make({folderId:'parent'});
+ category.classes.add('active');
+ const context={team:'team',view:'all',folder:'',selectedRoute:{project_id:'chosen',team_id:'team'},root:{querySelectorAll:()=>[project]},nav:{querySelectorAll:(selector:string)=>selector==='.manager-category'?[category]:[folder]}};
+ const update=runInNewContext(`${source.slice(source.indexOf('function updateProjectSelection('),source.indexOf('function chooseProject('))};updateProjectSelection;`,context);
+ update();expect(project.classes.has('selected')).toBe(true);expect(category.classes.has('active')).toBe(false);expect(folder.classes.has('active')).toBe(false);
+ context.selectedRoute=null as any;update();expect(project.classes.has('selected')).toBe(false);expect(category.classes.has('active')).toBe(true);
+});

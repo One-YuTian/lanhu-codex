@@ -2,7 +2,8 @@ import { parseRoute } from './model.js';
 import { savedProject } from './project-memory.js';
 
 export function extractLanhuLinks(text) {
-  const found = String(text || '').slice(0, 65536).match(/(?<![\w.@/-])(?:https?:\/\/)?(?:www\.)?lanhuapp\.com(?![\w.-])(?:[/?#][A-Za-z0-9\-._~:/?#@!$&()*+,;=%\[\]]*)?/gi) || [];
+  const normalized = String(text || '').slice(0, 65536).replace(/\\&/g, '&').replace(/&amp;/gi, '&');
+  const found = normalized.match(/(?<![\w.@/-])(?:https?:\/\/)?(?:www\.)?lanhuapp\.com(?![\w.-])(?:[/?#][A-Za-z0-9\-._~:/?#@!$&()*+,;=%\[\]]*)?/gi) || [];
   const result = new Set();
   for (const item of found) {
     try {
@@ -26,4 +27,13 @@ export const projectMemoryKey = route => `${route.team_id || ''}:${route.project
 export function firstProjectGroup(groups, preferred) {
   if (preferred === 'ungrouped' || groups.byId.has(preferred)) return preferred;
   return groups.roots[0]?.id || 'ungrouped';
+}
+
+export async function resolveProjectInput(value, resolve) {
+  const links = extractLanhuLinks(value);
+  if (!links.length) throw new Error('请输入有效的蓝湖项目、设计稿或邀请链接');
+  if (links.length > 1) throw new Error('请一次导入一个蓝湖链接');
+  const route = localLanhuRoute(links[0]) || savedProject(await resolve(links[0]));
+  if (!route) throw new Error('未能从邀请链接获取项目地址，请检查链接或使用浏览器打开后的项目链接');
+  return route;
 }

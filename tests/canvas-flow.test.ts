@@ -2,16 +2,16 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import { expect, it, vi } from 'vitest';
 
-it('手动登录成功清理认证状态并直接进入项目管理，不保留旧项目路由', async () => {
+it('手动登录成功清理认证状态并继续原项目路由', async () => {
   const app = await readFile('panel/canvas/app.js', 'utf8');
   const source = app.slice(app.indexOf('function completeLogin()'), app.indexOf('async function checkCanvasLogin()'));
   const navigate = vi.fn(), remove = vi.fn(), flow = { manual: true };
-  const context = { loginFlow: flow, loginRequired: true, document: { documentElement: { classList: { remove } } },
+  const context = { state: { route: { project_id: 'saved-project', team_id: 'team' } }, loginFlow: flow, loginRequired: true, document: { documentElement: { classList: { remove } } },
     $: () => ({ replaceChildren: vi.fn() }), projectPicker: { close: vi.fn() }, navigate, loadProfile: vi.fn() };
   runInNewContext(`${source}; completeLogin();`, context);
   expect(context.loginRequired).toBe(false); expect(flow.manual).toBe(false);
   expect(remove).toHaveBeenCalledWith('auth-checking', 'login-required');
-  expect(navigate).toHaveBeenCalledWith({});
+  expect(navigate).toHaveBeenCalledWith({ project_id: 'saved-project', team_id: 'team' });
 });
 
 it.each(['project', 'layers'])('设计稿加载与图层数据返回不会改变用户当前的 %s 标签', async nav => {

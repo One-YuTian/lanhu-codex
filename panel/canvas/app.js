@@ -3,13 +3,13 @@ import { icon, iconHref, renderIcons } from './icons.js';
 import { inspectorMarkup, layerSlice } from './inspector.js';
 import { formatColor } from './layer-style.js';
 import { createButton, installComponents, promptNumber } from './ui/components.js';
-import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, rememberProject, recallGroup, rememberGroup, setLoginCookie, recallSidebarWidth, rememberSidebarWidth } from './transport.js';
+import { canvasFetch, assignImage, hydrateImages, openExternal, currentUrl, updateUrl, rememberProject, recallProject, recallGroup, rememberGroup, setLoginCookie, recallSidebarWidth, rememberSidebarWidth } from './transport.js';
 import { mountAnnotations } from './annotation-ui.js';
 import { renderLoginState } from './login-state.js';
 import { mountProjectManager } from './project-manager.js';
 import { mountProjectPicker } from './project-picker.js';
 import { promptCookie } from './login-cookie.js';
-import { firstProjectGroup } from './lanhu-links.js';
+import { firstProjectGroup, resolveProjectInput } from './lanhu-links.js';
 import { installInterfaceEvents } from './interface-events.js';
 import { installClipboardProjects } from './clipboard-project.js';
 import { installSidebarResize } from './sidebar-resize.js';
@@ -81,8 +81,8 @@ function completeLogin() {
   document.documentElement.classList.remove('auth-checking', 'login-required');
   $('#state').replaceChildren();
   projectPicker.close();
-  // Always enter project management after authentication, even for an old route.
-  navigate({});
+  // Continue the selected project after authentication.
+  navigate(state.route.project_id ? { ...state.route } : {});
   void loadProfile();
 }
 async function checkCanvasLogin() {
@@ -165,8 +165,8 @@ async function onRoute(force = false) {
   annotations.render();
   clearVersionParams(next);
   if (projectChanged) { state.filter = ''; state.expanded.clear(); state.search = ''; $('#search').value = ''; void loadProfile(); }
-  if (projectChanged || force || !state.images.length) return loadProject();
   void rememberProject(next).catch(() => toast('无法保存最近打开的项目'));
+  if (projectChanged || force || !state.images.length) return loadProject();
   if (next.image_id) return loadDetail();
   detailGeneration++; state.detail = null; state.layers = []; state.layer = null;
   $('#inspector').hidden = true; $('#layer-tab').hidden = true; state.nav = 'project';
@@ -199,7 +199,6 @@ async function loadProject() {
     while (selectedGroup && !expandedGroups.has(selectedGroup.id)) { expandedGroups.add(selectedGroup.id); state.expanded.add(selectedGroup.id); selectedGroup = state.groups.byId.get(selectedGroup.parent_id); }
     void rememberGroup(state.route, state.filter).catch(() => {});
     setProjectTitle(project.name || project.project?.name || imageData.name || '蓝湖项目');
-    void rememberProject(state.route).catch(() => toast('无法保存最近打开的项目'));
     $('#state').innerHTML = ''; renderNavigation();
     if (results[0].status === 'rejected' || results[2].status === 'rejected') toast('部分项目资料或分组加载失败，设计图仍可浏览');
     if (state.route.image_id) await loadDetail(); else { renderBoards(); fit(); }
@@ -261,7 +260,7 @@ function renderNavigation() {
     return;
   }
   const imageEntry = (image, depth, groupId) => {
-    const button = entry(image.name, 'image', () => { if (state.detail) openImage(image.id); else { state.filter = groupId; focusImage(image); } }, state.detail?.id === image.id || state.selected.has(image.id), null, depth);
+    const button = entry(image.name, 'image', () => { if (state.detail) openImage(image.id); else { state.filter = groupId; focusImage(image); } }, state.detail ? state.detail.id === image.id : state.selected.has(image.id), null, depth);
     button.dataset.imageId = image.id;
   };
   const group = (sector, depth) => {
@@ -537,12 +536,35 @@ viewport.addEventListener('contextmenu', event => {
   item('复制当前链接', () => copy(`https://lanhuapp.com/web/${routeHash(state.route)}`)); menu.hidden = false; menu.style.left = `${Math.min(event.clientX, innerWidth - 180)}px`; menu.style.top = `${Math.min(event.clientY, innerHeight - 240)}px`;
 });
 document.addEventListener('click', event => { if (!event.target.closest('#context-menu')) $('#context-menu').hidden = true; else setTimeout(() => $('#context-menu').hidden = true, 0); });
-function openDialog() { $('#link-error').textContent = ''; $('#link-dialog').showModal(); $('#project-url').focus(); }
+function openDialog() { $('#project-url').value = ''; $('#link-error').textContent = ''; $('#link-dialog').showModal(); $('#project-url').focus(); }
 $('#link-button').onclick = () => projectPicker.open(); $('#project-name')?.addEventListener('click', () => projectPicker.open()); $('#cancel-link').onclick = () => $('#link-dialog').close();
-$('#link-form').onsubmit = event => {
-  event.preventDefault();
-  try { const route = parseRoute($('#project-url').value.trim()); if (!route.project_id) throw new Error('链接中没有找到项目 ID（pid）'); loginRequired = false; document.documentElement.classList.remove('login-required'); state.filter = ''; state.search = ''; $('#search').value = ''; $('#link-dialog').close(); projectPicker.close(); navigate(route); } catch (error) { $('#link-error').textContent = error.message; }
-};
+let importingLink = false, linkRequest = 0, linkController;
+$('#link-dialog').addEventListener('close', () => {
+  linkRequest++; linkController?.abort(); importingLink = false;
+  $('#confirm-link').disabled = false; $('#confirm-link').textContent = '导入并打开'; $('#project-url').disabled = false;
+});
+async function importProjectLink() {
+  if (importingLink) return;
+  importingLink = true; const request = ++linkRequest;
+  const controller = new AbortController(); linkController = controller;
+  $('#confirm-link').disabled = true; $('#confirm-link').textContent = '解析中…'; $('#project-url').disabled = true; $('#link-error').textContent = '';
+  try {
+    const route = await resolveProjectInput($('#project-url').value.trim(), async link => {
+      const response = await canvasFetch(`/api/resolve?${new URLSearchParams({ url: link })}`, { signal: controller.signal });
+      if (!response.ok) throw new Error('邀请链接解析失败，请稍后重试');
+      const result = await response.json(); return result.route;
+    });
+    if (request !== linkRequest || !$('#link-dialog').open) return;
+    loginRequired = false; document.documentElement.classList.remove('login-required'); state.filter = ''; state.search = ''; $('#search').value = '';
+    $('#link-dialog').close(); projectPicker.close(); navigate(route);
+  } catch (error) {
+    if (request === linkRequest && error.name !== 'AbortError') $('#link-error').textContent = error.message;
+  } finally {
+    if (request === linkRequest) { importingLink = false; $('#confirm-link').disabled = false; $('#confirm-link').textContent = '导入并打开'; $('#project-url').disabled = false; }
+  }
+}
+$('#confirm-link').onclick = () => { void importProjectLink(); };
+$('#project-url').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); void importProjectLink(); } });
 $('#refresh').onclick = () => { void loadProfile(); void onRoute(true); };
 $('#share').onclick = () => {
   if (!state.route.project_id) { toast('请先打开蓝湖项目'); return; }
@@ -587,11 +609,20 @@ window.addEventListener('popstate', () => onRoute()); window.addEventListener('h
 window.addEventListener('lanhu-navigation', () => onRoute());
 async function startCanvas() {
   updatePanels(); annotations.render();
+  const initial = currentUrl(), generation = state.generation;
+  if (!parseRoute(initial).project_id) {
+    try {
+      const route = await recallProject();
+      if (route && currentUrl() === initial && state.generation === generation) {
+        const url = new URL(initial); url.hash = routeHash(route); updateUrl(url, true);
+      }
+    } catch { /* Missing project memory falls back to project management. */ }
+  }
   await onRoute(true); if (!loginRequired) void loadProfile();
 }
 installSidebarResize({ sidebar: $('#sidebar'), readWidth: recallSidebarWidth, saveWidth: rememberSidebarWidth, onChange: updateToolbarLayout, onError: () => toast('无法保存面板宽度') });
 void startCanvas();
-installClipboardProjects({ enabled: () => !loginRequired && !document.documentElement.classList.contains('auth-checking'), open: route => { projectPicker.close(); navigate(route); } });
+installClipboardProjects({ getRoute: () => state.route, enabled: () => !loginRequired && !document.documentElement.classList.contains('auth-checking'), open: route => { projectPicker.close(); navigate(route); } });
 let checkingLogin = false;
 async function refreshLoginState() {
   if (checkingLogin || document.visibilityState === 'hidden') return;

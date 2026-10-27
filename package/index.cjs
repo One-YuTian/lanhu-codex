@@ -38044,7 +38044,7 @@ async function clipboardLinks(platform = process.platform, run2 = execute) {
 }
 
 // package.json
-var version2 = "0.2.16";
+var version2 = "0.2.17";
 
 // src/runtime-version.ts
 var MCP_VERSION = version2;
